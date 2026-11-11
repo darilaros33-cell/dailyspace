@@ -2049,17 +2049,25 @@
             dlAnchorElem.setAttribute("download", "daily_space_backup.json");
             dlAnchorElem.click();
             showToast("Data exported successfully!", "success");
-        }
-
         function resetUserData() {
-            if (confirm("Are you sure you want to reset all data?")) {
-                localStorage.removeItem('daily_space_state');
-                appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
-                saveState();
-                router('home');
-                showToast("Application reset to default state.", "success");
-            }
-        }
+    if (confirm("Are you sure you want to reset your data?")) {
+        // Save current premium status before wiping storage
+        const wasPremium = appState.user.isPremium;
+        const expiry = appState.user.premiumExpiry;
+
+        localStorage.removeItem('daily_space_state');
+        
+        // Reset app data to default, but instantly restore their PRO subscription
+        appState = JSON.parse(JSON.stringify(defaultState)); 
+        appState.user.isPremium = wasPremium;
+        appState.user.premiumExpiry = expiry;
+
+        saveState();
+        router('home');
+        showToast("Application reset successfully (PRO status preserved).");
+    }
+}
+
 async function sendAIMessage() {
     const inputElement = document.getElementById('ai-chat-input');
     if (!inputElement) return;
@@ -2099,6 +2107,7 @@ async function sendAIMessage() {
         }
                     
         window.onload = function() {
+           appState.user.isPremium = true;
             applyTheme();
             router('home');
             lucide.createIcons();
