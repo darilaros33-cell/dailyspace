@@ -6,11 +6,11 @@
   "orientation": "any",
   "scope": "/",
   "short_name": "DailySpace",
-  "start_url": "/ephemeral-custard-bfab22.netlify.app",
+  "start_url": "/https://darilaros33-cell.github.io/dailyspace/",
   "theme_color": "#7657ff",
   "icons": [
     {
-      "src": "https://ephemeral-custard-bfab22.netlify.app/favicon.ico",
+      "src": "",
       "type": "image/x-icon",
       "isSquare": false,
       "isPng": false,
