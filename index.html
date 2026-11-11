@@ -2091,6 +2091,25 @@ const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
     }
+      async function requestNotificationPermission() {
+    if (!("Notification" in window)) {
+        showToast("This browser does not support desktop notifications", "danger");
+        return;
+    }
+    
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+        appState.remindersEnabled = true;
+        saveState();
+        showToast("Notifications enabled successfully!", "success");
+    } else {
+        appState.remindersEnabled = false;
+        saveState();
+        showToast("Permission denied for notifications", "danger");
+    }
+    renderProfile(document.getElementById('main-viewport'));
+    lucide.createIcons();
+      }
         
         window.onload = function() {
             appState.user.isPremium = true;
