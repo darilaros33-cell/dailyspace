@@ -2139,7 +2139,7 @@ async function sendAIMessage() {
         appState.aiConversations.push({ sender: 'ai', text: fallbackReply });
         appState.aiMemory.push({ role: 'assistant', content: fallbackReply });
         saveState();
-    }
+     }
 
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
