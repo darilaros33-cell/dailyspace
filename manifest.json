@@ -1,6 +1,6 @@
 {
-  "name": "Daily Space",
-  "short_name": "Daily Space",
+  "name": "DailySpace",
+  "short_name": "DailySpace",
   "start_url": "/dailyspace/",
   "display": "standalone",
   "background_color": "#080b18",
