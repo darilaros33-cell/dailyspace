@@ -301,7 +301,7 @@
                 name: "Commander",
                 title: "Master of Discipline",
                 xp: 0,
-                level: 0,
+                level: 1,
                 streak: 0,
                 currency: "₹",
                 isPremium: false,
@@ -309,25 +309,25 @@
                 theme: "dark"
             },
             tasks: [
-                { id: 1, title: "Morning Hydration & Stretch", category: "Health", time: "07:00 AM", completed: true, priority: "High" },
-                { id: 2, title: "Deep Work: Core Architecture", category: "Work", time: "09:00 AM", completed: true, priority: "High" },
+                { id: 1, title: "Morning Hydration & Stretch", category: "Health", time: "07:00 AM", completed: false, priority: "High" },
+                { id: 2, title: "Deep Work: Core Architecture", category: "Work", time: "09:00 AM", completed: false, priority: "High" },
                 { id: 3, title: "Physical Exercise / Gym", category: "Fitness", time: "05:00 PM", completed: false, priority: "Medium" },
                 { id: 4, title: "Read 20 Pages of Non-Fiction", category: "Growth", time: "09:00 PM", completed: false, priority: "Low" }
             ],
             habits: [
-                { id: 1, title: "Code Daily", category: "Development", streak: 12, targetDays: 30, completedToday: true },
-                { id: 2, title: "Cold Shower", category: "Discipline", streak: 5, targetDays: 30, completedToday: true },
+                { id: 1, title: "Code Daily", category: "Development", streak: 12, targetDays: 30, completedToday: false },
+                { id: 2, title: "Cold Shower", category: "Discipline", streak: 5, targetDays: 30, completedToday: false },
                 { id: 3, title: "Journaling", category: "Mind", streak: 3, targetDays: 30, completedToday: false },
                 { id: 4, title: "No Sugar", category: "Health", streak: 8, targetDays: 30, completedToday: false }
             ],
             goals: [
-                { id: 1, title: "Build Full-Stack SaaS Product", category: "Career", progress: 65, targetDate: "2026-06-30", milestones: ["Database setup", "Core UI", "AI integration", "Stripe billing"] },
-                { id: 2, title: "Read 24 Books This Year", category: "Growth", progress: 40, targetDate: "2026-12-31", milestones: ["Read 6 books", "Read 12 books", "Read 18 books", "Read 24 books"] }
+                { id: 1, title: "Build Full-Stack SaaS Product", category: "Career", progress: 0, targetDate: "2026-06-30", milestones: ["Database setup", "Core UI", "AI integration", "Stripe billing"] },
+                { id: 2, title: "Read 24 Books This Year", category: "Growth", progress: 0, targetDate: "2026-12-31", milestones: ["Read 6 books", "Read 12 books", "Read 18 books", "Read 24 books"] }
             ],
             challenges: [
-                { id: 1, title: "Complete all high-priority tasks before noon", xp: 30, completed: true },
+                { id: 1, title: "Complete all high-priority tasks before noon", xp: 30, completed: false },
                 { id: 2, title: "Zero social media distractions during focus blocks", xp: 40, completed: false },
-                { id: 3, title: "Drink 3 liters of water", xp: 20, completed: true }
+                { id: 3, title: "Drink 3 liters of water", xp: 20, completed: false }
             ],
             rules: [
                 { id: 1, rule: "Never open entertainment apps before completing core work." },
@@ -337,16 +337,16 @@
                 { id: 1, date: "Nov 10", distraction: "Checked notifications mid-coding", impact: "Lost 25 mins of flow state", fix: "Phone in another room during deep work." }
             ],
             expenses: [
-                { id: 1, title: "Cloud Hosting Server", amount: 850, category: "Work", type: "expense", date: "2026-11-10" },
-                { id: 2, title: "Freelance Project Milestone", amount: 15000, category: "Income", type: "income", date: "2026-11-09" },
-                { id: 3, title: "Healthy Groceries", amount: 2400, category: "Living", type: "expense", date: "2026-11-08" }
+                { id: 1, title: "Cloud Hosting Server", amount: 0, category: "Work", type: "expense", date: "2026-11-10" },
+                { id: 2, title: "Freelance Project Milestone", amount: 0, category: "Income", type: "income", date: "2026-11-09" },
+                { id: 3, title: "Healthy Groceries", amount: 0, category: "Living", type: "expense", date: "2026-11-08" }
             ],
             achievementsList: [
-                { id: 1, title: "First Step", desc: "Complete your first task", unlocked: true, icon: "footprints" },
-                { id: 2, title: "Consistency Starter", desc: "Maintain a 3-day streak", unlocked: true, icon: "flame" },
+                { id: 1, title: "First Step", desc: "Complete your first task", unlocked: false, icon: "footprints" },
+                { id: 2, title: "Consistency Starter", desc: "Maintain a 3-day streak", unlocked: false, icon: "flame" },
                 { id: 3, title: "Focus Master", desc: "Accumulate 2 hours of deep focus", unlocked: false, icon: "timer" },
                 { id: 4, title: "Goal Achiever", desc: "Complete your first major goal", unlocked: false, icon: "target" },
-                { id: 5, title: "Routine Builder", desc: "Complete 10 routine tasks", unlocked: true, icon: "check-circle-2" }
+                { id: 5, title: "Routine Builder", desc: "Complete 10 routine tasks", unlocked: false, icon: "check-circle-2" }
             ],
             aiMemory: [
                 { role: "system", content: "You are SPACE AI, an advanced, highly disciplined personal life operating system assistant. You speak with calm authority, razor-sharp clarity, and provide structured reasoning. You retain memory of the user's goals, daily state, habits, and productivity metrics." }
@@ -355,8 +355,8 @@
                 { sender: "ai", text: "Greetings, Commander. I am SPACE AI, your Personal Life OS assistant. Discipline over motivation. How shall we optimize your execution today?" }
             ],
             remindersEnabled: false,
-            quietHoursStart: "22:00",
-            quietHoursEnd: "07:00"
+            quietHoursStart: "00:00",
+            quietHoursEnd: "00:00"
         };
 
         let appState = JSON.parse(localStorage.getItem('daily_space_state')) || DEFAULT_STATE;
