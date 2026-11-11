@@ -2043,8 +2043,7 @@ function saveApiKey() {
 
         const apiKey = appState.user.geminiApiKey || "";
 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-        let response = null;
+    let response = null;
         let data = null;
         let delay = 1000;
 
