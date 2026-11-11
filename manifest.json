@@ -1,6 +1,6 @@
 {
-  "name": "DailySpace",
-  "short_name": "DailySpace",
+  "name": "Daily Space",
+  "short_name": "Daily Space",
   "start_url": "/dailyspace/",
   "display": "standalone",
   "background_color": "#080b18",
@@ -11,5 +11,12 @@
   "categories": [
     "productivity"
   ],
-  "icons": []
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
