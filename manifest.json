@@ -1,0 +1,31 @@
+{
+  "background_color": "#080b18",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "DailySpace",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "DailySpace",
+  "start_url": "/ephemeral-custard-bfab22.netlify.app",
+  "theme_color": "#7657ff",
+  "icons": [
+    {
+      "src": "https://ephemeral-custard-bfab22.netlify.app/favicon.ico",
+      "type": "image/x-icon",
+      "isSquare": false,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    }
+  ],
+  "id": "/dailyspace/",
+  "description": "Daily Space is your ultimate personal productivity and life operating system designed to build unbreakable discipline. Move beyond fleeting motivation with structured tools tailored for high performance.\nKey Features:\nDashboard &amp;amp;amp; Daily Progress: Track your daily task completion rate, active streak score, and discipline level.\nRoutine Planner &amp;amp;amp; Tasks: Organize your daily schedule across work, fitness, health, and growth with priority management.\nAdvanced Habit Tracker: Build daily recurring habits and watch your consistency streaks grow.\nGoal Management: Set major strategic objectives and check off progress milestones.\nFocus Timer: Eliminate distractions with a robust deep work countdown timer and custom intervals.\nSelf-Control Center: Take on daily discipline challenges and enforce personal rules.\nAchievements &amp;amp;amp; Rewards: Earn XP, level up your commander rank, and unlock milestone badges.\nGamified Brain Gym, Calendar, and SPACE AI Assistant (Available in PRO).",
+  "lang": "en",
+  "categories": [
+    "productivity"
+  ]
+}
