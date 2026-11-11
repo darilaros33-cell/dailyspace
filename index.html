@@ -442,7 +442,7 @@
             selected.classList.add('border-primary', 'bg-primary/20');
             selected.classList.remove('border-white/10', 'bg-surfaceLight/40');
 
-            const upiUrl = `upi://pay?pa=dailyspace@okaxis&pn=DailySpacePRO&am=39.00&cu=INR&tn=DailySpaceMonthlyPRO`;
+            const upiUrl = `upi://pay?pa=ganeshkumarrs07@okicici&pn=DailySpacePRO&am=39.00&cu=INR&tn=DailySpaceMonthlyPRO`;
             showToast(`Opening ${app.toUpperCase()} UPI Intent...`, "success");
             setTimeout(() => {
                 try { window.location.href = upiUrl; } catch(e) {}
@@ -450,18 +450,40 @@
         }
 
         function executeRazorpayPayment() {
-            showToast("Processing secure UPI authorization...", "success");
-            setTimeout(() => {
-                appState.user.isPremium = true;
-                const expiry = new Date();
-                expiry.setMonth(expiry.getMonth() + 1);
-                appState.user.premiumExpiry = expiry.toISOString().split('T')[0];
-                saveState();
-                closeRazorpayModal();
-                showToast("Payment Verified Successfully! Welcome to PRO.", "success");
-                router(currentRoute);
-            }, 1800);
+    showToast("Opening secure payment gateway...");
+    
+    const options = {
+        key: "YOUR_RAZORPAY_KEY_ID", // Replace with your key if configured
+        amount: 3900, // Amount in paisa (₹39)
+        currency: "INR",
+        name: "Daily Space PRO",
+        description: "Lifetime or Monthly Premium Access",
+        handler: function (response) {
+            // This runs ONLY after a real, verified payment succeeds
+            appState.user.isPremium = true;
+            const expiry = new Date();
+            expiry.setMonth(expiry.getMonth() + 1);
+            appState.user.premiumExpiry = expiry.toISOString();
+            
+            saveState();
+            closeRazorpayModal();
+            showToast("Payment Verified Successfully! Welcome to PRO.");
+            router(currentRoute);
+        },
+        modal: {
+            ondismiss: function() {
+                showToast("Payment cancelled.");
+            }
+        },
+        theme: {
+            color: "#6366f1"
         }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+}
+
 
         let currentRoute = 'home';
 
