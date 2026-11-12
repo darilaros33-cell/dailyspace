@@ -2067,12 +2067,27 @@ function saveApiKey() {
             }
         }
 
+
 async function sendAIMessage() {
     const input = document.getElementById('ai-user-input');
     if (!input) return;
 
     const txt = input.value.trim();
     if (!txt) return;
+
+    if (window.dailySpaceAI?.isBusy) return;
+
+    if (!window.dailySpaceAI?.model) {
+        alert('SPACE AI is not initialized. Please refresh the app.');
+        return;
+    }
+
+    window.dailySpaceAI.isBusy = true;
+
+    const thinkingMessage = {
+        sender: 'ai',
+        text: 'Thinking...'
+    };
 
     appState.aiConversations.push({
         sender: 'user',
@@ -2087,57 +2102,26 @@ async function sendAIMessage() {
     saveState();
 
     input.value = '';
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
 
-    appState.aiConversations.push({
-        sender: 'ai',
-        text: 'Thinking...'
-    });
+    appState.aiConversations.push(thinkingMessage);
 
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 
     try {
-        if (!window.dailySpaceAI?.model) {
-            throw new Error('Firebase AI is not initialized yet.');
+        // Create one chat session and reuse it
+        if (!window.dailySpaceAI.chat) {
+            window.dailySpaceAI.chat =
+                window.dailySpaceAI.model.startChat();
         }
 
-        // Get previous messages, excluding the latest user message
-        const history = [];
-let lastRole = null;
+        // Send the message
+        const result =
+            await window.dailySpaceAI.chat.sendMessage(txt);
 
-for (const m of appState.aiMemory.slice(0, -1)) {
-    const role = m.role === 'assistant' ? 'model' : 'user';
-
-    if (role === lastRole) continue;
-
-    history.push({
-        role: role,
-        parts: [{ text: m.content }]
-    });
-
-    lastRole = role;
-}
-
-while (history.length > 0 && history[0].role !== 'user') {
-    history.shift();
-}
-
-const recentHistory = history.slice(-12);
-
-        // Start a chat session
-        const chat = window.dailySpaceAI.model.startChat({
-    history: recentHistory
-});
-
-        // Send the latest message
-        const result = await chat.sendMessage(txt);
-
-        const aiReply = result.response.text() ||
+        const aiReply =
+            result.response.text() ||
             'I received an empty response. Please try again.';
-
-        appState.aiConversations.pop();
 
         appState.aiConversations.push({
             sender: 'ai',
@@ -2152,30 +2136,29 @@ const recentHistory = history.slice(-12);
         saveState();
 
     } catch (error) {
-        console.error('Firebase AI Error:', error);
-
-        appState.aiConversations.pop();
-
-        const fallbackReply =
-            `Firebase error: ${error?.message || error}`;
+        console.error('SPACE AI Error:', error);
 
         appState.aiConversations.push({
             sender: 'ai',
-            text: fallbackReply
+            text: `SPACE AI Error: ${error?.message || error}`
         });
 
-        appState.aiMemory.push({
-            role: 'assistant',
-            content: fallbackReply
-        });
+    } finally {
+        // Remove the old Thinking message
+        const thinkingIndex =
+            appState.aiConversations.indexOf(thinkingMessage);
 
-        saveState();
+        if (thinkingIndex !== -1) {
+            appState.aiConversations.splice(thinkingIndex, 1);
+        }
+
+        window.dailySpaceAI.isBusy = false;
+
+        renderAI(document.getElementById('main-viewport'));
+        lucide.createIcons();
     }
-
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
-    
-}
+    }
+        
 
 
       async function requestNotificationPermission() {
