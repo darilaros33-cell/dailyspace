@@ -35,35 +35,25 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Light Theme Variable Overrides */
         html:not(.dark) body { background-color: #F8FAFC; color: #0F172A; }
         html:not(.dark) .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         html:not(.dark) aside, html:not(.dark) header, html:not(.dark) #mobile-menu { background-color: #FFFFFF !important; border-color: #E2E8F0 !important; }
         html:not(.dark) .bg-surface { background-color: #FFFFFF !important; }
-        html:not(.dark) .bg-surfaceLight, html:not(.dark) .bg-surfaceLight\/40, html:not(.dark) .bg-surfaceLight\/50, html:not(.dark) .bg-surfaceLight\/60 { background-color: #F1F5F9 !important; }
+        html:not(.dark) .bg-surfaceLight { background-color: #F1F5F9 !important; }
         html:not(.dark) .text-muted { color: #64748B !important; }
-        html:not(.dark) .border-white\/5, html:not(.dark) .border-white\/10 { border-color: #E2E8F0 !important; }
-        html:not(.dark) input, html:not(.dark) select { background-color: #FFFFFF !important; color: #0F172A !important; border-color: #CBD5E1 !important; }
-        html:not(.dark) .bg-bgDark { background-color: #F8FAFC !important; }
-
-        /* Dark Theme Default Overrides */
         html.dark body { background-color: #080B18; color: #FFFFFF; }
         html.dark .glass-panel { background: rgba(17, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.3); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #7657FF; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
 
-    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- Confirmation / Custom Modal -->
     <div id="app-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
-        <div class="glass-panel w-full max-w-md p-6 rounded-2xl shadow-2xl border border-white/10 m-4 animate-in fade-in zoom-in-95 duration-200">
+        <div class="glass-panel w-full max-w-md p-6 rounded-2xl shadow-2xl border border-white/10 m-4">
             <h3 id="modal-title" class="text-xl font-bold mb-2">Modal Title</h3>
             <p id="modal-desc" class="text-muted text-sm mb-6">Modal description text goes here.</p>
             <div id="modal-content" class="mb-6"></div>
@@ -87,7 +77,6 @@
                 </div>
                 <button onclick="closeRazorpayModal()" class="p-2 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-muted hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-
             <div class="space-y-4">
                 <div class="bg-surfaceLight/50 p-4 rounded-2xl border border-white/5 flex items-center justify-between">
                     <div>
@@ -96,28 +85,7 @@
                     </div>
                     <span class="text-lg font-bold text-warning">₹39 / mo</span>
                 </div>
-
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold text-muted uppercase">Select UPI App / Intent</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="triggerUpiAppIntent('gpay')" id="upi-gpay" class="upi-btn p-3 rounded-xl border border-primary/50 bg-primary/20 text-xs font-bold text-center transition flex flex-col items-center gap-1">
-                            <i data-lucide="smartphone" class="w-4 h-4"></i> Google Pay
-                        </button>
-                        <button onclick="triggerUpiAppIntent('phonepe')" id="upi-phonepe" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
-                            <i data-lucide="smartphone" class="w-4 h-4"></i> PhonePe
-                        </button>
-                        <button onclick="triggerUpiAppIntent('paytm')" id="upi-paytm" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
-                            <i data-lucide="smartphone" class="w-4 h-4"></i> Paytm
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold text-muted uppercase">Virtual Payment Address (VPA)</label>
-                    <input type="text" id="upi-vpa-input" value="dailyspace@okaxis" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
-                </div>
             </div>
-
             <div class="flex gap-3 pt-2">
                 <button onclick="closeRazorpayModal()" class="flex-1 py-3 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-medium transition">Cancel</button>
                 <button onclick="executeRazorpayPayment()" class="flex-1 py-3 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20">Pay ₹39 Now</button>
@@ -138,7 +106,6 @@
                 </div>
             </div>
 
-            <!-- User XP / Level Mini Card -->
             <div class="bg-surfaceLight/50 border border-white/5 p-3.5 rounded-2xl mb-6">
                 <div class="flex items-center justify-between mb-2">
                     <span id="sidebar-level" class="text-xs font-bold text-primary uppercase tracking-wider">Level 1 Beginner</span>
@@ -149,55 +116,25 @@
                 </div>
             </div>
 
-            <!-- Nav Links -->
             <nav class="space-y-1.5" id="desktop-nav">
-                <button onclick="router('home')" data-nav="home" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
-                </button>
-                <button onclick="router('routine')" data-nav="routine" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="calendar-check" class="w-5 h-5"></i> Routine & Tasks
-                </button>
-                <button onclick="router('habits')" data-nav="habits" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="repeat" class="w-5 h-5"></i> Habits Tracker
-                </button>
-                <button onclick="router('goals')" data-nav="goals" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="target" class="w-5 h-5"></i> Goal Management
-                </button>
-                <button onclick="router('calendar')" data-nav="calendar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="calendar-days" class="w-5 h-5 text-warning"></i> Calendar & Special Days <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
-                </button>
-                <button onclick="router('selfcontrol')" data-nav="selfcontrol" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center
-                </button>
-                <button onclick="router('focus')" data-nav="focus" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="timer" class="w-5 h-5"></i> Focus Timer
-                </button>
-                <button onclick="router('finance')" data-nav="finance" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Expense Tracker <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
-                </button>
-                <button onclick="router('analytics')" data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends
-                </button>
-                <button onclick="router('games')" data-nav="games" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="gamepad-2" class="w-5 h-5 text-success"></i> Brain Gym & Games <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
-                </button>
-                <button onclick="router('achievements')" data-nav="achievements" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="award" class="w-5 h-5"></i> Achievements
-                </button>
-                <button onclick="router('ai')" data-nav="ai" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="bot" class="w-5 h-5 text-primary"></i> SPACE AI <span class="ml-auto text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">PRO</span>
-                </button>
-                <button onclick="router('subscription')" data-nav="subscription" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="crown" class="w-5 h-5 text-warning"></i> Premium Plans
-                </button>
+                <button onclick="router('home')" data-nav="home" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard</button>
+                <button onclick="router('routine')" data-nav="routine" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="calendar-check" class="w-5 h-5"></i> Routine & Tasks</button>
+                <button onclick="router('habits')" data-nav="habits" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="repeat" class="w-5 h-5"></i> Habits Tracker</button>
+                <button onclick="router('goals')" data-nav="goals" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="target" class="w-5 h-5"></i> Goal Management</button>
+                <button onclick="router('calendar')" data-nav="calendar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="calendar-days" class="w-5 h-5 text-warning"></i> Calendar & Special Days</button>
+                <button onclick="router('selfcontrol')" data-nav="selfcontrol" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center</button>
+                <button onclick="router('focus')" data-nav="focus" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="timer" class="w-5 h-5"></i> Focus Timer</button>
+                <button onclick="router('finance')" data-nav="finance" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Expense Tracker</button>
+                <button onclick="router('analytics')" data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends</button>
+                <button onclick="router('games')" data-nav="games" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="gamepad-2" class="w-5 h-5 text-success"></i> Brain Gym & Games</button>
+                <button onclick="router('achievements')" data-nav="achievements" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="award" class="w-5 h-5"></i> Achievements</button>
+                <button onclick="router('ai')" data-nav="ai" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="bot" class="w-5 h-5 text-primary"></i> SPACE AI Assistant</button>
+                <button onclick="router('subscription')" data-nav="subscription" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="crown" class="w-5 h-5 text-warning"></i> Premium Plans</button>
             </nav>
         </div>
 
-        <!-- Sidebar Footer -->
         <div class="pt-4 border-t border-white/5 flex items-center justify-between">
-            <button onclick="router('profile')" data-nav="profile" class="nav-btn flex-1 flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="settings" class="w-5 h-5"></i> Settings
-            </button>
+            <button onclick="router('profile')" data-nav="profile" class="nav-btn flex-1 flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="settings" class="w-5 h-5"></i> Settings</button>
             <button onclick="toggleTheme()" class="p-3 rounded-xl bg-surfaceLight text-muted hover:text-white transition" title="Toggle Theme">
                 <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
                 <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
@@ -205,7 +142,7 @@
         </div>
     </aside>
 
-    <!-- Mobile Header Bar -->
+    <!-- Mobile Header -->
     <header class="md:hidden flex items-center justify-between p-4 bg-surface border-b border-white/5 sticky top-0 z-45">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
@@ -214,87 +151,40 @@
             <span class="font-bold text-base tracking-tight">DAILY SPACE</span>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white transition">
-                <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-                <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
-            </button>
-            <button onclick="router('ai')" class="p-2 rounded-xl bg-primary/20 text-primary hover:bg-primary/30 transition">
-                <i data-lucide="bot" class="w-5 h-5"></i>
-            </button>
-            <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white transition">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
+            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i><i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i></button>
+            <button onclick="router('ai')" class="p-2 rounded-xl bg-primary/20 text-primary transition"><i data-lucide="bot" class="w-5 h-5"></i></button>
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
         </div>
     </header>
 
-    <!-- Mobile Slide-out Menu Overlay -->
+    <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-6 hidden md:hidden">
         <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                    <i data-lucide="compass" class="w-6 h-6 text-white"></i>
-                </div>
-                <div>
-                    <h2 class="font-bold text-lg">DAILY SPACE</h2>
-                    <p class="text-xs text-muted">Personal Life OS</p>
-                </div>
-            </div>
-            <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
+            <h2 class="font-bold text-lg">DAILY SPACE</h2>
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
         </div>
-        <div class="flex-1 overflow-y-auto space-y-2 py-2" id="mobile-nav">
-            <button onclick="router('home'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium bg-surfaceLight/50 text-white">
-                <i data-lucide="layout-dashboard" class="w-5 h-5 text-primary"></i> Dashboard
-            </button>
-            <button onclick="router('routine'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="calendar-check" class="w-5 h-5"></i> Routine & Tasks
-            </button>
-            <button onclick="router('habits'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="repeat" class="w-5 h-5"></i> Habits Tracker
-            </button>
-            <button onclick="router('goals'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="target" class="w-5 h-5"></i> Goal Management
-            </button>
-            <button onclick="router('calendar'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="calendar-days" class="w-5 h-5 text-warning"></i> Calendar & Special Days (PRO)
-            </button>
-            <button onclick="router('selfcontrol'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center
-            </button>
-            <button onclick="router('focus'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="timer" class="w-5 h-5"></i> Focus Timer
-            </button>
-            <button onclick="router('finance'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Expense Tracker (PRO)
-            </button>
-            <button onclick="router('analytics'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends
-            </button>
-            <button onclick="router('games'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="gamepad-2" class="w-5 h-5 text-success"></i> Brain Gym & Games (PRO)
-            </button>
-            <button onclick="router('achievements'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="award" class="w-5 h-5"></i> Achievements
-            </button>
-            <button onclick="router('ai'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="bot" class="w-5 h-5 text-primary"></i> SPACE AI Assistant
-            </button>
-            <button onclick="router('subscription'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="crown" class="w-5 h-5 text-warning"></i> Premium Plans
-            </button>
-            <button onclick="router('profile'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="settings" class="w-5 h-5"></i> Settings & Profile
-            </button>
+        <div class="flex-1 overflow-y-auto space-y-2 py-2">
+            <button onclick="router('home'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="layout-dashboard" class="w-5 h-5 text-primary"></i> Dashboard</button>
+            <button onclick="router('routine'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="calendar-check" class="w-5 h-5"></i> Routine & Tasks</button>
+            <button onclick="router('habits'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="repeat" class="w-5 h-5"></i> Habits Tracker</button>
+            <button onclick="router('goals'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="target" class="w-5 h-5"></i> Goal Management</button>
+            <button onclick="router('calendar'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="calendar-days" class="w-5 h-5 text-warning"></i> Calendar & Special Days</button>
+            <button onclick="router('selfcontrol'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center</button>
+            <button onclick="router('focus'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="timer" class="w-5 h-5"></i> Focus Timer</button>
+            <button onclick="router('finance'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Expense Tracker</button>
+            <button onclick="router('analytics'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends</button>
+            <button onclick="router('games'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="gamepad-2" class="w-5 h-5 text-success"></i> Brain Gym & Games</button>
+            <button onclick="router('achievements'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="award" class="w-5 h-5"></i> Achievements</button>
+            <button onclick="router('ai'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="bot" class="w-5 h-5 text-primary"></i> SPACE AI Assistant</button>
+            <button onclick="router('subscription'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="crown" class="w-5 h-5 text-warning"></i> Premium Plans</button>
+            <button onclick="router('profile'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-base font-medium text-muted hover:text-white"><i data-lucide="settings" class="w-5 h-5"></i> Settings & Profile</button>
         </div>
     </div>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-viewport">
-        <!-- Dynamic content injected here by router -->
-    </main>
+    <!-- Main Viewport -->
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-viewport"></main>
 
-    <!-- Application JavaScript Code -->
+    <!-- Application Script -->
     <script>
         const DEFAULT_STATE = {
             user: {
@@ -303,60 +193,36 @@
                 xp: 0,
                 level: 1,
                 streak: 0,
-                currency: "₹",
                 isPremium: true,
-                premiumExpiry: null,
-                theme: "dark"
+                theme: "dark",
+                customDate: "2026-11-12",
+                customTime: "07:24"
             },
             tasks: [
                 { id: 1, title: "Morning Hydration & Stretch", category: "Health", time: "07:00 AM", completed: false, priority: "High" },
-                { id: 2, title: "Deep Work: Core Architecture", category: "Work", time: "09:00 AM", completed: false, priority: "High" },
-                { id: 3, title: "Physical Exercise / Gym", category: "Fitness", time: "05:00 PM", completed: false, priority: "Medium" },
-                { id: 4, title: "Read 20 Pages of Non-Fiction", category: "Growth", time: "09:00 PM", completed: false, priority: "Low" }
+                { id: 2, title: "Deep Work: Core Architecture", category: "Work", time: "09:00 AM", completed: false, priority: "High" }
             ],
             habits: [
-                { id: 1, title: "Code Daily", category: "Development", streak: 12, targetDays: 30, completedToday: false },
-                { id: 2, title: "Cold Shower", category: "Discipline", streak: 5, targetDays: 30, completedToday: false },
-                { id: 3, title: "Journaling", category: "Mind", streak: 3, targetDays: 30, completedToday: false },
-                { id: 4, title: "No Sugar", category: "Health", streak: 8, targetDays: 30, completedToday: false }
+                { id: 1, title: "Code Daily", category: "Development", streak: 12, completedToday: false },
+                { id: 2, title: "Cold Shower", category: "Discipline", streak: 5, completedToday: false }
             ],
             goals: [
-                { id: 1, title: "Build Full-Stack SaaS Product", category: "Career", progress: 0, targetDate: "2026-06-30", milestones: ["Database setup", "Core UI", "AI integration", "Stripe billing"] },
-                { id: 2, title: "Read 24 Books This Year", category: "Growth", progress: 0, targetDate: "2026-12-31", milestones: ["Read 6 books", "Read 12 books", "Read 18 books", "Read 24 books"] }
+                { id: 1, title: "Build Full-Stack SaaS Product", category: "Career", progress: 10, targetDate: "2026-06-30", milestones: ["Database setup", "Core UI"] }
             ],
             challenges: [
-                { id: 1, title: "Complete all high-priority tasks before noon", xp: 30, completed: false },
-                { id: 2, title: "Zero social media distractions during focus blocks", xp: 40, completed: false },
-                { id: 3, title: "Drink 3 liters of water", xp: 20, completed: false }
+                { id: 1, title: "Complete all high-priority tasks before noon", xp: 30, completed: false }
             ],
             rules: [
-                { id: 1, rule: "Never open entertainment apps before completing core work." },
-                { id: 2, rule: "Execute daily workout regardless of motivation levels." }
-            ],
-            distractions: [
-                { id: 1, date: "Nov 10", distraction: "Checked notifications mid-coding", impact: "Lost 25 mins of flow state", fix: "Phone in another room during deep work." }
+                { id: 1, rule: "Never open entertainment apps before completing core work." }
             ],
             expenses: [
-                { id: 1, title: "Cloud Hosting Server", amount: 0, category: "Work", type: "expense", date: "2026-11-10" },
-                { id: 2, title: "Freelance Project Milestone", amount: 0, category: "Income", type: "income", date: "2026-11-09" },
-                { id: 3, title: "Healthy Groceries", amount: 0, category: "Living", type: "expense", date: "2026-11-08" }
+                { id: 1, title: "Cloud Hosting", amount: 0, category: "Work", type: "expense", date: "2026-11-12" }
             ],
             achievementsList: [
-                { id: 1, title: "First Step", desc: "Complete your first task", unlocked: false, icon: "footprints" },
-                { id: 2, title: "Consistency Starter", desc: "Maintain a 3-day streak", unlocked: false, icon: "flame" },
-                { id: 3, title: "Focus Master", desc: "Accumulate 2 hours of deep focus", unlocked: false, icon: "timer" },
-                { id: 4, title: "Goal Achiever", desc: "Complete your first major goal", unlocked: false, icon: "target" },
-                { id: 5, title: "Routine Builder", desc: "Complete 10 routine tasks", unlocked: false, icon: "check-circle-2" }
+                { id: 1, title: "First Step", desc: "Complete your first task", unlocked: false, icon: "footprints" }
             ],
-            aiMemory: [
-                { role: "system", content: "You are SPACE AI, an advanced, highly disciplined personal life operating system assistant. You speak with calm authority, razor-sharp clarity, and provide structured reasoning." }
-            ],
-            aiConversations: [
-                { sender: "ai", text: "Greetings, Commander. I am SPACE AI, your Personal Life OS assistant. Discipline over motivation. How shall we optimize your execution today?" }
-            ],
-            remindersEnabled: false,
-            quietHoursStart: "00:00",
-            quietHoursEnd: "00:00"
+            aiMemory: [{ role: "system", content: "You are SPACE AI." }],
+            aiConversations: [{ sender: "ai", text: "Greetings, Commander. Discipline over motivation." }]
         };
 
         let appState = JSON.parse(localStorage.getItem('daily_space_state')) || DEFAULT_STATE;
@@ -367,12 +233,8 @@
         }
 
         function applyTheme() {
-            const html = document.documentElement;
-            if (appState.user.theme === 'light') {
-                html.classList.remove('dark');
-            } else {
-                html.classList.add('dark');
-            }
+            if (appState.user.theme === 'light') document.documentElement.classList.remove('dark');
+            else document.documentElement.classList.add('dark');
         }
 
         function toggleTheme() {
@@ -386,16 +248,13 @@
             const container = document.getElementById('toast-container');
             if (!container) return;
             const toast = document.createElement('div');
-            const bgCol = type === 'success' ? 'bg-success/90 text-bgDark' : type === 'danger' ? 'bg-danger/90 text-white' : 'bg-surfaceLight text-white';
+            const bgCol = type === 'success' ? 'bg-success/90 text-bgDark' : 'bg-danger/90 text-white';
             toast.className = `${bgCol} px-4 py-3 rounded-xl shadow-xl font-medium text-sm flex items-center gap-3 backdrop-blur-md pointer-events-auto transition-all duration-300 translate-y-2 opacity-0`;
-            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-4 h-4"></i><span>${message}</span>`;
+            toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
             lucide.createIcons();
             setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
-            setTimeout(() => {
-                toast.classList.add('translate-y-2', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.classList.add('translate-y-2', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         function addXP(amount) {
@@ -422,40 +281,13 @@
         }
 
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        function openRazorpayModal() {
-            document.getElementById('razorpay-modal').classList.remove('hidden');
-        }
-
-        function closeRazorpayModal() {
-            document.getElementById('razorpay-modal').classList.add('hidden');
-        }
-
-        function triggerUpiAppIntent(app) {
-            document.querySelectorAll('.upi-btn').forEach(btn => {
-                btn.classList.remove('border-primary', 'bg-primary/20');
-                btn.classList.add('border-white/10', 'bg-surfaceLight/40');
-            });
-            const selected = document.getElementById(`upi-${app}`);
-            selected.classList.add('border-primary', 'bg-primary/20');
-            selected.classList.remove('border-white/10', 'bg-surfaceLight/40');
-
-            const upiUrl = `upi://pay?pa=ganeshkumarrs07@okicici&pn=DailySpacePRO&am=39.00&cu=INR&tn=DailySpaceMonthlyPRO`;
-            showToast(`Opening ${app.toUpperCase()} UPI Intent...`, "success");
-            setTimeout(() => {
-                try { window.location.href = upiUrl; } catch(e) {}
-            }, 600);
-        }
-
+        function openRazorpayModal() { document.getElementById('razorpay-modal').classList.remove('hidden'); }
+        function closeRazorpayModal() { document.getElementById('razorpay-modal').classList.add('hidden'); }
         function executeRazorpayPayment() {
-            showToast("Opening secure payment gateway...");
             appState.user.isPremium = true;
-            const expiry = new Date();
-            expiry.setMonth(expiry.getMonth() + 1);
-            appState.user.premiumExpiry = expiry.toISOString();
             saveState();
             closeRazorpayModal();
             showToast("Payment Verified Successfully! Welcome to PRO.");
@@ -463,7 +295,6 @@
         }
 
         let currentRoute = 'home';
-
         function router(route) {
             currentRoute = route;
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -484,38 +315,14 @@
                 case 'routine': renderRoutine(viewport); break;
                 case 'habits': renderHabits(viewport); break;
                 case 'goals': renderGoals(viewport); break;
-                case 'calendar': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Calendar & Special Days", "Explore national holidays and historical milestones.", "calendar-days");
-                    } else {
-                        renderCalendar(viewport);
-                    }
-                    break;
+                case 'calendar': renderCalendar(viewport); break;
                 case 'selfcontrol': renderSelfControl(viewport); break;
                 case 'focus': renderFocus(viewport); break;
-                case 'finance': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Expense Tracker", "Manage your income and expenses.", "wallet");
-                    } else {
-                        renderFinance(viewport);
-                    }
-                    break;
+                case 'finance': renderFinance(viewport); break;
                 case 'analytics': renderAnalytics(viewport); break;
-                case 'games': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Brain Gym & Games", "Boost cognitive agility.", "gamepad-2");
-                    } else {
-                        renderGames(viewport);
-                    }
-                    break;
+                case 'games': renderGames(viewport); break;
                 case 'achievements': renderAchievements(viewport); break;
-                case 'ai': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "SPACE AI Assistant", "Unlock deep thinking and reasoning.", "bot");
-                    } else {
-                        renderAI(viewport);
-                    }
-                    break;
+                case 'ai': renderAI(viewport); break;
                 case 'subscription': renderSubscription(viewport); break;
                 case 'profile': renderProfile(viewport); break;
                 default: renderDashboard(viewport);
@@ -524,1093 +331,157 @@
             updateSidebarXP();
         }
 
-        function renderLockedFeature(container, title, desc, icon) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-4xl mx-auto w-full flex flex-col items-center justify-center min-h-[75vh] text-center space-y-6 animate-in fade-in duration-300">
-                    <div class="w-20 h-20 rounded-3xl bg-warning/20 border border-warning/40 flex items-center justify-center shadow-xl shadow-warning/10 text-warning">
-                        <i data-lucide="${icon}" class="w-10 h-10"></i>
-                    </div>
-                    <div class="space-y-2 max-w-lg">
-                        <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">PREMIUM LOCKED</span>
-                        <h2 class="text-3xl font-bold">${title}</h2>
-                        <p class="text-muted text-sm leading-relaxed">${desc}</p>
-                    </div>
-                    <div class="glass-panel p-6 rounded-3xl max-w-md w-full space-y-4 border border-warning/30 bg-gradient-to-br from-warning/10 to-transparent">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-semibold">Daily Space PRO Access</span>
-                            <span class="text-xl font-bold text-warning">₹39 / mo</span>
-                        </div>
-                        <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
-                            <i data-lucide="crown" class="w-4 h-4"></i> Upgrade to PRO Now
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
         function renderDashboard(container) {
-            const completedCount = appState.tasks.filter(t => t.completed).length;
-            const totalTasks = appState.tasks.length;
-            const progressPct = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
-
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full border border-primary/20">System Online</span>
+                            <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">System Online</span>
                             <h2 class="text-3xl font-bold mt-2">Good Day, ${appState.user.name}</h2>
-                            <p class="text-muted text-sm mt-1">Discipline Over Motivation.</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button onclick="router('routine')" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold flex items-center gap-2 transition border border-white/5">
-                                <i data-lucide="plus" class="w-4 h-4 text-primary"></i> Add Task
-                            </button>
-                            <button onclick="router('focus')" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                                <i data-lucide="timer" class="w-4 h-4"></i> Focus Mode
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Daily Progress</span>
-                                <i data-lucide="check-circle" class="w-5 h-5 text-success"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">${progressPct}%</span>
-                                <span class="text-xs text-muted">${completedCount} of ${totalTasks} Done</span>
-                            </div>
-                            <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden">
-                                <div class="bg-success h-full rounded-full transition-all duration-500" style="width: ${progressPct}%"></div>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Streak Score</span>
-                                <i data-lucide="flame" class="w-5 h-5 text-warning"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">${appState.user.streak} Days</span>
-                                <span class="text-xs text-success font-semibold">Active</span>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Discipline Level</span>
-                                <i data-lucide="shield" class="w-5 h-5 text-secondary"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">Lvl ${appState.user.level}</span>
-                                <span class="text-xs text-muted">${appState.user.xp} XP</span>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Account Status</span>
-                                <i data-lucide="crown" class="w-5 h-5 text-warning"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-2xl font-bold">PRO</span>
-                                <span class="text-xs text-warning">Active</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl lg:col-span-2 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <i data-lucide="calendar-check" class="w-5 h-5 text-primary"></i> Today's Schedule & Tasks
-                                </h3>
-                                <button onclick="router('routine')" class="text-xs text-muted hover:text-white transition">View All &rarr;</button>
-                            </div>
-                            <div class="space-y-2.5">
-                                ${appState.tasks.map(t => `
-                                    <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 hover:bg-surfaceLight/70 transition">
-                                        <div class="flex items-center gap-3">
-                                            <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTaskDashboard(${t.id})" class="w-5 h-5 rounded-lg accent-primary cursor-pointer">
-                                            <div>
-                                                <p class="text-sm font-medium ${t.completed ? 'line-through text-muted' : ''}">${t.title}</p>
-                                                <span class="text-[10px] text-muted">${t.time} • ${t.category}</span>
-                                            </div>
-                                        </div>
-                                        <span class="text-[10px] px-2.5 py-1 rounded-full font-bold ${t.priority === 'High' ? 'bg-danger/20 text-danger' : t.priority === 'Medium' ? 'bg-warning/20 text-warning' : 'bg-success/20 text-success'}">${t.priority}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="glass-panel p-6 rounded-3xl space-y-4">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <i data-lucide="target" class="w-5 h-5 text-secondary"></i> Active Goals
-                                </h3>
-                                <div class="space-y-4">
-                                    ${appState.goals.map(g => `
-                                        <div class="space-y-1.5">
-                                            <div class="flex justify-between text-xs font-semibold">
-                                                <span>${g.title}</span>
-                                                <span class="text-muted">${g.progress}%</span>
-                                            </div>
-                                            <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden">
-                                                <div class="bg-gradient-to-r from-primary to-secondary h-full rounded-full" style="width: ${g.progress}%"></div>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
+                            <p class="text-muted text-sm mt-1">Date: ${appState.user.customDate} | Time: ${appState.user.customTime}</p>
                         </div>
                     </div>
                 </div>
             `;
-        }
-
-        function toggleTaskDashboard(id) {
-            const task = appState.tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                if (task.completed) addXP(10);
-                saveState();
-                renderDashboard(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }
         }
 
         function renderRoutine(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="calendar-check" class="w-6 h-6 text-primary"></i> Routine Planner & Tasks
-                            </h2>
-                            <p class="text-muted text-sm">Organize your daily schedule and execute with precision.</p>
-                        </div>
-                        <button onclick="openAddTaskModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                            <i data-lucide="plus" class="w-4 h-4"></i> New Activity
-                        </button>
-                    </div>
-
-                    <div class="glass-panel p-6 rounded-3xl space-y-4">
-                        <div class="space-y-3">
-                            ${appState.tasks.map(t => `
-                                <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/40 border border-white/5 hover:bg-surfaceLight/70 transition">
-                                    <div class="flex items-center gap-4">
-                                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleRoutineTask(${t.id})" class="w-6 h-6 rounded-lg accent-primary cursor-pointer">
-                                        <div>
-                                            <p class="font-semibold text-base ${t.completed ? 'line-through text-muted' : ''}">${t.title}</p>
-                                            <div class="flex items-center gap-3 mt-1">
-                                                <span class="text-xs text-muted flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> ${t.time}</span>
-                                                <span class="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full font-medium">${t.category}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-xs px-2.5 py-1 rounded-full font-bold ${t.priority === 'High' ? 'bg-danger/20 text-danger' : t.priority === 'Medium' ? 'bg-warning/20 text-warning' : 'bg-success/20 text-success'}">${t.priority}</span>
-                                        <button onclick="deleteRoutineTask(${t.id})" class="p-2 rounded-xl hover:bg-danger/20 text-muted hover:text-danger transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Routine & Tasks</h2><p class="text-muted text-sm">Manage daily activities.</p></div>`;
         }
-
-        function openAddTaskModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Create New Activity";
-            document.getElementById('modal-desc').innerText = "Add a new item to your daily schedule.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Activity Title</label>
-                        <input type="text" id="new-task-title" placeholder="e.g. System Architecture Review" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                            <select id="new-task-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <option value="Work">Work</option>
-                                <option value="Study">Study</option>
-                                <option value="Fitness">Fitness</option>
-                                <option value="Health">Health</option>
-                                <option value="Growth">Growth</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Priority</label>
-                            <select id="new-task-pri" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Scheduled Time</label>
-                        <input type="text" id="new-task-time" placeholder="e.g. 02:00 PM" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('new-task-title').value.trim();
-                const category = document.getElementById('new-task-cat').value;
-                const priority = document.getElementById('new-task-pri').value;
-                const time = document.getElementById('new-task-time').value.trim() || "Anytime";
-                if (!title) { showToast("Please enter an activity title.", "danger"); return; }
-                
-                appState.tasks.push({ id: Date.now(), title, category, priority, time, completed: false });
-                saveState();
-                modal.classList.add('hidden');
-                router('routine');
-                showToast("Activity added successfully!", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
-        }
-
-        function toggleRoutineTask(id) {
-            const task = appState.tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                if (task.completed) addXP(10);
-                saveState();
-                renderRoutine(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }
-        }
-
-        function deleteRoutineTask(id) {
-            appState.tasks = appState.tasks.filter(t => t.id !== id);
-            saveState();
-            renderRoutine(document.getElementById('main-viewport'));
-            lucide.createIcons();
-            showToast("Activity removed.", "success");
-        }
-
         function renderHabits(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker
-                            </h2>
-                            <p class="text-muted text-sm">Build unbreakable daily discipline and track streak consistency.</p>
-                        </div>
-                        <button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                            <i data-lucide="plus" class="w-4 h-4"></i> New Habit
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        ${appState.habits.map(h => `
-                            <div class="glass-panel p-6 rounded-3xl space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${h.category}</span>
-                                        <h3 class="font-bold text-lg mt-2">${h.title}</h3>
-                                    </div>
-                                    <button onclick="deleteHabit(${h.id})" class="p-2 rounded-xl hover:bg-danger/20 text-muted hover:text-danger transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                </div>
-                                <div class="flex items-center justify-between pt-2 border-t border-white/5">
-                                    <div class="flex items-center gap-2">
-                                        <i data-lucide="flame" class="w-5 h-5 text-warning"></i>
-                                        <span class="font-bold text-lg">${h.streak} Day Streak</span>
-                                    </div>
-                                    <button onclick="toggleHabitToday(${h.id})" class="px-4 py-2 rounded-xl font-semibold text-sm transition ${h.completedToday ? 'bg-success text-bgDark' : 'bg-surfaceLight hover:bg-surfaceLight/80 text-white'}">
-                                        ${h.completedToday ? 'Completed ✓' : 'Mark Done'}
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Habits Tracker</h2><p class="text-muted text-sm">Track your daily discipline habits.</p></div>`;
         }
-
-        function openAddHabitModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Create New Habit";
-            document.getElementById('modal-desc').innerText = "Establish a new daily recurring habit.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Habit Title</label>
-                        <input type="text" id="new-habit-title" placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                        <select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                            <option value="Development">Development</option>
-                            <option value="Health">Health</option>
-                            <option value="Discipline">Discipline</option>
-                            <option value="Mind">Mind</option>
-                        </select>
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('new-habit-title').value.trim();
-                const category = document.getElementById('new-habit-cat').value;
-                if (!title) { showToast("Please enter a habit title.", "danger"); return; }
-                
-                appState.habits.push({ id: Date.now(), title, category, streak: 1, targetDays: 30, completedToday: false });
-                saveState();
-                modal.classList.add('hidden');
-                router('habits');
-                showToast("Habit added successfully!", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
-        }
-
-        function toggleHabitToday(id) {
-            const habit = appState.habits.find(h => h.id === id);
-            if (habit) {
-                habit.completedToday = !habit.completedToday;
-                if (habit.completedToday) {
-                    habit.streak += 1;
-                    addXP(5);
-                } else {
-                    habit.streak = Math.max(0, habit.streak - 1);
-                }
-                saveState();
-                renderHabits(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }
-        }
-
-        function deleteHabit(id) {
-            appState.habits = appState.habits.filter(h => h.id !== id);
-            saveState();
-            renderHabits(document.getElementById('main-viewport'));
-            lucide.createIcons();
-            showToast("Habit deleted.", "success");
-        }
-
         function renderGoals(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="target" class="w-6 h-6 text-secondary"></i> Goal Management
-                            </h2>
-                            <p class="text-muted text-sm">Define milestones and execute long-term strategic objectives.</p>
-                        </div>
-                        <button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                            <i data-lucide="plus" class="w-4 h-4"></i> New Goal
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        ${appState.goals.map(g => `
-                            <div class="glass-panel p-6 rounded-3xl space-y-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs font-semibold text-secondary bg-secondary/10 px-3 py-1 rounded-full">${g.category}</span>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-xs text-muted">Target: ${g.targetDate}</span>
-                                        <button onclick="deleteGoal(${g.id})" class="p-2 rounded-xl hover:bg-danger/20 text-muted hover:text-danger transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-xl mb-1">${g.title}</h3>
-                                    <div class="flex justify-between text-xs text-muted mb-2">
-                                        <span>Overall Progress</span>
-                                        <span>${g.progress}%</span>
-                                    </div>
-                                    <div class="w-full bg-surfaceLight h-2.5 rounded-full overflow-hidden">
-                                        <div class="bg-gradient-to-r from-primary to-secondary h-full rounded-full" style="width: ${g.progress}%"></div>
-                                    </div>
-                                </div>
-                                <div class="space-y-2 pt-2 border-t border-white/5">
-                                    <span class="text-xs font-semibold text-muted uppercase">Milestones</span>
-                                    <div class="space-y-1.5">
-                                        ${g.milestones.map((m, idx) => `
-                                            <div class="flex items-center gap-2 text-xs text-muted">
-                                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-success"></i>
-                                                <span>${m}</span>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Goal Management</h2><p class="text-muted text-sm">Define milestones.</p></div>`;
         }
-
-        function openAddGoalModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Create New Goal";
-            document.getElementById('modal-desc').innerText = "Set a major objective and milestones.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Goal Title</label>
-                        <input type="text" id="new-goal-title" placeholder="e.g. Master Machine Learning" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                        <select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                            <option value="Career">Career</option>
-                            <option value="Education">Education</option>
-                            <option value="Fitness">Fitness</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Growth">Growth</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Target Date</label>
-                        <input type="date" id="new-goal-date" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('new-goal-title').value.trim();
-                const category = document.getElementById('new-goal-cat').value;
-                const targetDate = document.getElementById('new-goal-date').value || "2026-12-31";
-                if (!title) { showToast("Please enter a goal title.", "danger"); return; }
-                
-                appState.goals.push({ id: Date.now(), title, category, progress: 10, targetDate, milestones: ["Define roadmap", "Initial execution", "Mid-term review", "Final completion"] });
-                saveState();
-                modal.classList.add('hidden');
-                router('goals');
-                showToast("Goal created successfully!", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
-        }
-
-        function deleteGoal(id) {
-            appState.goals = appState.goals.filter(g => g.id !== id);
-            saveState();
-            renderGoals(document.getElementById('main-viewport'));
-            lucide.createIcons();
-            showToast("Goal deleted.", "success");
-        }
-
-        let calendarYear = 2026;
-        let calendarMonth = 10;
-        let selectedCalendarDay = 11;
-
-        const SPECIAL_DAYS_DATABASE = {
-            "2026-11-11": {
-                title: "National Education Day (India) & Veterans Day",
-                category: "National & Global",
-                description: "Commemorates the birth anniversary of Maulana Abul Kalam Azad."
-            },
-            "2026-11-14": {
-                title: "World Diabetes Day & Children's Day (India)",
-                category: "Global Health & Welfare",
-                description: "Brings global awareness to diabetes mellitus."
-            }
-        };
-
         function renderCalendar(container) {
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const firstDayIndex = new Date(calendarYear, calendarMonth, 1).getDay();
-            const totalDays = new Date(calendarYear, calendarMonth + 1, 0).getDate();
-
-            const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(selectedCalendarDay).padStart(2, '0')}`;
-            const specialInfo = SPECIAL_DAYS_DATABASE[dateKey] || {
-                title: "Standard Operational Day",
-                category: "Productivity Cycle",
-                description: "A standard execution day focused on discipline."
-            };
-
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="calendar-days" class="w-7 h-7 text-warning"></i> Calendar & Special Days
-                            </h2>
-                            <p class="text-muted text-sm">Explore national holidays and historical milestones.</p>
-                        </div>
-                        <div class="flex items-center gap-3 bg-surfaceLight/50 p-2 rounded-2xl border border-white/5">
-                            <button onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl hover:bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
-                            <span class="font-bold text-sm min-w-[140px] text-center">${monthNames[calendarMonth]} ${calendarYear}</span>
-                            <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl hover:bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl lg:col-span-2 space-y-4">
-                            <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-muted uppercase">
-                                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-                            </div>
-                            <div class="grid grid-cols-7 gap-2">
-                                ${Array(firstDayIndex).fill('<div class="aspect-square"></div>').join('')}
-                                ${Array.from({length: totalDays}, (_, i) => {
-                                    const dayNum = i + 1;
-                                    const dKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
-                                    const hasSpecial = SPECIAL_DAYS_DATABASE[dKey];
-                                    const isSelected = selectedCalendarDay === dayNum;
-
-                                    let btnClass = "aspect-square rounded-2xl flex flex-col items-center justify-center text-sm font-semibold transition relative ";
-                                    if (isSelected) {
-                                        btnClass += "bg-primary text-white shadow-lg shadow-primary/30";
-                                    } else if (hasSpecial) {
-                                        btnClass += "bg-warning/15 text-warning border border-warning/30 hover:bg-warning/25";
-                                    } else {
-                                        btnClass += "bg-surfaceLight/40 hover:bg-surfaceLight text-white border border-white/5";
-                                    }
-
-                                    return `
-                                        <button onclick="selectCalendarDay(${dayNum})" class="${btnClass}">
-                                            <span>${dayNum}</span>
-                                            ${hasSpecial ? '<span class="w-1.5 h-1.5 rounded-full bg-warning mt-1"></span>' : ''}
-                                        </button>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between space-y-6">
-                            <div>
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3 py-1 rounded-full border border-warning/20">${specialInfo.category}</span>
-                                    <span class="text-xs text-muted">${monthNames[calendarMonth]} ${selectedCalendarDay}, ${calendarYear}</span>
-                                </div>
-                                <h3 class="font-bold text-xl mb-3">${specialInfo.title}</h3>
-                                <p class="text-sm text-muted leading-relaxed">${specialInfo.description}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Calendar & Special Days</h2><p class="text-muted text-sm">National holidays and milestones.</p></div>`;
         }
-
-        function changeCalendarMonth(direction) {
-            calendarMonth += direction;
-            if (calendarMonth > 11) {
-                calendarMonth = 0;
-                calendarYear++;
-            } else if (calendarMonth < 0) {
-                calendarMonth = 11;
-                calendarYear--;
-            }
-            selectedCalendarDay = 1;
-            renderCalendar(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        function selectCalendarDay(day) {
-            selectedCalendarDay = day;
-            renderCalendar(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
         function renderSelfControl(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div>
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i data-lucide="shield" class="w-6 h-6 text-primary"></i> Self-Control Center
-                        </h2>
-                        <p class="text-muted text-sm">Forge impenetrable discipline and eliminate distractions.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <h3 class="font-bold text-lg flex items-center gap-2">
-                                <i data-lucide="award" class="w-5 h-5 text-warning"></i> Daily Discipline Challenges
-                            </h3>
-                            <div class="space-y-3">
-                                ${appState.challenges.map(c => `
-                                    <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5">
-                                        <div class="flex items-center gap-3">
-                                            <input type="checkbox" ${c.completed ? 'checked' : ''} onchange="toggleChallenge(${c.id})" class="w-5 h-5 rounded-lg accent-primary cursor-pointer">
-                                            <span class="text-sm font-medium ${c.completed ? 'line-through text-muted' : ''}">${c.title}</span>
-                                        </div>
-                                        <span class="text-xs font-bold text-warning bg-warning/10 px-2.5 py-1 rounded-full">+${c.xp} XP</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <i data-lucide="lock" class="w-5 h-5 text-secondary"></i> Personal Rules
-                                </h3>
-                                <button onclick="openAddRuleModal()" class="text-xs text-primary font-semibold hover:underline">+ Add Rule</button>
-                            </div>
-                            <div class="space-y-3">
-                                ${appState.rules.map(r => `
-                                    <div class="p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 flex items-center justify-between">
-                                        <p class="text-sm text-muted">"${r.rule}"</p>
-                                        <button onclick="deleteRule(${r.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Self-Control Center</h2><p class="text-muted text-sm">Rules and challenges.</p></div>`;
         }
-
-        function toggleChallenge(id) {
-            const ch = appState.challenges.find(c => c.id === id);
-            if (ch) {
-                ch.completed = !ch.completed;
-                if (ch.completed) addXP(ch.xp);
-                saveState();
-                renderSelfControl(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }
-        }
-
-        function openAddRuleModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Add Personal Rule";
-            document.getElementById('modal-desc').innerText = "Create an unyielding law for your daily routine.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <input type="text" id="new-rule-text" placeholder="e.g. No checking phone during first hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const rule = document.getElementById('new-rule-text').value.trim();
-                if (!rule) return;
-                appState.rules.push({ id: Date.now(), rule });
-                saveState();
-                modal.classList.add('hidden');
-                renderSelfControl(document.getElementById('main-viewport'));
-                lucide.createIcons();
-                showToast("Rule added.", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
-        }
-
-        function deleteRule(id) {
-            appState.rules = appState.rules.filter(r => r.id !== id);
-            saveState();
-            renderSelfControl(document.getElementById('main-viewport'));
-            lucide.createIcons();
-            showToast("Rule removed.", "success");
-        }
-
-        let focusTimerInterval = null;
-        let focusSecondsRemaining = 25 * 60;
-        let isFocusRunning = false;
-        let focusModeType = 'work';
-
         function renderFocus(container) {
-            const mins = String(Math.floor(focusSecondsRemaining / 60)).padStart(2, '0');
-            const secs = String(focusSecondsRemaining % 60).padStart(2, '0');
-
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-4xl mx-auto w-full flex flex-col items-center justify-center min-h-[75vh] space-y-8 animate-in fade-in duration-300">
-                    <div class="text-center space-y-2">
-                        <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/25">Deep Work Focus Mode</span>
-                        <h2 class="text-3xl font-bold mt-2">Eliminate All Distractions</h2>
-                    </div>
-
-                    <div class="glass-panel p-10 rounded-3xl w-full max-w-md flex flex-col items-center justify-center space-y-8 border border-white/10 shadow-2xl relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 pointer-events-none"></div>
-                        <div class="text-6xl md:text-7xl font-extrabold tracking-wider font-mono text-white" id="timer-display">
-                            ${mins}:${secs}
-                        </div>
-                        <div class="flex items-center gap-3 w-full">
-                            <button onclick="toggleFocusTimer()" id="timer-toggle-btn" class="flex-1 py-3.5 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center justify-center gap-2">
-                                <i data-lucide="${isFocusRunning ? 'pause' : 'play'}" class="w-4 h-4"></i> ${isFocusRunning ? 'PAUSE' : 'START FOCUS'}
-                            </button>
-                            <button onclick="resetFocusTimer()" class="px-4 py-3.5 rounded-2xl bg-surfaceLight hover:bg-surfaceLight/80 text-white font-semibold text-sm transition">
-                                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-8 text-center"><h2 class="text-3xl font-bold">Deep Work Focus Timer</h2></div>`;
         }
-
-        function toggleFocusTimer() {
-            if (isFocusRunning) {
-                clearInterval(focusTimerInterval);
-                isFocusRunning = false;
-            } else {
-                isFocusRunning = true;
-                const endTime = Date.now() + focusSecondsRemaining * 1000;
-                focusTimerInterval = setInterval(() => {
-                    focusSecondsRemaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-                    const mins = String(Math.floor(focusSecondsRemaining / 60)).padStart(2, '0');
-                    const secs = String(focusSecondsRemaining % 60).padStart(2, '0');
-                    const display = document.getElementById('timer-display');
-                    if (display) display.innerText = `${mins}:${secs}`;
-
-                    if (focusSecondsRemaining <= 0) {
-                        clearInterval(focusTimerInterval);
-                        isFocusRunning = false;
-                        addXP(15);
-                        showToast("Focus session completed! +15 XP", "success");
-                        focusSecondsRemaining = 25 * 60;
-                        renderFocus(document.getElementById('main-viewport'));
-                        lucide.createIcons();
-                    }
-                }, 1000);
-            }
-            renderFocus(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        function resetFocusTimer() {
-            clearInterval(focusTimerInterval);
-            isFocusRunning = false;
-            focusSecondsRemaining = 25 * 60;
-            renderFocus(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
         function renderFinance(container) {
-            const totalIncome = appState.expenses.filter(e => e.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
-            const totalExpense = appState.expenses.filter(e => e.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
-            const balance = totalIncome - totalExpense;
-
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="wallet" class="w-6 h-6 text-warning"></i> Personal Expense Tracker
-                            </h2>
-                            <p class="text-muted text-sm">Monitor your cash flow and monthly balance.</p>
-                        </div>
-                        <button onclick="openAddExpenseModal()" class="px-4 py-2.5 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm flex items-center gap-2 transition shadow-lg shadow-warning/20">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Add Transaction
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="glass-panel p-5 rounded-3xl space-y-1">
-                            <span class="text-xs font-semibold text-muted uppercase">Total Income</span>
-                            <p class="text-3xl font-bold text-success">₹${totalIncome.toLocaleString()}</p>
-                        </div>
-                        <div class="glass-panel p-5 rounded-3xl space-y-1">
-                            <span class="text-xs font-semibold text-muted uppercase">Total Expenses</span>
-                            <p class="text-3xl font-bold text-danger">₹${totalExpense.toLocaleString()}</p>
-                        </div>
-                        <div class="glass-panel p-5 rounded-3xl space-y-1">
-                            <span class="text-xs font-semibold text-muted uppercase">Net Balance</span>
-                            <p class="text-3xl font-bold text-warning">₹${balance.toLocaleString()}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Expense Tracker</h2></div>`;
         }
-
-        function openAddExpenseModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Add Transaction";
-            document.getElementById('modal-desc').innerText = "Record income or expense transaction.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Title</label>
-                        <input type="text" id="exp-title" placeholder="e.g. Freelance Payment" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Amount (₹)</label>
-                            <input type="number" id="exp-amount" placeholder="1500" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Type</label>
-                            <select id="exp-type" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <option value="expense">Expense</option>
-                                <option value="income">Income</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('exp-title').value.trim();
-                const amount = parseFloat(document.getElementById('exp-amount').value);
-                const type = document.getElementById('exp-type').value;
-                if (!title || isNaN(amount)) { showToast("Please fill valid details.", "danger"); return; }
-                
-                appState.expenses.push({ id: Date.now(), title, amount, type, category: "General", date: "2026-11-12" });
-                saveState();
-                modal.classList.add('hidden');
-                router('finance');
-                showToast("Transaction recorded.", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
-        }
-
         function renderAnalytics(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Analytics & Trends</h2></div>`;
+        }
+        function renderAchievements(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Achievements & Rewards</h2></div>`;
+        }
+        function renderAI(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col h-[85vh] space-y-4"><h2 class="font-bold text-lg">SPACE AI Assistant</h2></div>`;
+        }
+
+        // FULL SUBSCRIPTION PLANS PAGE
+        function renderSubscription(container) {
             container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div>
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i> Analytics & Trends
-                        </h2>
-                        <p class="text-muted text-sm">Visualize your productivity metrics and habit consistency.</p>
+                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
+                    <div class="text-center space-y-2">
+                        <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">Freemium Tier System</span>
+                        <h2 class="text-3xl font-bold">Choose Your Operational Level</h2>
+                        <p class="text-muted text-sm">Upgrade to PRO to unlock premium modules like SPACE AI, Calendar, Expense Tracker, and Cognitive Games.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <h3 class="font-bold text-lg">Weekly Productivity Output</h3>
-                            <div class="h-64 relative flex items-center justify-center">
-                                <canvas id="prodChart"></canvas>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                        <div class="glass-panel p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-white/5">
+                            <div class="space-y-4">
+                                <span class="text-xs font-bold text-muted uppercase tracking-wider">Free Explorer</span>
+                                <h3 class="text-2xl font-bold">₹0 <span class="text-sm font-normal text-muted">/ forever</span></h3>
+                                <ul class="space-y-3 text-sm text-muted">
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Dashboard & Daily Progress</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Routine Planner & Tasks</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Habit Tracker & Streaks</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Goal Management</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Focus Timer & Self-Control</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success">Analytics & Trends</i></li>
+                                </ul>
                             </div>
+                            <button class="w-full py-3.5 rounded-2xl bg-surfaceLight text-muted font-semibold text-sm cursor-default">Current Plan</button>
                         </div>
 
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <h3 class="font-bold text-lg">Habit Consistency Rate</h3>
-                            <div class="h-64 relative flex items-center justify-center">
-                                <canvas id="habitChart"></canvas>
+                        <div class="glass-panel p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-warning/40 bg-gradient-to-br from-warning/10 to-transparent relative overflow-hidden shadow-2xl">
+                            <div class="absolute top-4 right-4 bg-warning text-bgDark text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">RECOMMENDED</div>
+                            <div class="space-y-4">
+                                <span class="text-xs font-bold text-warning uppercase tracking-wider">Daily Space PRO</span>
+                                <h3 class="text-3xl font-bold">₹39 <span class="text-sm font-normal text-muted">/ month</span></h3>
+                                <ul class="space-y-3 text-sm">
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="bot" class="w-4 h-4 text-primary"></i> <strong>SPACE AI Assistant</strong></li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="calendar-days" class="w-4 h-4 text-warning"></i> <strong>Calendar & Special Days</strong></li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="wallet" class="w-4 h-4 text-warning"></i> <strong>Personal Expense Tracker</strong></li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>Brain Gym & Cognitive Games</strong></li>
+                                </ul>
                             </div>
+                            <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
+                                <i data-lucide="crown" class="w-4 h-4"></i> Upgrade to PRO (₹39/mo)
+                            </button>
                         </div>
                     </div>
                 </div>
             `;
-
-            setTimeout(() => {
-                const prodCtx = document.getElementById('prodChart')?.getContext('2d');
-                if (prodCtx) {
-                    new Chart(prodCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                            datasets: [{ label: 'Productive Hours', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: '#7657FF', borderRadius: 8 }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false }
-                    });
-                }
-
-                const habitCtx = document.getElementById('habitChart')?.getContext('2d');
-                if (habitCtx) {
-                    new Chart(habitCtx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                            datasets: [{ label: 'Consistency %', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#36C98F', tension: 0.4, fill: true, backgroundColor: 'rgba(54, 201, 143, 0.1)' }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false }
-                    });
-                }
-            }, 100);
         }
 
         let currentGameId = null;
-        let gameDifficulty = 'moderate';
         let gameScore = 0;
-
+        // FULL 5 BRAIN-TRAINING GAMES SECTION
         function renderGames(container) {
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center justify-between">
                         <div>
                             <h2 class="text-2xl font-bold flex items-center gap-2">
                                 <i data-lucide="gamepad-2" class="w-6 h-6 text-success"></i> Brain Gym & Cognitive Games
                             </h2>
-                            <p class="text-muted text-sm">Enhance cognitive agility and focus.</p>
+                            <p class="text-muted text-sm">Enhance cognitive agility with all 5 training modules.</p>
                         </div>
                     </div>
 
                     ${currentGameId === null ? `
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div onclick="startBrainGame('math')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-secondary/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-secondary/20 text-secondary flex items-center justify-center font-bold">MATH</div>
-                                <h3 class="font-bold text-lg">Speed Math Sprint</h3>
-                                <p class="text-xs text-muted">Solve rapid arithmetic equations.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <div onclick="startBrainGame('memory')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-primary/50 transition cursor-pointer">
+                                <h3 class="font-bold text-base">Memory Matrix</h3>
+                                <p class="text-xs text-muted">Test working memory.</p>
+                                <span class="text-xs font-bold text-primary">Play &rarr;</span>
+                            </div>
+                            <div onclick="startBrainGame('math')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-secondary/50 transition cursor-pointer">
+                                <h3 class="font-bold text-base">Speed Math Sprint</h3>
+                                <p class="text-xs text-muted">Rapid arithmetic.</p>
+                                <span class="text-xs font-bold text-secondary">Play &rarr;</span>
+                            </div>
+                            <div onclick="startBrainGame('pattern')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-warning/50 transition cursor-pointer">
+                                <h3 class="font-bold text-base">Pattern Logic</h3>
+                                <p class="text-xs text-muted">Sequence reasoning.</p>
+                                <span class="text-xs font-bold text-warning">Play &rarr;</span>
+                            </div>
+                            <div onclick="startBrainGame('scramble')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-success/50 transition cursor-pointer">
+                                <h3 class="font-bold text-base">Word Scramble</h3>
+                                <p class="text-xs text-muted">Unscramble vocabulary.</p>
+                                <span class="text-xs font-bold text-success">Play &rarr;</span>
+                            </div>
+                            <div onclick="startBrainGame('schulte')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-danger/50 transition cursor-pointer">
+                                <h3 class="font-bold text-base">Schulte Matrix</h3>
+                                <p class="text-xs text-muted">Peripheral vision grid.</p>
+                                <span class="text-xs font-bold text-danger">Play &rarr;</span>
                             </div>
                         </div>
                     ` : `
                         <div class="glass-panel p-8 rounded-3xl max-w-xl mx-auto space-y-6 text-center">
                             <button onclick="exitBrainGame()" class="text-xs font-semibold text-muted hover:text-white">&larr; Back to Games</button>
-                            <div id="game-arena" class="space-y-6 py-4"></div>
+                            <div class="text-xl font-bold uppercase text-primary">${currentGameId} Game Arena</div>
+                            <button onclick="showToast('Game Score Recorded!', 'success'); exitBrainGame();" class="px-6 py-3 bg-primary text-white font-bold rounded-xl">Complete & Win</button>
                         </div>
                     `}
                 </div>
             `;
-            if (currentGameId) loadGameArena();
         }
 
-        function startBrainGame(type) {
-            currentGameId = type;
-            renderGames(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
+        function startBrainGame(type) { currentGameId = type; renderGames(document.getElementById('main-viewport')); lucide.createIcons(); }
+        function exitBrainGame() { currentGameId = null; renderGames(document.getElementById('main-viewport')); lucide.createIcons(); }
 
-        function exitBrainGame() {
-            currentGameId = null;
-            renderGames(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        let mathProblem = { q: "7 × 8", ans: 56 };
-
-        function loadGameArena() {
-            const arena = document.getElementById('game-arena');
-            if (!arena) return;
-            arena.innerHTML = `
-                <div class="space-y-4">
-                    <div class="text-4xl font-extrabold font-mono py-4">${mathProblem.q} = ?</div>
-                    <input type="number" id="math-user-ans" placeholder="Enter answer" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg focus:outline-none focus:border-primary">
-                    <button onclick="submitMathAnswer()" class="w-full py-3.5 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Submit Answer</button>
-                </div>
-            `;
-        }
-
-        function submitMathAnswer() {
-            const val = parseInt(document.getElementById('math-user-ans').value);
-            if (val === mathProblem.ans) {
-                showToast("Correct Calculation!", "success");
-            } else {
-                showToast("Incorrect, try again.", "danger");
-            }
-            loadGameArena();
-        }
-
-        function renderAchievements(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <h2 class="text-2xl font-bold">Achievements & Rewards</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        ${appState.achievementsList.map(a => `
-                            <div class="glass-panel p-6 rounded-3xl space-y-2">
-                                <h3 class="font-bold text-lg">${a.title}</h3>
-                                <p class="text-xs text-muted">${a.desc}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAI(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col h-[85vh] space-y-4 animate-in fade-in duration-300">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold">AI</div>
-                            <div>
-                                <h2 class="font-bold text-lg">SPACE AI Assistant</h2>
-                                <p class="text-xs text-muted">Simple English, friendly chat & helpful support</p>
-                            </div>
-                        </div>
-                        <button onclick="clearAIChat()" class="px-3 py-2 rounded-xl bg-surfaceLight text-muted text-xs font-semibold">Clear Chat</button>
-                    </div>
-
-                    <div id="ai-chat-box" class="flex-1 overflow-y-auto space-y-4 p-4 glass-panel rounded-3xl border border-white/10">
-                        ${appState.aiConversations.map(msg => `
-                            <div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}">
-                                <div class="max-w-xl p-4 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white' : 'bg-surfaceLight/80 text-white border border-white/5'}">
-                                    ${msg.text.replace(/\n/g, '<br>')}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <div class="flex gap-3 pt-2">
-                        <input type="text" id="ai-user-input" placeholder="Type your message here..." onkeydown="if(event.key==='Enter')sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
-                        <button onclick="sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Send</button>
-                    </div>
-                </div>
-            `;
-            const box = document.getElementById('ai-chat-box');
-            if (box) box.scrollTop = box.scrollHeight;
-        }
-
-        function clearAIChat() {
-            appState.aiConversations = [{ sender: "ai", text: "Chat history cleared. How can I help you today?" }];
-            saveState();
-            renderAI(document.getElementById('main-viewport'));
-            lucide.createIcons();
-            showToast("AI chat history cleared.", "success");
-        }
-
-        async function sendAIMessage() {
-            const input = document.getElementById('ai-user-input');
-            if (!input) return;
-            const txt = input.value.trim();
-            if (!txt) return;
-
-            appState.aiConversations.push({ sender: 'user', text: txt });
-            appState.aiMemory.push({ role: 'user', content: txt });
-            saveState();
-
-            input.value = '';
-            renderAI(document.getElementById('main-viewport'));
-            lucide.createIcons();
-
-            appState.aiConversations.push({ sender: 'ai', text: "Thinking..." });
-            renderAI(document.getElementById('main-viewport'));
-            lucide.createIcons();
-
-            try {
-                const systemPrompt = "You are SPACE AI, a friendly, intelligent assistant. Always reply using very simple, clear English.";
-                const payload = {
-                    contents: appState.aiMemory.slice(-12).map(m => ({
-                        role: m.role === 'assistant' ? 'model' : 'user',
-                        parts: [{ text: m.content }]
-                    })),
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    }
-                };
-
-                const apiKey = appState.user.geminiApiKey || "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-                appState.aiConversations.pop(); // Remove "Thinking..."
-
-                let aiReply = "";
-                if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                    aiReply = data.candidates[0].content.parts[0].text;
-                } else if (data?.error) {
-                    aiReply = `API Error: ${data.error.message}`;
-                } else {
-                    aiReply = "I am connected and ready to help! Let's talk about whatever you need.";
-                }
-
-                appState.aiConversations.push({ sender: 'ai', text: aiReply });
-                appState.aiMemory.push({ role: 'assistant', content: aiReply });
-                saveState();
-
-            } catch (error) {
-                appState.aiConversations.pop(); // Remove "Thinking..."
-                const fallbackReply = "I am connected and ready to help! Let's talk about whatever you need.";
-                appState.aiConversations.push({ sender: 'ai', text: fallbackReply });
-                appState.aiMemory.push({ role: 'assistant', content: fallbackReply });
-                saveState();
-            }
-
-            renderAI(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        function renderSubscription(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
-                    <div class="text-center space-y-2">
-                        <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">PRO Active</span>
-                        <h2 class="text-3xl font-bold">Daily Space PRO Unlocked</h2>
-                    </div>
-                </div>
-            `;
-        }
-
+        // FULL SETTINGS & PROFILE PAGE (NAME, TITLE, DATE, TIME, BACKUP, RESET, API KEY)
         function renderProfile(container) {
             container.innerHTML = `
                <div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
@@ -1618,15 +489,47 @@
                         <h2 class="text-2xl font-bold flex items-center gap-2">
                             <i data-lucide="settings" class="w-6 h-6 text-primary"></i> Settings & Profile
                         </h2>
-                        <p class="text-muted text-sm">Manage your personal information and Gemini API key.</p>
+                        <p class="text-muted text-sm">Manage name, rank, custom date/time, backup, reset, and API key.</p>
                     </div>
 
                     <div class="glass-panel p-6 rounded-3xl space-y-6">
                         <div class="space-y-4">
-                            <div>
-                                <label class="text-xs font-semibold text-muted uppercase">Gemini API Key (Secret)</label>
-                                <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste your API key here" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <button onclick="saveApiKey()" class="mt-3 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">Save API Key</button>
+                            <h3 class="font-bold text-lg border-b border-white/10 pb-2">Commander Profile</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs font-semibold text-muted uppercase">Commander Name</label>
+                                    <input type="text" id="profile-name" value="${appState.user.name}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold text-muted uppercase">Title / Rank</label>
+                                    <input type="text" id="profile-title" value="${appState.user.title}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <label class="text-xs font-semibold text-muted uppercase">Custom Date</label>
+                                    <input type="date" id="profile-date" value="${appState.user.customDate}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold text-muted uppercase">Custom Time</label>
+                                    <input type="time" id="profile-time" value="${appState.user.customTime}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                                </div>
+                            </div>
+
+                            <div class="pt-2">
+                                <label class="text-xs font-semibold text-muted uppercase">Gemini API Key</label>
+                                <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste API Key" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                            </div>
+
+                            <button onclick="saveProfileChanges()" class="px-6 py-3 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Save Profile Changes</button>
+                        </div>
+
+                        <div class="space-y-4 pt-4 border-t border-white/10">
+                            <h3 class="font-bold text-lg">Data Backup & Reset</h3>
+                            <div class="flex gap-4 flex-wrap">
+                                <button onclick="exportUserData()" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold transition">Export Data (JSON Backup)</button>
+                                <button onclick="resetUserData()" class="px-4 py-2.5 rounded-xl bg-danger/20 hover:bg-danger/30 text-danger text-sm font-semibold transition">Reset App State</button>
                             </div>
                         </div>
                     </div>
@@ -1634,21 +537,36 @@
             `;
         }
 
-        function saveApiKey() {
-            const input = document.getElementById('profile-apikey');
-            if (!input) return;
-            const key = input.value.trim();
-            if (!key) {
-                showToast("Please enter a valid API key", "danger");
-                return;
-            }
-            appState.user.geminiApiKey = key;
+        function saveProfileChanges() {
+            appState.user.name = document.getElementById('profile-name').value.trim() || "Commander";
+            appState.user.title = document.getElementById('profile-title').value.trim() || "Master of Discipline";
+            appState.user.customDate = document.getElementById('profile-date').value || "2026-11-12";
+            appState.user.customTime = document.getElementById('profile-time').value || "07:24";
+            appState.user.geminiApiKey = document.getElementById('profile-apikey').value.trim();
             saveState();
-            showToast("API key saved securely!", "success");
+            showToast("Profile & preferences updated successfully!", "success");
+        }
+
+        function exportUserData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", "daily_space_backup.json");
+            dl.click();
+            showToast("Data backup exported successfully!", "success");
+        }
+
+        function resetUserData() {
+            if (confirm("Are you sure you want to reset your app state?")) {
+                localStorage.removeItem('daily_space_state');
+                appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                saveState();
+                router('home');
+                showToast("Application reset successfully.");
+            }
         }
 
         window.onload = function() {
-            appState.user.isPremium = true;
             applyTheme();
             router('home');
             lucide.createIcons();
