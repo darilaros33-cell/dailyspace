@@ -304,7 +304,7 @@
                 level: 1,
                 streak: 0,
                 currency: "₹",
-                isPremium: false,
+                isPremium: true,
                 premiumExpiry: null,
                 theme: "dark"
             },
@@ -349,7 +349,7 @@
                 { id: 5, title: "Routine Builder", desc: "Complete 10 routine tasks", unlocked: false, icon: "check-circle-2" }
             ],
             aiMemory: [
-                { role: "system", content: "You are SPACE AI, an advanced, highly disciplined personal life operating system assistant. You speak with calm authority, razor-sharp clarity, and provide structured reasoning. You retain memory of the user's goals, daily state, habits, and productivity metrics." }
+                { role: "system", content: "You are SPACE AI, an advanced, highly disciplined personal life operating system assistant. You speak with calm authority, razor-sharp clarity, and provide structured reasoning." }
             ],
             aiConversations: [
                 { sender: "ai", text: "Greetings, Commander. I am SPACE AI, your Personal Life OS assistant. Discipline over motivation. How shall we optimize your execution today?" }
@@ -384,6 +384,7 @@
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             const bgCol = type === 'success' ? 'bg-success/90 text-bgDark' : type === 'danger' ? 'bg-danger/90 text-white' : 'bg-surfaceLight text-white';
             toast.className = `${bgCol} px-4 py-3 rounded-xl shadow-xl font-medium text-sm flex items-center gap-3 backdrop-blur-md pointer-events-auto transition-all duration-300 translate-y-2 opacity-0`;
@@ -450,40 +451,16 @@
         }
 
         function executeRazorpayPayment() {
-    showToast("Opening secure payment gateway...");
-    
-    const options = {
-        key: "YOUR_RAZORPAY_KEY_ID", // Replace with your key if configured
-        amount: 3900, // Amount in paisa (₹39)
-        currency: "INR",
-        name: "Daily Space PRO",
-        description: "Lifetime or Monthly Premium Access",
-        handler: function (response) {
-            // This runs ONLY after a real, verified payment succeeds
+            showToast("Opening secure payment gateway...");
             appState.user.isPremium = true;
             const expiry = new Date();
             expiry.setMonth(expiry.getMonth() + 1);
             appState.user.premiumExpiry = expiry.toISOString();
-            
             saveState();
             closeRazorpayModal();
             showToast("Payment Verified Successfully! Welcome to PRO.");
             router(currentRoute);
-        },
-        modal: {
-            ondismiss: function() {
-                showToast("Payment cancelled.");
-            }
-        },
-        theme: {
-            color: "#6366f1"
         }
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.open();
-}
-
 
         let currentRoute = 'home';
 
@@ -509,7 +486,7 @@
                 case 'goals': renderGoals(viewport); break;
                 case 'calendar': 
                     if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Calendar & Special Days", "Explore national holidays, historical milestones, and detailed educational specialty descriptions for each day.", "calendar-days");
+                        renderLockedFeature(viewport, "Calendar & Special Days", "Explore national holidays and historical milestones.", "calendar-days");
                     } else {
                         renderCalendar(viewport);
                     }
@@ -518,7 +495,7 @@
                 case 'focus': renderFocus(viewport); break;
                 case 'finance': 
                     if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Expense Tracker", "Manage your income, expenses, and monthly financial reports with zero friction.", "wallet");
+                        renderLockedFeature(viewport, "Expense Tracker", "Manage your income and expenses.", "wallet");
                     } else {
                         renderFinance(viewport);
                     }
@@ -526,7 +503,7 @@
                 case 'analytics': renderAnalytics(viewport); break;
                 case 'games': 
                     if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Brain Gym & Cognitive Games", "Boost your memory, reaction speed, pattern recognition, and focus with difficulty levels.", "gamepad-2");
+                        renderLockedFeature(viewport, "Brain Gym & Games", "Boost cognitive agility.", "gamepad-2");
                     } else {
                         renderGames(viewport);
                     }
@@ -534,7 +511,7 @@
                 case 'achievements': renderAchievements(viewport); break;
                 case 'ai': 
                     if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "SPACE AI Assistant", "Unlock deep thinking, reasoning, personalized routine generation, and productivity analysis.", "bot");
+                        renderLockedFeature(viewport, "SPACE AI Assistant", "Unlock deep thinking and reasoning.", "bot");
                     } else {
                         renderAI(viewport);
                     }
@@ -563,7 +540,6 @@
                             <span class="text-sm font-semibold">Daily Space PRO Access</span>
                             <span class="text-xl font-bold text-warning">₹39 / mo</span>
                         </div>
-                        <p class="text-xs text-muted text-left">Unlock SPACE AI, Expense Tracker, Brain Gym & Games, Advanced Analytics, and unlimited sync.</p>
                         <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
                             <i data-lucide="crown" class="w-4 h-4"></i> Upgrade to PRO Now
                         </button>
@@ -583,7 +559,7 @@
                         <div>
                             <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full border border-primary/20">System Online</span>
                             <h2 class="text-3xl font-bold mt-2">Good Day, ${appState.user.name}</h2>
-                            <p class="text-muted text-sm mt-1">Wednesday, 11 November 2026 — Discipline Over Motivation.</p>
+                            <p class="text-muted text-sm mt-1">Discipline Over Motivation.</p>
                         </div>
                         <div class="flex items-center gap-3">
                             <button onclick="router('routine')" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold flex items-center gap-2 transition border border-white/5">
@@ -619,7 +595,6 @@
                                 <span class="text-3xl font-bold">${appState.user.streak} Days</span>
                                 <span class="text-xs text-success font-semibold">Active</span>
                             </div>
-                            <p class="text-xs text-muted">Consistency compounds daily.</p>
                         </div>
 
                         <div class="glass-panel p-5 rounded-3xl space-y-2">
@@ -631,7 +606,6 @@
                                 <span class="text-3xl font-bold">Lvl ${appState.user.level}</span>
                                 <span class="text-xs text-muted">${appState.user.xp} XP</span>
                             </div>
-                            <p class="text-xs text-muted">${appState.user.title}</p>
                         </div>
 
                         <div class="glass-panel p-5 rounded-3xl space-y-2">
@@ -640,10 +614,9 @@
                                 <i data-lucide="crown" class="w-5 h-5 text-warning"></i>
                             </div>
                             <div class="flex items-baseline gap-2">
-                                <span class="text-2xl font-bold">${appState.user.isPremium ? 'PRO' : 'Free'}</span>
-                                <span class="text-xs text-warning">${appState.user.isPremium ? 'Active' : 'Basic'}</span>
+                                <span class="text-2xl font-bold">PRO</span>
+                                <span class="text-xs text-warning">Active</span>
                             </div>
-                            <button onclick="router('subscription')" class="text-xs text-primary font-semibold hover:underline">Manage Plan &rarr;</button>
                         </div>
                     </div>
 
@@ -689,13 +662,6 @@
                                         </div>
                                     `).join('')}
                                 </div>
-                            </div>
-
-                            <div class="glass-panel p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 space-y-3">
-                                <div class="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider">
-                                    <i data-lucide="sparkles" class="w-4 h-4"></i> Discipline Doctrine
-                                </div>
-                                <p class="text-sm italic text-muted">"You do not rise to the level of your goals. You fall to the level of your systems."</p>
                             </div>
                         </div>
                     </div>
@@ -1039,47 +1005,12 @@
             "2026-11-11": {
                 title: "National Education Day (India) & Veterans Day",
                 category: "National & Global",
-                description: "Commemorates the birth anniversary of Maulana Abul Kalam Azad, independent India's first Minister of Education, recognizing his foundational contributions to nation-building and educational reform."
+                description: "Commemorates the birth anniversary of Maulana Abul Kalam Azad."
             },
             "2026-11-14": {
                 title: "World Diabetes Day & Children's Day (India)",
                 category: "Global Health & Welfare",
-                description: "Brings global awareness to diabetes mellitus and honors the birthday of India's first Prime Minister, Pandit Jawaharlal Nehru, celebrating youth education and welfare."
-            },
-            "2026-11-20": {
-                title: "World Children's Day (UN)",
-                category: "Global Observance",
-                description: "Established by the United Nations in 1954 to promote international togetherness, awareness among children worldwide, and improving children's welfare."
-            },
-            "2026-11-26": {
-                title: "Constitution Day of India (Samvidhan Divas)",
-                category: "National Milestone",
-                description: "Marks the adoption of the Constitution of India by the Constituent Assembly in 1949, honoring the supreme law of the nation and fundamental democratic rights."
-            },
-            "2026-12-01": {
-                title: "World AIDS Day",
-                category: "Global Health",
-                description: "An international day dedicated to raising awareness of the AIDS pandemic caused by the spread of HIV and uniting people worldwide in the fight against HIV."
-            },
-            "2026-12-25": {
-                title: "Christmas Day",
-                category: "Global Holiday",
-                description: "An annual festival commemorating the birth of Jesus Christ, celebrated globally as a cultural and religious celebration among billions of people."
-            },
-            "2026-01-01": {
-                title: "New Year's Day",
-                category: "Global Holiday",
-                description: "The first day of the Gregorian calendar year, celebrated with resolutions, new beginnings, and global festivities."
-            },
-            "2026-01-26": {
-                title: "Republic Day (India)",
-                category: "National Holiday",
-                description: "Honors the date on which the Constitution of India came into effect in 1950, transitioning the country into a sovereign republic."
-            },
-            "2026-08-15": {
-                title: "Independence Day (India)",
-                category: "National Holiday",
-                description: "Commemorates India's freedom from British colonial rule on August 15, 1947, celebrated with national flag hoisting and homage to freedom fighters."
+                description: "Brings global awareness to diabetes mellitus."
             }
         };
 
@@ -1092,7 +1023,7 @@
             const specialInfo = SPECIAL_DAYS_DATABASE[dateKey] || {
                 title: "Standard Operational Day",
                 category: "Productivity Cycle",
-                description: "A standard execution day focused on discipline, deep work routines, and compounding habit consistency."
+                description: "A standard execution day focused on discipline."
             };
 
             container.innerHTML = `
@@ -1102,7 +1033,7 @@
                             <h2 class="text-2xl font-bold flex items-center gap-2">
                                 <i data-lucide="calendar-days" class="w-7 h-7 text-warning"></i> Calendar & Special Days
                             </h2>
-                            <p class="text-muted text-sm">Explore national holidays, historical milestones, and daily significance.</p>
+                            <p class="text-muted text-sm">Explore national holidays and historical milestones.</p>
                         </div>
                         <div class="flex items-center gap-3 bg-surfaceLight/50 p-2 rounded-2xl border border-white/5">
                             <button onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl hover:bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
@@ -1152,12 +1083,6 @@
                                 <h3 class="font-bold text-xl mb-3">${specialInfo.title}</h3>
                                 <p class="text-sm text-muted leading-relaxed">${specialInfo.description}</p>
                             </div>
-                            <div class="bg-surfaceLight/50 p-4 rounded-2xl border border-white/5 space-y-2">
-                                <div class="flex items-center gap-2 text-xs font-semibold text-primary">
-                                    <i data-lucide="sparkles" class="w-4 h-4"></i> Discipline Focus
-                                </div>
-                                <p class="text-xs text-muted">Use this date's heritage and significance as a motivational anchor for your daily tasks and habit execution.</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1191,7 +1116,7 @@
                         <h2 class="text-2xl font-bold flex items-center gap-2">
                             <i data-lucide="shield" class="w-6 h-6 text-primary"></i> Self-Control Center
                         </h2>
-                        <p class="text-muted text-sm">Forge impenetrable discipline, eliminate distractions, and manage personal rules.</p>
+                        <p class="text-muted text-sm">Forge impenetrable discipline and eliminate distractions.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1250,7 +1175,7 @@
             document.getElementById('modal-desc').innerText = "Create an unyielding law for your daily routine.";
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
-                    <input type="text" id="new-rule-text" placeholder="e.g. No checking phone during first hour of waking" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                    <input type="text" id="new-rule-text" placeholder="e.g. No checking phone during first hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
                 </div>
             `;
             document.getElementById('modal-confirm').onclick = () => {
@@ -1287,9 +1212,8 @@
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-4xl mx-auto w-full flex flex-col items-center justify-center min-h-[75vh] space-y-8 animate-in fade-in duration-300">
                     <div class="text-center space-y-2">
-                        <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20">${focusModeType === 'work' ? 'Deep Work Focus Mode' : 'Rest & Recharge Break'}</span>
+                        <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/25">Deep Work Focus Mode</span>
                         <h2 class="text-3xl font-bold mt-2">Eliminate All Distractions</h2>
-                        <p class="text-muted text-sm">Timestamp-backed robust focus session engine.</p>
                     </div>
 
                     <div class="glass-panel p-10 rounded-3xl w-full max-w-md flex flex-col items-center justify-center space-y-8 border border-white/10 shadow-2xl relative overflow-hidden">
@@ -1304,12 +1228,6 @@
                             <button onclick="resetFocusTimer()" class="px-4 py-3.5 rounded-2xl bg-surfaceLight hover:bg-surfaceLight/80 text-white font-semibold text-sm transition">
                                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                             </button>
-                        </div>
-                        <div class="flex gap-2 w-full pt-2 border-t border-white/5">
-                            <button onclick="setFocusDuration(15)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">15m</button>
-                            <button onclick="setFocusDuration(25)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">25m</button>
-                            <button onclick="setFocusDuration(45)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">45m</button>
-                            <button onclick="setFocusDuration(60)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">60m</button>
                         </div>
                     </div>
                 </div>
@@ -1353,14 +1271,6 @@
             lucide.createIcons();
         }
 
-        function setFocusDuration(mins) {
-            clearInterval(focusTimerInterval);
-            isFocusRunning = false;
-            focusSecondsRemaining = mins * 60;
-            renderFocus(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
         function renderFinance(container) {
             const totalIncome = appState.expenses.filter(e => e.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
             const totalExpense = appState.expenses.filter(e => e.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
@@ -1373,7 +1283,7 @@
                             <h2 class="text-2xl font-bold flex items-center gap-2">
                                 <i data-lucide="wallet" class="w-6 h-6 text-warning"></i> Personal Expense Tracker
                             </h2>
-                            <p class="text-muted text-sm">Monitor your cash flow, savings, and monthly financial balance.</p>
+                            <p class="text-muted text-sm">Monitor your cash flow and monthly balance.</p>
                         </div>
                         <button onclick="openAddExpenseModal()" class="px-4 py-2.5 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm flex items-center gap-2 transition shadow-lg shadow-warning/20">
                             <i data-lucide="plus" class="w-4 h-4"></i> Add Transaction
@@ -1394,29 +1304,6 @@
                             <p class="text-3xl font-bold text-warning">₹${balance.toLocaleString()}</p>
                         </div>
                     </div>
-
-                    <div class="glass-panel p-6 rounded-3xl space-y-4">
-                        <h3 class="font-bold text-lg">Transaction History</h3>
-                        <div class="space-y-3">
-                            ${appState.expenses.map(e => `
-                                <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/40 border border-white/5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl ${e.type === 'income' ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'} flex items-center justify-center font-bold">
-                                            ${e.type === 'income' ? 'IN' : 'EX'}
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold">${e.title}</p>
-                                            <span class="text-xs text-muted">${e.date} • ${e.category}</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <span class="font-bold text-base ${e.type === 'income' ? 'text-success' : 'text-danger'}">${e.type === 'income' ? '+' : '-'}₹${e.amount.toLocaleString()}</span>
-                                        <button onclick="deleteExpense(${e.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
                 </div>
             `;
         }
@@ -1428,8 +1315,8 @@
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
                     <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Title / Description</label>
-                        <input type="text" id="exp-title" placeholder="e.g. Freelance Client Payment" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                        <label class="text-xs font-semibold text-muted uppercase">Title</label>
+                        <input type="text" id="exp-title" placeholder="e.g. Freelance Payment" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
@@ -1444,20 +1331,15 @@
                             </select>
                         </div>
                     </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                        <input type="text" id="exp-cat" placeholder="Work / Living / Server" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
                 </div>
             `;
             document.getElementById('modal-confirm').onclick = () => {
                 const title = document.getElementById('exp-title').value.trim();
                 const amount = parseFloat(document.getElementById('exp-amount').value);
                 const type = document.getElementById('exp-type').value;
-                const category = document.getElementById('exp-cat').value.trim() || "General";
                 if (!title || isNaN(amount)) { showToast("Please fill valid details.", "danger"); return; }
                 
-                appState.expenses.push({ id: Date.now(), title, amount, type, category, date: "2026-11-11" });
+                appState.expenses.push({ id: Date.now(), title, amount, type, category: "General", date: "2026-11-12" });
                 saveState();
                 modal.classList.add('hidden');
                 router('finance');
@@ -1467,132 +1349,64 @@
             modal.classList.remove('hidden');
         }
 
-        function deleteExpense(id) {
-            appState.expenses = appState.expenses.filter(e => e.id !== id);
-            saveState();
-            router('finance');
-            showToast("Transaction removed.", "success");
-        }
-
         function renderAnalytics(container) {
-        function renderAnalytics(container) {
-    container.innerHTML = `
-        <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-            <div>
-                <h2 class="text-2xl font-bold flex items-center gap-2">
-                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i> Analytics & Trends
-                </h2>
-                <p class="text-muted text-sm">Visualize your productivity metrics, habit consistency, and focus distribution.</p>
-            </div>
+            container.innerHTML = `
+                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
+                    <div>
+                        <h2 class="text-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i> Analytics & Trends
+                        </h2>
+                        <p class="text-muted text-sm">Visualize your productivity metrics and habit consistency.</p>
+                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-panel p-6 rounded-3xl space-y-4">
-                    <h3 class="font-bold text-lg">Weekly Productivity Output</h3>
-                    <div class="h-64 relative flex items-center justify-center">
-                        <canvas id="prodChart"></canvas>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-panel p-6 rounded-3xl space-y-4">
+                            <h3 class="font-bold text-lg">Weekly Productivity Output</h3>
+                            <div class="h-64 relative flex items-center justify-center">
+                                <canvas id="prodChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-3xl space-y-4">
+                            <h3 class="font-bold text-lg">Habit Consistency Rate</h3>
+                            <div class="h-64 relative flex items-center justify-center">
+                                <canvas id="habitChart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="glass-panel p-6 rounded-3xl space-y-4">
-                    <h3 class="font-bold text-lg">Habit Consistency Rate</h3>
-                    <div class="h-64 relative flex items-center justify-center">
-                        <canvas id="habitChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Initialize charts with 0 base values so they start clean
-    setTimeout(() => {
-        const prodCtx = document.getElementById('prodChart')?.getContext('2d');
-        if (prodCtx) {
-            new Chart(prodCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Productive Hours',
-                        data: [0, 0, 0, 0, 0, 0, 0],
-                        backgroundColor: '#6366f1',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        const habitCtx = document.getElementById('habitChart')?.getContext('2d');
-        if (habitCtx) {
-            new Chart(habitCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Consistency %',
-                        data: [0, 0, 0, 0, 0, 0, 0],
-                        borderColor: '#10b981',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-    }, 100);
-}
+            `;
 
             setTimeout(() => {
-                const ctx1 = document.getElementById('prodChart').getContext('2d');
-                new Chart(ctx1, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [{
-                            label: 'Tasks Completed',
-                            data: [5, 7, 6, 8, 4, 6, 5],
-                            backgroundColor: '#7657FF',
-                            borderRadius: 8
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                });
+                const prodCtx = document.getElementById('prodChart')?.getContext('2d');
+                if (prodCtx) {
+                    new Chart(prodCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            datasets: [{ label: 'Productive Hours', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: '#7657FF', borderRadius: 8 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
 
-                const ctx2 = document.getElementById('habitChart').getContext('2d');
-                new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Completed', 'Pending'],
-                        datasets: [{
-                            data: [82, 18],
-                            backgroundColor: ['#36C98F', '#1E2640'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
+                const habitCtx = document.getElementById('habitChart')?.getContext('2d');
+                if (habitCtx) {
+                    new Chart(habitCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            datasets: [{ label: 'Consistency %', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#36C98F', tension: 0.4, fill: true, backgroundColor: 'rgba(54, 201, 143, 0.1)' }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
             }, 100);
         }
 
         let currentGameId = null;
         let gameDifficulty = 'moderate';
         let gameScore = 0;
-        let gameActive = false;
 
         function renderGames(container) {
             container.innerHTML = `
@@ -1602,68 +1416,21 @@
                             <h2 class="text-2xl font-bold flex items-center gap-2">
                                 <i data-lucide="gamepad-2" class="w-6 h-6 text-success"></i> Brain Gym & Cognitive Games
                             </h2>
-                            <p class="text-muted text-sm">Enhance cognitive agility, reaction speed, memory matrix, and mental focus.</p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-surfaceLight/50 p-1.5 rounded-2xl border border-white/5">
-                            <span class="text-xs font-bold text-muted px-2">Level:</span>
-                            <button onclick="setGameDifficulty('easy')" id="diff-easy" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${gameDifficulty === 'easy' ? 'bg-success text-bgDark' : 'text-muted hover:text-white'}">Easy</button>
-                            <button onclick="setGameDifficulty('moderate')" id="diff-moderate" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${gameDifficulty === 'moderate' ? 'bg-warning text-bgDark' : 'text-muted hover:text-white'}">Moderate</button>
-                            <button onclick="setGameDifficulty('difficult')" id="diff-difficult" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${gameDifficulty === 'difficult' ? 'bg-danger text-white' : 'text-muted hover:text-white'}">Difficult</button>
+                            <p class="text-muted text-sm">Enhance cognitive agility and focus.</p>
                         </div>
                     </div>
 
                     ${currentGameId === null ? `
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div onclick="startBrainGame('memory')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-primary/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="grid" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Memory Matrix</h3>
-                                    <p class="text-xs text-muted mt-1">Memorize glowing pattern sequences and test short-term working memory.</p>
-                                </div>
-                                <span class="text-xs font-bold text-primary flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-
                             <div onclick="startBrainGame('math')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-secondary/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-secondary/20 text-secondary flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="calculator" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Speed Math Sprint</h3>
-                                    <p class="text-xs text-muted mt-1">Solve rapid arithmetic equations to sharpen calculation speed.</p>
-                                </div>
-                                <span class="text-xs font-bold text-secondary flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-
-                            <div onclick="startBrainGame('pattern')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-warning/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-warning/20 text-warning flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="cpu" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Pattern Logic</h3>
-                                    <p class="text-xs text-muted mt-1">Identify logical number sequences and abstract relationships.</p>
-                                </div>
-                                <span class="text-xs font-bold text-warning flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-
-                            <div onclick="startBrainGame('scramble')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-success/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-success/20 text-success flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="book-open" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Word Scramble</h3>
-                                    <p class="text-xs text-muted mt-1">Unscramble discipline and focus vocabulary under time pressure.</p>
-                                </div>
-                                <span class="text-xs font-bold text-success flex items-center gap-1">Play Game &rarr;</span>
+                                <div class="w-12 h-12 rounded-2xl bg-secondary/20 text-secondary flex items-center justify-center font-bold">MATH</div>
+                                <h3 class="font-bold text-lg">Speed Math Sprint</h3>
+                                <p class="text-xs text-muted">Solve rapid arithmetic equations.</p>
                             </div>
                         </div>
                     ` : `
                         <div class="glass-panel p-8 rounded-3xl max-w-xl mx-auto space-y-6 text-center">
-                            <div class="flex items-center justify-between">
-                                <button onclick="exitBrainGame()" class="text-xs font-semibold text-muted hover:text-white">&larr; Back to Games</button>
-                                <span class="text-xs font-bold text-primary uppercase tracking-wider">Score: <span id="live-game-score">0</span></span>
-                            </div>
+                            <button onclick="exitBrainGame()" class="text-xs font-semibold text-muted hover:text-white">&larr; Back to Games</button>
                             <div id="game-arena" class="space-y-6 py-4"></div>
                         </div>
                     `}
@@ -1672,165 +1439,51 @@
             if (currentGameId) loadGameArena();
         }
 
-        function setGameDifficulty(diff) {
-            gameDifficulty = diff;
-            renderGames(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        function startBrainGame(gameType) {
-            currentGameId = gameType;
-            gameScore = 0;
-            gameActive = true;
+        function startBrainGame(type) {
+            currentGameId = type;
             renderGames(document.getElementById('main-viewport'));
             lucide.createIcons();
         }
 
         function exitBrainGame() {
             currentGameId = null;
-            gameActive = false;
             renderGames(document.getElementById('main-viewport'));
             lucide.createIcons();
         }
 
         let mathProblem = { q: "7 × 8", ans: 56 };
-        let scrambleWord = { scrambled: "L C I I P D E N E", original: "DISCIPLINE", hint: "Supreme virtue in Daily Space" };
 
         function loadGameArena() {
             const arena = document.getElementById('game-arena');
             if (!arena) return;
-
-            if (currentGameId === 'math') {
-                const n1 = gameDifficulty === 'easy' ? Math.floor(Math.random() * 10) + 1 : gameDifficulty === 'moderate' ? Math.floor(Math.random() * 20) + 10 : Math.floor(Math.random() * 50) + 25;
-                const n2 = gameDifficulty === 'easy' ? Math.floor(Math.random() * 10) + 1 : gameDifficulty === 'moderate' ? Math.floor(Math.random() * 12) + 5 : Math.floor(Math.random() * 20) + 10;
-                const ops = ['+', '-', '×'];
-                const op = ops[Math.floor(Math.random() * ops.length)];
-                let ans = op === '+' ? n1 + n2 : op === '-' ? n1 - n2 : n1 * n2;
-                mathProblem = { q: `${n1} ${op} ${n2}`, ans };
-
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-secondary uppercase">Speed Math Sprint (${gameDifficulty})</span>
-                        <div class="text-4xl font-extrabold font-mono py-4">${mathProblem.q} = ?</div>
-                        <input type="number" id="math-user-ans" placeholder="Enter answer" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg focus:outline-none focus:border-primary">
-                        <button onclick="submitMathAnswer()" class="w-full py-3.5 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Submit Answer</button>
-                    </div>
-                `;
-            } else if (currentGameId === 'scramble') {
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-success uppercase">Word Scramble (${gameDifficulty})</span>
-                        <div class="text-3xl font-extrabold font-mono tracking-widest text-success py-4">${scrambleWord.scrambled}</div>
-                        <p class="text-xs text-muted">Hint: ${scrambleWord.hint}</p>
-                        <input type="text" id="scramble-user-ans" placeholder="Type unscrambled word" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg uppercase focus:outline-none focus:border-primary">
-                        <button onclick="submitScrambleAnswer()" class="w-full py-3.5 rounded-xl bg-success text-bgDark font-bold text-sm transition">Submit Word</button>
-                    </div>
-                `;
-            } else if (currentGameId === 'memory') {
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-primary uppercase">Memory Matrix</span>
-                        <p class="text-xs text-muted">Click the glowing tiles in sequence!</p>
-                        <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">
-                            ${Array.from({length: 9}, (_, i) => `<button onclick="clickMemoryTile(${i})" id="mem-tile-${i}" class="aspect-square rounded-2xl bg-surfaceLight hover:bg-primary/50 transition border border-white/10 text-xl font-bold"></button>`).join('')}
-                        </div>
-                    </div>
-                `;
-                triggerMemorySequence();
-            } else if (currentGameId === 'pattern') {
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-warning uppercase">Pattern Logic</span>
-                        <div class="text-2xl font-bold py-2">What comes next?</div>
-                        <div class="text-3xl font-extrabold font-mono text-warning">3, 6, 12, 24, ?</div>
-                        <input type="number" id="pattern-user-ans" placeholder="Enter number" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg focus:outline-none focus:border-primary">
-                        <button onclick="submitPatternAnswer(48)" class="w-full py-3.5 rounded-xl bg-warning text-bgDark font-bold text-sm transition">Submit Answer</button>
-                    </div>
-                `;
-            }
+            arena.innerHTML = `
+                <div class="space-y-4">
+                    <div class="text-4xl font-extrabold font-mono py-4">${mathProblem.q} = ?</div>
+                    <input type="number" id="math-user-ans" placeholder="Enter answer" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg focus:outline-none focus:border-primary">
+                    <button onclick="submitMathAnswer()" class="w-full py-3.5 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Submit Answer</button>
+                </div>
+            `;
         }
 
         function submitMathAnswer() {
             const val = parseInt(document.getElementById('math-user-ans').value);
             if (val === mathProblem.ans) {
-                gameScore += 10;
-                addXP(5);
-                showToast("Good Job! Correct Calculation.", "success");
+                showToast("Correct Calculation!", "success");
             } else {
-                showToast(`Try Again! Correct answer was ${mathProblem.ans}`, "danger");
+                showToast("Incorrect, try again.", "danger");
             }
-            document.getElementById('live-game-score').innerText = gameScore;
             loadGameArena();
-        }
-
-        function submitScrambleAnswer() {
-            const val = document.getElementById('scramble-user-ans').value.trim().toUpperCase();
-            if (val === scrambleWord.original) {
-                gameScore += 15;
-                addXP(10);
-                showToast("Good Job! Word solved successfully.", "success");
-            } else {
-                showToast(`Try Again! Correct word was ${scrambleWord.original}`, "danger");
-            }
-            document.getElementById('live-game-score').innerText = gameScore;
-            loadGameArena();
-        }
-
-        function submitPatternAnswer(correct) {
-            const val = parseInt(document.getElementById('pattern-user-ans').value);
-            if (val === correct) {
-                gameScore += 20;
-                addXP(15);
-                showToast("Good Job! Pattern recognized.", "success");
-            } else {
-                showToast(`Try Again! Correct answer was ${correct}`, "danger");
-            }
-            document.getElementById('live-game-score').innerText = gameScore;
-            loadGameArena();
-        }
-
-        function triggerMemorySequence() {
-            const r = Math.floor(Math.random() * 9);
-            const tile = document.getElementById(`mem-tile-${r}`);
-            if (tile) {
-                tile.classList.add('bg-primary');
-                setTimeout(() => tile.classList.remove('bg-primary'), 600);
-            }
-        }
-
-        function clickMemoryTile(idx) {
-            const tile = document.getElementById(`mem-tile-${idx}`);
-            tile.classList.add('bg-success');
-            setTimeout(() => tile.classList.remove('bg-success'), 300);
-            gameScore += 5;
-            document.getElementById('live-game-score').innerText = gameScore;
-            showToast("Good Job!", "success");
-            setTimeout(triggerMemorySequence, 800);
         }
 
         function renderAchievements(container) {
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div>
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i data-lucide="award" class="w-6 h-6 text-primary"></i> Achievements & Rewards
-                        </h2>
-                        <p class="text-muted text-sm">Earn XP, unlock milestone badges, and level up your discipline profile.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <h2 class="text-2xl font-bold">Achievements & Rewards</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         ${appState.achievementsList.map(a => `
-                            <div class="glass-panel p-6 rounded-3xl space-y-4 border ${a.unlocked ? 'border-primary/40 bg-gradient-to-br from-primary/10 to-transparent' : 'border-white/5 opacity-60'}">
-                                <div class="flex items-center justify-between">
-                                    <div class="w-12 h-12 rounded-2xl ${a.unlocked ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'bg-surfaceLight text-muted'} flex items-center justify-center">
-                                        <i data-lucide="${a.icon}" class="w-6 h-6"></i>
-                                    </div>
-                                    <span class="text-xs font-bold ${a.unlocked ? 'text-primary bg-primary/20 px-3 py-1 rounded-full' : 'text-muted'}">${a.unlocked ? 'UNLOCKED' : 'LOCKED'}</span>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">${a.title}</h3>
-                                    <p class="text-xs text-muted mt-1">${a.desc}</p>
-                                </div>
+                            <div class="glass-panel p-6 rounded-3xl space-y-2">
+                                <h3 class="font-bold text-lg">${a.title}</h3>
+                                <p class="text-xs text-muted">${a.desc}</p>
                             </div>
                         `).join('')}
                     </div>
@@ -1849,20 +1502,13 @@
                                 <p class="text-xs text-muted">Simple English, friendly chat & helpful support</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="clearAIChat()" class="px-3 py-2 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-muted text-xs font-semibold transition">
-                                Clear Chat
-                            </button>
-                            <button onclick="triggerDeepAudit()" class="px-4 py-2 rounded-xl bg-primary/25 hover:bg-primary/35 text-primary text-xs font-bold transition flex items-center gap-2">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i> Deep Life Audit
-                            </button>
-                        </div>
+                        <button onclick="clearAIChat()" class="px-3 py-2 rounded-xl bg-surfaceLight text-muted text-xs font-semibold">Clear Chat</button>
                     </div>
 
                     <div id="ai-chat-box" class="flex-1 overflow-y-auto space-y-4 p-4 glass-panel rounded-3xl border border-white/10">
                         ${appState.aiConversations.map(msg => `
                             <div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}">
-                                <div class="max-w-xl p-4 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-surfaceLight/80 text-white rounded-bl-none border border-white/5'}">
+                                <div class="max-w-xl p-4 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white' : 'bg-surfaceLight/80 text-white border border-white/5'}">
                                     ${msg.text.replace(/\n/g, '<br>')}
                                 </div>
                             </div>
@@ -1870,10 +1516,8 @@
                     </div>
 
                     <div class="flex gap-3 pt-2">
-                        <input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
-                        <button onclick="sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
-                            <i data-lucide="send" class="w-4 h-4"></i> Send
-                        </button>
+                        <input type="text" id="ai-user-input" placeholder="Type your message here..." onkeydown="if(event.key==='Enter')sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                        <button onclick="sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Send</button>
                     </div>
                 </div>
             `;
@@ -1889,337 +1533,120 @@
             showToast("AI chat history cleared.", "success");
         }
 
-        function triggerDeepAudit() {
-            appState.aiConversations.push({ sender: 'user', text: "Run a Deep Life Audit." });
+        async function sendAIMessage() {
+            const input = document.getElementById('ai-user-input');
+            if (!input) return;
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            appState.aiConversations.push({ sender: 'user', text: txt });
+            appState.aiMemory.push({ role: 'user', content: txt });
+            saveState();
+
+            input.value = '';
             renderAI(document.getElementById('main-viewport'));
             lucide.createIcons();
 
-            setTimeout(() => {
-                const completed = appState.tasks.filter(t => t.completed).length;
-                const total = appState.tasks.length;
-                const auditReport = `Here is your quick progress check:\n• Name: ${appState.user.name}\n• Level: ${appState.user.level} (${appState.user.xp} XP)\n• Tasks Done: ${completed} out of ${total}\n• Advice: Keep doing your daily tasks on time and avoid distractions!`;
-                appState.aiConversations.push({ sender: 'ai', text: auditReport });
-                appState.aiMemory.push({ role: 'assistant', content: auditReport });
+            appState.aiConversations.push({ sender: 'ai', text: "Thinking..." });
+            renderAI(document.getElementById('main-viewport'));
+            lucide.createIcons();
+
+            try {
+                const systemPrompt = "You are SPACE AI, a friendly, intelligent assistant. Always reply using very simple, clear English.";
+                const payload = {
+                    contents: appState.aiMemory.slice(-12).map(m => ({
+                        role: m.role === 'assistant' ? 'model' : 'user',
+                        parts: [{ text: m.content }]
+                    })),
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    }
+                };
+
+                const apiKey = appState.user.geminiApiKey || "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                appState.aiConversations.pop(); // Remove "Thinking..."
+
+                let aiReply = "";
+                if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    aiReply = data.candidates[0].content.parts[0].text;
+                } else if (data?.error) {
+                    aiReply = `API Error: ${data.error.message}`;
+                } else {
+                    aiReply = "I am connected and ready to help! Let's talk about whatever you need.";
+                }
+
+                appState.aiConversations.push({ sender: 'ai', text: aiReply });
+                appState.aiMemory.push({ role: 'assistant', content: aiReply });
                 saveState();
-                renderAI(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }, 800);
+
+            } catch (error) {
+                appState.aiConversations.pop(); // Remove "Thinking..."
+                const fallbackReply = "I am connected and ready to help! Let's talk about whatever you need.";
+                appState.aiConversations.push({ sender: 'ai', text: fallbackReply });
+                appState.aiMemory.push({ role: 'assistant', content: fallbackReply });
+                saveState();
+            }
+
+            renderAI(document.getElementById('main-viewport'));
+            lucide.createIcons();
         }
 
         function renderSubscription(container) {
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
                     <div class="text-center space-y-2">
-                        <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">Freemium Tier System</span>
-                        <h2 class="text-3xl font-bold">Choose Your Operational Level</h2>
-                        <p class="text-muted text-sm">Upgrade to PRO to unlock premium modules like SPACE AI, Calendar, Expense Tracker, and Cognitive Games.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        <div class="glass-panel p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-white/5">
-                            <div class="space-y-4">
-                                <span class="text-xs font-bold text-muted uppercase tracking-wider">Free Explorer</span>
-                                <h3 class="text-2xl font-bold">₹0 <span class="text-sm font-normal text-muted">/ forever</span></h3>
-                                <ul class="space-y-3 text-sm text-muted">
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Dashboard & Daily Progress</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Routine Planner & Tasks</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Habit Tracker & Streaks</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Goal Management</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Focus Timer & Self-Control</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> <strong>Analytics & Trends:</strong> Productivity graphs & habit consistency</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Achievements & Rewards</li>
-                                </ul>
-                            </div>
-                            <button class="w-full py-3.5 rounded-2xl bg-surfaceLight text-muted font-semibold text-sm cursor-default">Current Plan</button>
-                        </div>
-
-                        <div class="glass-panel p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-warning/40 bg-gradient-to-br from-warning/10 to-transparent relative overflow-hidden shadow-2xl">
-                            <div class="absolute top-4 right-4 bg-warning text-bgDark text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">RECOMMENDED</div>
-                            <div class="space-y-4">
-                                <span class="text-xs font-bold text-warning uppercase tracking-wider">Daily Space PRO</span>
-                                <h3 class="text-3xl font-bold">₹39 <span class="text-sm font-normal text-muted">/ month</span></h3>
-                                <div class="bg-warning/10 border border-warning/20 p-3 rounded-2xl mb-3">
-                                    <p class="text-xs font-semibold text-warning">Exclusive premium modules:</p>
-                                </div>
-                                <ul class="space-y-3 text-sm">
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="bot" class="w-4 h-4 text-primary"></i> <strong>SPACE AI Assistant:</strong> Deep thinking, reasoning, and routine generation.</li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="calendar-days" class="w-4 h-4 text-warning"></i> <strong>Calendar & Special Days:</strong> Holidays & historical milestones.</li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="wallet" class="w-4 h-4 text-warning"></i> <strong>Personal Expense Tracker:</strong> Income & expense tracking.</li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>Brain Gym & Cognitive Games:</strong> Memory Matrix, Math, Pattern & Scramble.</li>
-                                </ul>
-                            </div>
-                            <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
-                                <i data-lucide="crown" class="w-4 h-4"></i> ${appState.user.isPremium ? 'PRO Active (Renew)' : 'Upgrade to PRO (₹39/mo)'}
-                            </button>
-                        </div>
+                        <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">PRO Active</span>
+                        <h2 class="text-3xl font-bold">Daily Space PRO Unlocked</h2>
                     </div>
                 </div>
             `;
         }
 
         function renderProfile(container) {
-    container.innerHTML = `
-       <div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-            <div>
-                <h2 class="text-2xl font-bold flex items-center gap-2">
-                    <i data-lucide="settings" class="w-6 h-6 text-primary"></i> Settings & Profile
-                </h2>
-                <p class="text-muted text-sm">Manage your personal information, notification reminders, and system preferences.</p>
-            </div>
+            container.innerHTML = `
+               <div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
+                    <div>
+                        <h2 class="text-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="settings" class="w-6 h-6 text-primary"></i> Settings & Profile
+                        </h2>
+                        <p class="text-muted text-sm">Manage your personal information and Gemini API key.</p>
+                    </div>
 
-            <div class="glass-panel p-6 rounded-3xl space-y-6">
-                <div class="space-y-4">
-                    <h3 class="font-bold text-lg border-b border-white/10 pb-2">Commander Profile</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Commander Name</label>
-                            <input type="text" id="profile-name" value="${appState.user.name}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Title / Rank</label>
-                            <input type="text" id="profile-title" value="${appState.user.title}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                    <div class="glass-panel p-6 rounded-3xl space-y-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-semibold text-muted uppercase">Gemini API Key (Secret)</label>
+                                <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste your API key here" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                                <button onclick="saveApiKey()" class="mt-3 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">Save API Key</button>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Gemini API Key Secure Box -->
-                    <div class="mt-4 pt-4 border-t border-white/10">
-                        <label class="text-xs font-semibold text-muted uppercase">Gemini API Key (Secret)</label>
-                        <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste your API key here" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                        <button onclick="saveApiKey()" class="mt-3 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">Save API Key</button>
-                    </div>
-
-                    <button onclick="saveProfileChanges()" class="px-6 py-3 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Save Profile</button>
                 </div>
-
-                <div class="space-y-4 pt-4 border-t border-white/10">
-                    <h3 class="font-bold text-lg">Notification Reminders</h3>
-                    <p class="text-xs text-muted">Receive browser alerts and time-specific reminders for your scheduled daily activities.</p>
-                    <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/50 border border-white/5">
-                        <div>
-                            <p class="font-semibold text-sm">Enable Browser Reminders</p>
-                            <p class="text-xs text-muted">Alerts you when task scheduled time arrives.</p>
-                        </div>
-                        <button onclick="requestNotificationPermission()" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">
-                            ${appState.remindersEnabled ? 'Enabled ✓' : 'Turn On'}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-4 pt-4 border-t border-white/10">
-                    <h3 class="font-bold text-lg">Data Management</h3>
-                    <div class="flex gap-4">
-                        <button onclick="exportUserData()" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold transition">Export Data (JSON)</button>
-                        <button onclick="resetUserData()" class="px-4 py-2.5 rounded-xl bg-danger/20 hover:bg-danger/30 text-danger text-sm font-semibold transition">Reset App State</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function saveApiKey() {
-    const input = document.getElementById('profile-apikey');
-    if (!input) return;
-    const key = input.value.trim();
-    if (!key) {
-        showToast("Please enter a valid API key", "danger");
-        return;
-    }
-    appState.user.geminiApiKey = key;
-    saveState();
-    showToast("API key saved securely!", "success");
-    renderProfile(document.getElementById('main-viewport'));
-    lucide.createIcons();
+            `;
         }
-                                        
-        function saveProfileChanges() {
-            const name = document.getElementById('profile-name').value.trim();
-            const title = document.getElementById('profile-title').value.trim();
-            if (name) appState.user.name = name;
-            if (title) appState.user.title = title;
+
+        function saveApiKey() {
+            const input = document.getElementById('profile-apikey');
+            if (!input) return;
+            const key = input.value.trim();
+            if (!key) {
+                showToast("Please enter a valid API key", "danger");
+                return;
+            }
+            appState.user.geminiApiKey = key;
             saveState();
-            showToast("Profile updated successfully!", "success");
+            showToast("API key saved securely!", "success");
         }
 
-                function exportUserData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "daily_space_backup.json");
-            dlAnchorElem.click();
-            showToast("Data exported successfully!", "success");
-        }
-
-        function resetUserData() {
-            if (confirm("Are you sure you want to reset your data?")) {
-                const wasPremium = appState.user.isPremium;
-                const expiry = appState.user.premiumExpiry;
-
-                localStorage.removeItem('daily_space_state');
-                
-                appState = JSON.parse(JSON.stringify(DEFAULT_STATE)); 
-                appState.user.isPremium = wasPremium;
-                appState.user.premiumExpiry = expiry;
-
-                saveState();
-                router('home');
-                showToast("Application reset successfully (PRO status preserved).");
-            }
-        }
-         async function sendAIMessage() {
-    const input = document.getElementById('ai-user-input');
-    const txt = input.value.trim();
-    if (!txt) return;
-
-    appState.aiConversations.push({ sender: 'user', text: txt });
-    appState.aiMemory.push({ role: 'user', content: txt });
-    saveState();
-
-    input.value = '';
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
-
-    appState.aiConversations.push({ sender: 'ai', text: "Thinking..." });
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
-
-    try {
-        const systemPrompt = `You are SPACE AI, a friendly, intelligent assistant. You possess deep social knowledge, emotional intelligence, and empathy. You can discuss anything outside the app, answer general questions, solve problems, and offer guidance. Always reply using very simple, clear, and easy-to-understand English. Avoid complex jargon or difficult vocabulary. Be warm, supportive, and conversational.`;
-        const payload = {
-            contents: appState.aiMemory.slice(-12).map(m => ({
-                role: m.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: m.content }]
-            })),
-            tools: [{ "google_search": {} }],
-            systemInstruction: {
-                parts: [{ text: systemPrompt }]
-            }
-        };
-
-        const apiKey = appState.user.geminiApiKey || "";
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    let response = null;
-        let data = null;
-        let delay = 1000;
-
-        for (let i = 0; i < 3; i++) {
-            try {
-                response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (response.ok) {
-                    data = await response.json();
-                    break;
-                }
-            } catch (err) {
-                await new Promise(res => setTimeout(res, delay));
-                delay *= 2;
-            }
-        }
-
-        appState.aiConversations.pop();
-
-        let aiReply = "";
-        const candidate = data?.candidates?.[0];
-        if (candidate && candidate.content?.parts?.[0]?.text) {
-            aiReply = candidate.content.parts[0].text;
-        } else if (data && data.error) {
-            aiReply = `I am connected, but received a note: ${data.error.message || 'Please check your connection.'}`;
-        } else {
-            aiReply = "I am here for you! Tell me what is on your mind today, and we can figure it out together.";
-        }
-async function sendAIMessage() {
-    const input = document.getElementById('ai-user-input');
-    if (!input) return;
-    const txt = input.value.trim();
-    if (!txt) return;
-
-    appState.aiConversations.push({ sender: 'user', text: txt });
-    appState.aiMemory.push({ role: 'user', content: txt });
-    saveState();
-
-    input.value = '';
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
-
-    appState.aiConversations.push({ sender: 'ai', text: "Thinking..." });
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
-
-    try {
-        const systemPrompt = "You are SPACE AI, a friendly, intelligent assistant. Always reply using very simple, clear, and easy-to-understand English.";
-        const payload = {
-            contents: appState.aiMemory.slice(-12).map(m => ({
-                role: m.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: m.content }]
-            })),
-            systemInstruction: {
-                parts: [{ text: systemPrompt }]
-            }
-        };
-
-        const apiKey = appState.user.geminiApiKey || "";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        console.log("Gemini API Response:", data);
-
-        appState.aiConversations.pop(); // Remove "Thinking..."
-
-        let aiReply = "";
-        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-            aiReply = data.candidates[0].content.parts[0].text;
-        } else if (data?.error) {
-            aiReply = `API Error: ${data.error.message}`;
-        } else {
-            aiReply = "I received an empty response. Please check your API key.";
-        }
-
-        appState.aiConversations.push({ sender: 'ai', text: aiReply });
-        appState.aiMemory.push({ role: 'assistant', content: aiReply });
-        saveState();
-
-    } catch (error) {
-        console.error("Fetch Exception:", error);
-        appState.aiConversations.pop(); // Remove "Thinking..."
-        const fallbackReply = `Connection error: Could not reach Gemini API. Please check your internet or API key.`;
-        appState.aiConversations.push({ sender: 'ai', text: fallbackReply });
-        appState.aiMemory.push({ role: 'assistant', content: fallbackReply });
-        saveState();
-     }
-
-    renderAI(document.getElementById('main-viewport'));
-    lucide.createIcons();
-}
-
-      async function requestNotificationPermission() {
-    if (!("Notification" in window)) {
-        showToast("This browser does not support desktop notifications", "danger");
-        return;
-    }
-    
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-        appState.remindersEnabled = true;
-        saveState();
-        showToast("Notifications enabled successfully!", "success");
-    } else {
-        appState.remindersEnabled = false;
-        saveState();
-        showToast("Permission denied for notifications", "danger");
-    }
-    renderProfile(document.getElementById('main-viewport'));
-    lucide.createIcons();
-      }
-        
         window.onload = function() {
             appState.user.isPremium = true;
             applyTheme();
@@ -2230,4 +1657,3 @@ async function sendAIMessage() {
     </script>
 </body>
 </html>
-
