@@ -2065,10 +2065,11 @@ function saveApiKey() {
                 router('home');
                 showToast("Application reset successfully (PRO status preserved).");
             }
-        }
-        async function sendAIMessage() {
+        
+async function sendAIMessage() {
     const input = document.getElementById('ai-user-input');
     if (!input) return;
+
     const txt = input.value.trim();
     if (!txt) return;
 
@@ -2080,61 +2081,66 @@ function saveApiKey() {
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 
-    appState.aiConversations.push({ sender: 'ai', text: "Thinking..." });
+    appState.aiConversations.push({ sender: 'ai', text: 'Thinking...' });
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 
     try {
-        const systemPrompt = "You are SPACE AI, a friendly, intelligent assistant. Always reply using very simple, clear, and easy-to-understand English.";
-        const payload = {
-            contents: appState.aiMemory.slice(-12).map(m => ({
-                role: m.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: m.content }]
-            })),
-            systemInstruction: {
-                parts: [{ text: systemPrompt }]
-            }
-        };
-
-        const apiKey = appState.user.geminiApiKey || "";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        console.log("Gemini API Response:", data);
-
-        appState.aiConversations.pop(); // Remove "Thinking..."
-
-        let aiReply = "";
-        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-            aiReply = data.candidates[0].content.parts[0].text;
-        } else if (data?.error) {
-            aiReply = `API Error: ${data.error.message}`;
-        } else {
-            aiReply = "I received an empty response. Please check your API key.";
+        if (!window.dailySpaceAI?.model) {
+            throw new Error('Firebase AI is not initialized yet.');
         }
 
-        appState.aiConversations.push({ sender: 'ai', text: aiReply });
-        appState.aiMemory.push({ role: 'assistant', content: aiReply });
+        const contents = appState.aiMemory
+            .filter(m => m.role === 'user' || m.role === 'assistant')
+            .slice(-12)
+            .map(m => ({
+                role: m.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: m.content }]
+            }));
+
+        const result = await window.dailySpaceAI.model.generateContent(contents);
+        const aiReply = result.response.text() ||
+            'I received an empty response. Please try again.';
+
+        appState.aiConversations.pop();
+
+        appState.aiConversations.push({
+            sender: 'ai',
+            text: aiReply
+        });
+
+        appState.aiMemory.push({
+            role: 'assistant',
+            content: aiReply
+        });
+
         saveState();
 
     } catch (error) {
-        console.error("Fetch Exception:", error);
-        appState.aiConversations.pop(); // Remove "Thinking..."
-        const fallbackReply = `Connection error: Could not reach Gemini API. Please check your internet or API key.`;
-        appState.aiConversations.push({ sender: 'ai', text: fallbackReply });
-        appState.aiMemory.push({ role: 'assistant', content: fallbackReply });
+        console.error('Firebase AI Error:', error);
+
+        appState.aiConversations.pop();
+
+        const fallbackReply =
+            'Sorry, I could not connect to SPACE AI. Please try again.';
+
+        appState.aiConversations.push({
+            sender: 'ai',
+            text: fallbackReply
+        });
+
+        appState.aiMemory.push({
+            role: 'assistant',
+            content: fallbackReply
+        });
+
         saveState();
-     }
+    }
 
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 }
+
 
       async function requestNotificationPermission() {
     if (!("Notification" in window)) {
@@ -2164,5 +2170,69 @@ function saveApiKey() {
             updateSidebarXP();
         };
     </script>
+    
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+    import {
+        initializeAppCheck,
+        ReCaptchaEnterpriseProvider
+    } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app-check.js";
+
+    import {
+        getAI,
+        getGenerativeModel,
+        GoogleAIBackend
+    } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-ai.js";
+
+    // Firebase project configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBxiZJ7rh_2DhQRY6A4QKfNKFAbJyBiu0Y",
+        authDomain: "dailyspace-51906.firebaseapp.com",
+        projectId: "dailyspace-51906",
+        storageBucket: "dailyspace-51906.firebasestorage.app",
+        messagingSenderId: "365433303545",
+        appId: "1:365433303545:web:0395a76deb227052d28d28",
+        measurementId: "G-7WDDKC8QNB"
+    };
+
+    // Your reCAPTCHA Enterprise site key
+    const recaptchaSiteKey =
+        "6LfYORwuAAAAAAhvnYDx-gq7CAWLyaeiyzQjmQ9h";
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Initialize App Check
+    const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
+        isTokenAutoRefreshEnabled: true
+    });
+
+    // Initialize Firebase AI Logic
+    const ai = getAI(app, {
+        backend: new GoogleAIBackend()
+    });
+
+    // Create SPACE AI model
+    const model = getGenerativeModel(ai, {
+        model: "gemini-3.8-flash",
+        systemInstruction:
+            "You are SPACE AI, a friendly and intelligent assistant. Always reply using very simple, clear, and easy-to-understand English."
+    });
+
+    // Make Firebase AI available to the app
+    window.dailySpaceAI = {
+        app,
+        appCheck,
+        ai,
+        model
+    };
+
+    console.log("Daily Space Firebase AI initialized successfully.");
+</script>
+</body>
+</html>
+
 </body>
 </html>
