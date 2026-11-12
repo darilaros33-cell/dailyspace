@@ -1475,32 +1475,87 @@
         }
 
         function renderAnalytics(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div>
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i> Analytics & Trends
-                        </h2>
-                        <p class="text-muted text-sm">Visualize your productivity metrics, habit consistency, and focus distribution.</p>
-                    </div>
+        function renderAnalytics(container) {
+    container.innerHTML = `
+        <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
+            <div>
+                <h2 class="text-2xl font-bold flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i> Analytics & Trends
+                </h2>
+                <p class="text-muted text-sm">Visualize your productivity metrics, habit consistency, and focus distribution.</p>
+            </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <h3 class="font-bold text-lg">Weekly Productivity Output</h3>
-                            <div class="h-64 relative flex items-center justify-center">
-                                <canvas id="prodChart"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <h3 class="font-bold text-lg">Habit Consistency Rate</h3>
-                            <div class="h-64 relative flex items-center justify-center">
-                                <canvas id="habitChart"></canvas>
-                            </div>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 rounded-3xl space-y-4">
+                    <h3 class="font-bold text-lg">Weekly Productivity Output</h3>
+                    <div class="h-64 relative flex items-center justify-center">
+                        <canvas id="prodChart"></canvas>
                     </div>
                 </div>
-            `;
+
+                <div class="glass-panel p-6 rounded-3xl space-y-4">
+                    <h3 class="font-bold text-lg">Habit Consistency Rate</h3>
+                    <div class="h-64 relative flex items-center justify-center">
+                        <canvas id="habitChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Initialize charts with 0 base values so they start clean
+    setTimeout(() => {
+        const prodCtx = document.getElementById('prodChart')?.getContext('2d');
+        if (prodCtx) {
+            new Chart(prodCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Productive Hours',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        const habitCtx = document.getElementById('habitChart')?.getContext('2d');
+        if (habitCtx) {
+            new Chart(habitCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Consistency %',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#10b981',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    }, 100);
+}
 
             setTimeout(() => {
                 const ctx1 = document.getElementById('prodChart').getContext('2d');
