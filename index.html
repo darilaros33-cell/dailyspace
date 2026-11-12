@@ -2089,6 +2089,7 @@ async function sendAIMessage() {
         text: 'Thinking...'
     };
 
+    // Save the user's message
     appState.aiConversations.push({
         sender: 'user',
         text: txt
@@ -2100,7 +2101,6 @@ async function sendAIMessage() {
     });
 
     saveState();
-
     input.value = '';
 
     appState.aiConversations.push(thinkingMessage);
@@ -2109,15 +2109,48 @@ async function sendAIMessage() {
     lucide.createIcons();
 
     try {
-        // Create one chat session and reuse it
-        if (!window.dailySpaceAI.chat) {
+        // Collect previous conversation memory
+        const previousMemory = Array.isArray(appState.aiMemory)
+            ? appState.aiMemory
+                .slice(0, -1)
+                .filter(item =>
+                    item.role === 'user' ||
+                    item.role === 'assistant'
+                )
+                .slice(-20)
+            : [];
+
+        // Format previous messages as readable context
+        const memoryContext = previousMemory
+            .map(item =>
+                `${item.role === 'user' ? 'User' : 'SPACE AI'}: ${item.content}`
+            )
+            .join('\n');
+
+        // Create a new Gemini chat session if needed
+        const isNewSession = !window.dailySpaceAI.chat;
+
+        if (isNewSession) {
             window.dailySpaceAI.chat =
                 window.dailySpaceAI.model.startChat();
         }
 
-        // Send the message
+        // Include saved memory only when starting a new session
+        const messageToSend = isNewSession && memoryContext
+            ? `Here is the previous conversation for context.
+Use it to understand the user's earlier messages and remember relevant details.
+Do not repeat the conversation unless asked.
+
+PREVIOUS CONVERSATION:
+${memoryContext}
+
+CURRENT MESSAGE:
+${txt}`
+            : txt;
+
+        // Send message to Gemini
         const result =
-            await window.dailySpaceAI.chat.sendMessage(txt);
+            await window.dailySpaceAI.chat.sendMessage(messageToSend);
 
         const aiReply =
             result.response.text() ||
@@ -2144,7 +2177,6 @@ async function sendAIMessage() {
         });
 
     } finally {
-        // Remove the old Thinking message
         const thinkingIndex =
             appState.aiConversations.indexOf(thinkingMessage);
 
@@ -2157,9 +2189,9 @@ async function sendAIMessage() {
         renderAI(document.getElementById('main-viewport'));
         lucide.createIcons();
     }
-    }
-     window.sendAIMessage = sendAIMessage;   
+}
 
+window.sendAIMessage = sendAIMessage;
 
       async function requestNotificationPermission() {
     if (!("Notification" in window)) {
