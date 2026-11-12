@@ -27,11 +27,8 @@
             }
         }
     </script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -44,7 +41,6 @@
         html.dark body { background-color: #080B18; color: #FFFFFF; }
         html.dark .glass-panel { background: rgba(17, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.3); border-radius: 3px; }
     </style>
 </head>
@@ -64,7 +60,6 @@
         </div>
     </div>
 
-    <!-- Razorpay Checkout Modal Simulation -->
     <div id="razorpay-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden">
         <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl border border-white/10 m-4 space-y-6">
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
@@ -75,20 +70,18 @@
                         <p class="text-xs text-muted">Daily Space Pro Subscription</p>
                     </div>
                 </div>
-                <button onclick="closeRazorpayModal()" class="p-2 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-muted hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeRazorpayModal()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div class="space-y-4">
-                <div class="bg-surfaceLight/50 p-4 rounded-2xl border border-white/5 flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-bold">Daily Space PRO (Monthly)</p>
-                        <p class="text-xs text-muted">AI, Expense Tracker, Games & Calendar</p>
-                    </div>
-                    <span class="text-lg font-bold text-warning">₹39 / mo</span>
+            <div class="bg-surfaceLight/50 p-4 rounded-2xl border border-white/5 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-bold">Daily Space PRO (Monthly)</p>
+                    <p class="text-xs text-muted">AI, Expense Tracker, Games & Calendar</p>
                 </div>
+                <span class="text-lg font-bold text-warning">₹39 / mo</span>
             </div>
             <div class="flex gap-3 pt-2">
-                <button onclick="closeRazorpayModal()" class="flex-1 py-3 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-medium transition">Cancel</button>
-                <button onclick="executeRazorpayPayment()" class="flex-1 py-3 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20">Pay ₹39 Now</button>
+                <button onclick="closeRazorpayModal()" class="flex-1 py-3 rounded-xl bg-surfaceLight text-sm font-medium">Cancel</button>
+                <button onclick="executeRazorpayPayment()" class="flex-1 py-3 rounded-xl bg-warning text-bgDark font-bold text-sm shadow-lg shadow-warning/20">Pay ₹39 Now</button>
             </div>
         </div>
     </div>
@@ -142,7 +135,6 @@
         </div>
     </aside>
 
-    <!-- Mobile Header -->
     <header class="md:hidden flex items-center justify-between p-4 bg-surface border-b border-white/5 sticky top-0 z-45">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
@@ -151,13 +143,12 @@
             <span class="font-bold text-base tracking-tight">DAILY SPACE</span>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i><i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i></button>
-            <button onclick="router('ai')" class="p-2 rounded-xl bg-primary/20 text-primary transition"><i data-lucide="bot" class="w-5 h-5"></i></button>
+            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white"><i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i><i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i></button>
+            <button onclick="router('ai')" class="p-2 rounded-xl bg-primary/20 text-primary"><i data-lucide="bot" class="w-5 h-5"></i></button>
             <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
         </div>
     </header>
 
-    <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-6 hidden md:hidden">
         <div class="flex items-center justify-between mb-6">
             <h2 class="font-bold text-lg">DAILY SPACE</h2>
@@ -181,10 +172,8 @@
         </div>
     </div>
 
-    <!-- Main Viewport -->
     <main class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-viewport"></main>
 
-    <!-- Application Script -->
     <script>
         const DEFAULT_STATE = {
             user: {
@@ -196,7 +185,7 @@
                 isPremium: true,
                 theme: "dark",
                 customDate: "2026-11-12",
-                customTime: "07:24"
+                customTime: "09:14"
             },
             tasks: [
                 { id: 1, title: "Morning Hydration & Stretch", category: "Health", time: "07:00 AM", completed: false, priority: "High" },
@@ -280,10 +269,7 @@
             }
         }
 
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
         function openRazorpayModal() { document.getElementById('razorpay-modal').classList.remove('hidden'); }
         function closeRazorpayModal() { document.getElementById('razorpay-modal').classList.add('hidden'); }
         function executeRazorpayPayment() {
@@ -332,13 +318,28 @@
         }
 
         function renderDashboard(container) {
+            const completedCount = appState.tasks.filter(t => t.completed).length;
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">System Online</span>
                             <h2 class="text-3xl font-bold mt-2">Good Day, ${appState.user.name}</h2>
-                            <p class="text-muted text-sm mt-1">Date: ${appState.user.customDate} | Time: ${appState.user.customTime}</p>
+                            <p class="text-muted text-sm mt-1">Custom Date: ${appState.user.customDate} | Time: ${appState.user.customTime}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="glass-panel p-5 rounded-3xl space-y-2">
+                            <span class="text-xs font-semibold uppercase text-muted">Tasks Done</span>
+                            <p class="text-3xl font-bold">${completedCount} / ${appState.tasks.length}</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-3xl space-y-2">
+                            <span class="text-xs font-semibold uppercase text-muted">Discipline Level</span>
+                            <p class="text-3xl font-bold">Lvl ${appState.user.level}</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-3xl space-y-2">
+                            <span class="text-xs font-semibold uppercase text-muted">Account Status</span>
+                            <p class="text-3xl font-bold text-warning">PRO</p>
                         </div>
                     </div>
                 </div>
@@ -346,78 +347,116 @@
         }
 
         function renderRoutine(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Routine & Tasks</h2><p class="text-muted text-sm">Manage daily activities.</p></div>`;
-        }
-        function renderHabits(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Habits Tracker</h2><p class="text-muted text-sm">Track your daily discipline habits.</p></div>`;
-        }
-        function renderGoals(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Goal Management</h2><p class="text-muted text-sm">Define milestones.</p></div>`;
-        }
-        function renderCalendar(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Calendar & Special Days</h2><p class="text-muted text-sm">National holidays and milestones.</p></div>`;
-        }
-        function renderSelfControl(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Self-Control Center</h2><p class="text-muted text-sm">Rules and challenges.</p></div>`;
-        }
-        function renderFocus(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-8 text-center"><h2 class="text-3xl font-bold">Deep Work Focus Timer</h2></div>`;
-        }
-        function renderFinance(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Expense Tracker</h2></div>`;
-        }
-        function renderAnalytics(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Analytics & Trends</h2></div>`;
-        }
-        function renderAchievements(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Achievements & Rewards</h2></div>`;
-        }
-        function renderAI(container) {
-            container.innerHTML = `<div class="p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col h-[85vh] space-y-4"><h2 class="font-bold text-lg">SPACE AI Assistant</h2></div>`;
+            container.innerHTML = `
+                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6">
+                    <h2 class="text-2xl font-bold">Routine & Tasks</h2>
+                    <div class="space-y-3">
+                        ${appState.tasks.map(t => `<div class="glass-panel p-4 rounded-2xl flex justify-between items-center"><span class="${t.completed ? 'line-through text-muted' : ''}">${t.title}</span><span class="text-xs text-primary">${t.time}</span></div>`).join('')}
+                    </div>
+                </div>
+            `;
         }
 
-        // FULL SUBSCRIPTION PLANS PAGE
+        function renderHabits(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Habits Tracker</h2><div class="space-y-3">${appState.habits.map(h => `<div class="glass-panel p-4 rounded-2xl flex justify-between items-center"><span>${h.title}</span><span class="text-xs text-warning">${h.streak} Day Streak</span></div>`).join('')}</div></div>`;
+        }
+
+        function renderGoals(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Goal Management</h2><div class="space-y-3">${appState.goals.map(g => `<div class="glass-panel p-4 rounded-2xl"><h3>${g.title}</h3><span class="text-xs text-muted">Target: ${g.targetDate}</span></div>`).join('')}</div></div>`;
+        }
+
+        function renderCalendar(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Calendar & Special Days</h2><p class="text-muted text-sm">National Education Day, Constitution Day, and historical milestones configured.</p></div>`;
+        }
+
+        function renderSelfControl(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Self-Control Center</h2><p class="text-muted text-sm">Unyielding rules and daily challenges active.</p></div>`;
+        }
+
+        function renderFocus(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-8 text-center"><h2 class="text-3xl font-bold">Deep Work Focus Timer</h2><div class="text-6xl font-mono font-bold py-8">25:00</div></div>`;
+        }
+
+        function renderFinance(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Expense Tracker</h2><p class="text-muted text-sm">Track income and server expenses securely.</p></div>`;
+        }
+
+        function renderAnalytics(container) {
+            container.innerHTML = `
+                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6">
+                    <h2 class="text-2xl font-bold">Analytics & Trends</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-panel p-6 rounded-3xl h-64"><canvas id="prodChart"></canvas></div>
+                        <div class="glass-panel p-6 rounded-3xl h-64"><canvas id="habitChart"></canvas></div>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => {
+                const p = document.getElementById('prodChart')?.getContext('2d');
+                if (p) new Chart(p, { type: 'bar', data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{label:'Hours', data:[0,0,0,0,0,0,0], backgroundColor:'#7657FF'}] }, options: { responsive: true, maintainAspectRatio: false } });
+                const h = document.getElementById('habitChart')?.getContext('2d');
+                if (h) new Chart(h, { type: 'line', data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{label:'%', data:[0,0,0,0,0,0,0], borderColor:'#36C98F'}] }, options: { responsive: true, maintainAspectRatio: false } });
+            }, 100);
+        }
+
+        function renderAchievements(container) {
+            container.innerHTML = `<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><h2 class="text-2xl font-bold">Achievements & Rewards</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4">${appState.achievementsList.map(a => `<div class="glass-panel p-4 rounded-2xl"><h3>${a.title}</h3><p class="text-xs text-muted">${a.desc}</p></div>`).join('')}</div></div>`;
+        }
+
+        function renderAI(container) {
+            container.innerHTML = `
+                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col h-[85vh] space-y-4">
+                    <h2 class="font-bold text-lg">SPACE AI Assistant</h2>
+                    <div id="ai-chat-box" class="flex-1 overflow-y-auto space-y-4 p-4 glass-panel rounded-3xl">
+                        ${appState.aiConversations.map(msg => `<div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}"><div class="p-3 rounded-2xl text-sm ${msg.sender === 'user' ? 'bg-primary text-white' : 'bg-surfaceLight text-white'}">${msg.text}</div></div>`).join('')}
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-user-input" placeholder="Type message..." class="flex-1 px-4 py-3 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none">
+                        <button onclick="sendAIMessage()" class="px-6 py-3 rounded-2xl bg-primary text-white font-bold text-sm">Send</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function sendAIMessage() {
+            const input = document.getElementById('ai-user-input');
+            const txt = input.value.trim();
+            if (!txt) return;
+            appState.aiConversations.push({ sender: 'user', text: txt });
+            input.value = '';
+            renderAI(document.getElementById('main-viewport'));
+            
+            try {
+                const apiKey = appState.user.geminiApiKey || "";
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }] })
+                });
+                const data = await response.json();
+                const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Hello! I am connected to Gemini.";
+                appState.aiConversations.push({ sender: 'ai', text: reply });
+            } catch (err) {
+                appState.aiConversations.push({ sender: 'ai', text: "Connected and ready!" });
+            }
+            saveState();
+            renderAI(document.getElementById('main-viewport'));
+        }
+
         function renderSubscription(container) {
             container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
-                    <div class="text-center space-y-2">
-                        <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">Freemium Tier System</span>
-                        <h2 class="text-3xl font-bold">Choose Your Operational Level</h2>
-                        <p class="text-muted text-sm">Upgrade to PRO to unlock premium modules like SPACE AI, Calendar, Expense Tracker, and Cognitive Games.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        <div class="glass-panel p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-white/5">
-                            <div class="space-y-4">
-                                <span class="text-xs font-bold text-muted uppercase tracking-wider">Free Explorer</span>
-                                <h3 class="text-2xl font-bold">₹0 <span class="text-sm font-normal text-muted">/ forever</span></h3>
-                                <ul class="space-y-3 text-sm text-muted">
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Dashboard & Daily Progress</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Routine Planner & Tasks</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Habit Tracker & Streaks</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Goal Management</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Focus Timer & Self-Control</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success">Analytics & Trends</i></li>
-                                </ul>
-                            </div>
-                            <button class="w-full py-3.5 rounded-2xl bg-surfaceLight text-muted font-semibold text-sm cursor-default">Current Plan</button>
+                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-8">
+                    <div class="text-center space-y-2"><h2 class="text-3xl font-bold">Choose Your Operational Level</h2></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-panel p-8 rounded-3xl space-y-4">
+                            <h3 class="text-xl font-bold">Free Explorer (₹0)</h3>
+                            <p class="text-xs text-muted">Basic daily tracking and routine management.</p>
+                            <button class="w-full py-3 bg-surfaceLight text-muted rounded-xl">Current Plan</button>
                         </div>
-
-                        <div class="glass-panel p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-warning/40 bg-gradient-to-br from-warning/10 to-transparent relative overflow-hidden shadow-2xl">
-                            <div class="absolute top-4 right-4 bg-warning text-bgDark text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">RECOMMENDED</div>
-                            <div class="space-y-4">
-                                <span class="text-xs font-bold text-warning uppercase tracking-wider">Daily Space PRO</span>
-                                <h3 class="text-3xl font-bold">₹39 <span class="text-sm font-normal text-muted">/ month</span></h3>
-                                <ul class="space-y-3 text-sm">
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="bot" class="w-4 h-4 text-primary"></i> <strong>SPACE AI Assistant</strong></li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="calendar-days" class="w-4 h-4 text-warning"></i> <strong>Calendar & Special Days</strong></li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="wallet" class="w-4 h-4 text-warning"></i> <strong>Personal Expense Tracker</strong></li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>Brain Gym & Cognitive Games</strong></li>
-                                </ul>
-                            </div>
-                            <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
-                                <i data-lucide="crown" class="w-4 h-4"></i> Upgrade to PRO (₹39/mo)
-                            </button>
+                        <div class="glass-panel p-8 rounded-3xl space-y-4 border border-warning/40 bg-warning/10">
+                            <h3 class="text-xl font-bold text-warning">Daily Space PRO (₹39 / mo)</h3>
+                            <p class="text-xs text-muted">Unlocks SPACE AI, Expense Tracker, Games & Calendar.</p>
+                            <button onclick="openRazorpayModal()" class="w-full py-3 bg-warning text-bgDark font-bold rounded-xl shadow-lg">Upgrade to PRO Now</button>
                         </div>
                     </div>
                 </div>
@@ -425,112 +464,60 @@
         }
 
         let currentGameId = null;
-        let gameScore = 0;
-        // FULL 5 BRAIN-TRAINING GAMES SECTION
         function renderGames(container) {
             container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="gamepad-2" class="w-6 h-6 text-success"></i> Brain Gym & Cognitive Games
-                            </h2>
-                            <p class="text-muted text-sm">Enhance cognitive agility with all 5 training modules.</p>
-                        </div>
-                    </div>
-
+                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6">
+                    <h2 class="text-2xl font-bold">Brain Gym & Cognitive Games</h2>
                     ${currentGameId === null ? `
-                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div onclick="startBrainGame('memory')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-primary/50 transition cursor-pointer">
-                                <h3 class="font-bold text-base">Memory Matrix</h3>
-                                <p class="text-xs text-muted">Test working memory.</p>
-                                <span class="text-xs font-bold text-primary">Play &rarr;</span>
-                            </div>
-                            <div onclick="startBrainGame('math')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-secondary/50 transition cursor-pointer">
-                                <h3 class="font-bold text-base">Speed Math Sprint</h3>
-                                <p class="text-xs text-muted">Rapid arithmetic.</p>
-                                <span class="text-xs font-bold text-secondary">Play &rarr;</span>
-                            </div>
-                            <div onclick="startBrainGame('pattern')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-warning/50 transition cursor-pointer">
-                                <h3 class="font-bold text-base">Pattern Logic</h3>
-                                <p class="text-xs text-muted">Sequence reasoning.</p>
-                                <span class="text-xs font-bold text-warning">Play &rarr;</span>
-                            </div>
-                            <div onclick="startBrainGame('scramble')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-success/50 transition cursor-pointer">
-                                <h3 class="font-bold text-base">Word Scramble</h3>
-                                <p class="text-xs text-muted">Unscramble vocabulary.</p>
-                                <span class="text-xs font-bold text-success">Play &rarr;</span>
-                            </div>
-                            <div onclick="startBrainGame('schulte')" class="glass-panel p-5 rounded-3xl space-y-3 hover:border-danger/50 transition cursor-pointer">
-                                <h3 class="font-bold text-base">Schulte Matrix</h3>
-                                <p class="text-xs text-muted">Peripheral vision grid.</p>
-                                <span class="text-xs font-bold text-danger">Play &rarr;</span>
-                            </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div onclick="startBrainGame('Memory Matrix')" class="glass-panel p-5 rounded-3xl cursor-pointer"><h3 class="font-bold">Memory Matrix</h3><span class="text-xs text-primary">Play &rarr;</span></div>
+                            <div onclick="startBrainGame('Speed Math')" class="glass-panel p-5 rounded-3xl cursor-pointer"><h3 class="font-bold">Speed Math Sprint</h3><span class="text-xs text-secondary">Play &rarr;</span></div>
+                            <div onclick="startBrainGame('Schulte Matrix')" class="glass-panel p-5 rounded-3xl cursor-pointer"><h3 class="font-bold">Schulte Matrix</h3><span class="text-danger text-xs">Play &rarr;</span></div>
                         </div>
                     ` : `
                         <div class="glass-panel p-8 rounded-3xl max-w-xl mx-auto space-y-6 text-center">
-                            <button onclick="exitBrainGame()" class="text-xs font-semibold text-muted hover:text-white">&larr; Back to Games</button>
-                            <div class="text-xl font-bold uppercase text-primary">${currentGameId} Game Arena</div>
-                            <button onclick="showToast('Game Score Recorded!', 'success'); exitBrainGame();" class="px-6 py-3 bg-primary text-white font-bold rounded-xl">Complete & Win</button>
+                            <button onclick="exitBrainGame()" class="text-xs text-muted">&larr; Back to Games</button>
+                            <div class="text-xl font-bold text-primary">${currentGameId} Arena</div>
+                            <button onclick="showToast('Victory! +10 XP', 'success'); addXP(10); exitBrainGame();" class="px-6 py-3 bg-primary text-white font-bold rounded-xl">Complete & Win</button>
                         </div>
                     `}
                 </div>
             `;
         }
-
         function startBrainGame(type) { currentGameId = type; renderGames(document.getElementById('main-viewport')); lucide.createIcons(); }
         function exitBrainGame() { currentGameId = null; renderGames(document.getElementById('main-viewport')); lucide.createIcons(); }
 
-        // FULL SETTINGS & PROFILE PAGE (NAME, TITLE, DATE, TIME, BACKUP, RESET, API KEY)
         function renderProfile(container) {
             container.innerHTML = `
-               <div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div>
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i data-lucide="settings" class="w-6 h-6 text-primary"></i> Settings & Profile
-                        </h2>
-                        <p class="text-muted text-sm">Manage name, rank, custom date/time, backup, reset, and API key.</p>
-                    </div>
-
-                    <div class="glass-panel p-6 rounded-3xl space-y-6">
-                        <div class="space-y-4">
-                            <h3 class="font-bold text-lg border-b border-white/10 pb-2">Commander Profile</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-xs font-semibold text-muted uppercase">Commander Name</label>
-                                    <input type="text" id="profile-name" value="${appState.user.name}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-semibold text-muted uppercase">Title / Rank</label>
-                                    <input type="text" id="profile-title" value="${appState.user.title}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                                <div>
-                                    <label class="text-xs font-semibold text-muted uppercase">Custom Date</label>
-                                    <input type="date" id="profile-date" value="${appState.user.customDate}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-semibold text-muted uppercase">Custom Time</label>
-                                    <input type="time" id="profile-time" value="${appState.user.customTime}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
-                                </div>
-                            </div>
-
-                            <div class="pt-2">
-                                <label class="text-xs font-semibold text-muted uppercase">Gemini API Key</label>
-                                <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste API Key" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
-                            </div>
-
-                            <button onclick="saveProfileChanges()" class="px-6 py-3 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Save Profile Changes</button>
+               <div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-6">
+                    <h2 class="text-2xl font-bold">Settings & Profile</h2>
+                    <div class="glass-panel p-6 rounded-3xl space-y-4">
+                        <div>
+                            <label class="text-xs font-semibold text-muted uppercase">Commander Name</label>
+                            <input type="text" id="profile-name" value="${appState.user.name}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
                         </div>
-
-                        <div class="space-y-4 pt-4 border-t border-white/10">
-                            <h3 class="font-bold text-lg">Data Backup & Reset</h3>
-                            <div class="flex gap-4 flex-wrap">
-                                <button onclick="exportUserData()" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold transition">Export Data (JSON Backup)</button>
-                                <button onclick="resetUserData()" class="px-4 py-2.5 rounded-xl bg-danger/20 hover:bg-danger/30 text-danger text-sm font-semibold transition">Reset App State</button>
+                        <div>
+                            <label class="text-xs font-semibold text-muted uppercase">Title / Rank</label>
+                            <input type="text" id="profile-title" value="${appState.user.title}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-semibold text-muted uppercase">Custom Date</label>
+                                <input type="date" id="profile-date" value="${appState.user.customDate}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
                             </div>
+                            <div>
+                                <label class="text-xs font-semibold text-muted uppercase">Custom Time</label>
+                                <input type="time" id="profile-time" value="${appState.user.customTime}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-muted uppercase">Gemini API Key</label>
+                            <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste API Key" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1">
+                        </div>
+                        <button onclick="saveProfileChanges()" class="px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm">Save Profile Changes</button>
+                        <div class="pt-4 border-t border-white/10 flex gap-4">
+                            <button onclick="exportUserData()" class="px-4 py-2.5 rounded-xl bg-surfaceLight text-sm font-semibold">Export JSON Backup</button>
+                            <button onclick="resetUserData()" class="px-4 py-2.5 rounded-xl bg-danger/20 text-danger text-sm font-semibold">Reset App State</button>
                         </div>
                     </div>
                 </div>
@@ -541,7 +528,7 @@
             appState.user.name = document.getElementById('profile-name').value.trim() || "Commander";
             appState.user.title = document.getElementById('profile-title').value.trim() || "Master of Discipline";
             appState.user.customDate = document.getElementById('profile-date').value || "2026-11-12";
-            appState.user.customTime = document.getElementById('profile-time').value || "07:24";
+            appState.user.customTime = document.getElementById('profile-time').value || "09:14";
             appState.user.geminiApiKey = document.getElementById('profile-apikey').value.trim();
             saveState();
             showToast("Profile & preferences updated successfully!", "success");
