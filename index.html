@@ -2061,11 +2061,12 @@ function saveApiKey() {
                 appState.user.isPremium = wasPremium;
                 appState.user.premiumExpiry = expiry;
 
-                saveState();
+                                saveState();
                 router('home');
                 showToast("Application reset successfully (PRO status preserved).");
             }
-        
+        }
+
 async function sendAIMessage() {
     const input = document.getElementById('ai-user-input');
     if (!input) return;
