@@ -1870,8 +1870,8 @@
                     </div>
 
                     <div class="flex gap-3 pt-2">
-                        <input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
-                        <button onclick="sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
+                        <input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')window.sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                        <button onclick="window.sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
                             <i data-lucide="send" class="w-4 h-4"></i> Send
                         </button>
                     </div>
@@ -2158,7 +2158,7 @@ async function sendAIMessage() {
         lucide.createIcons();
     }
     }
-        
+     window.sendAIMessage = sendAIMessage;   
 
 
       async function requestNotificationPermission() {
