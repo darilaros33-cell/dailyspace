@@ -2074,15 +2074,27 @@ async function sendAIMessage() {
     const txt = input.value.trim();
     if (!txt) return;
 
-    appState.aiConversations.push({ sender: 'user', text: txt });
-    appState.aiMemory.push({ role: 'user', content: txt });
+    appState.aiConversations.push({
+        sender: 'user',
+        text: txt
+    });
+
+    appState.aiMemory.push({
+        role: 'user',
+        content: txt
+    });
+
     saveState();
 
     input.value = '';
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 
-    appState.aiConversations.push({ sender: 'ai', text: 'Thinking...' });
+    appState.aiConversations.push({
+        sender: 'ai',
+        text: 'Thinking...'
+    });
+
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 
@@ -2091,15 +2103,26 @@ async function sendAIMessage() {
             throw new Error('Firebase AI is not initialized yet.');
         }
 
-        const contents = appState.aiMemory
-            .filter(m => m.role === 'user' || m.role === 'assistant')
+        // Get previous messages, excluding the latest user message
+        const history = appState.aiMemory
+            .slice(0, -1)
             .slice(-12)
             .map(m => ({
                 role: m.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: m.content }]
+                parts: [{
+                    type: 'text',
+                    text: m.content
+                }]
             }));
 
-        const result = await window.dailySpaceAI.model.generateContent(contents);
+        // Start a chat session
+        const chat = window.dailySpaceAI.model.startChat({
+            history: history
+        });
+
+        // Send the latest message
+        const result = await chat.sendMessage(txt);
+
         const aiReply = result.response.text() ||
             'I received an empty response. Please try again.';
 
@@ -2122,8 +2145,8 @@ async function sendAIMessage() {
 
         appState.aiConversations.pop();
 
-            const fallbackReply =
-    `Firebase error: ${error?.message || error}`;
+        const fallbackReply =
+            `Firebase error: ${error?.message || error}`;
 
         appState.aiConversations.push({
             sender: 'ai',
@@ -2140,6 +2163,7 @@ async function sendAIMessage() {
 
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
+    
 }
 
 
