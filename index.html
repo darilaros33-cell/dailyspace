@@ -2104,21 +2104,32 @@ async function sendAIMessage() {
         }
 
         // Get previous messages, excluding the latest user message
-        const history = appState.aiMemory
-            .slice(0, -1)
-            .slice(-12)
-            .map(m => ({
-                role: m.role === 'assistant' ? 'model' : 'user',
-                parts: [{
-                    type: 'text',
-                    text: m.content
-                }]
-            }));
+        const history = [];
+let lastRole = null;
+
+for (const m of appState.aiMemory.slice(0, -1)) {
+    const role = m.role === 'assistant' ? 'model' : 'user';
+
+    if (role === lastRole) continue;
+
+    history.push({
+        role: role,
+        parts: [{ text: m.content }]
+    });
+
+    lastRole = role;
+}
+
+while (history.length > 0 && history[0].role !== 'user') {
+    history.shift();
+}
+
+const recentHistory = history.slice(-12);
 
         // Start a chat session
         const chat = window.dailySpaceAI.model.startChat({
-            history: history
-        });
+    history: recentHistory
+});
 
         // Send the latest message
         const result = await chat.sendMessage(txt);
