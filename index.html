@@ -2122,8 +2122,8 @@ async function sendAIMessage() {
 
         appState.aiConversations.pop();
 
-        const fallbackReply =
-            'Sorry, I could not connect to SPACE AI. Please try again.';
+            const fallbackReply =
+    `Firebase error: ${error?.message || error}`;
 
         appState.aiConversations.push({
             sender: 'ai',
