@@ -125,6 +125,44 @@
         </div>
     </div>
 
+    <!-- Firebase Authentication Gate -->
+    <section id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#080B18] p-4">
+        <div class="w-full max-w-md rounded-3xl border border-white/10 bg-[#11172A] p-7 shadow-2xl">
+            <div class="mb-6 flex items-center gap-3">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary">
+                    <i data-lucide="compass" class="h-7 w-7 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">DAILY SPACE</h1>
+                    <p class="text-xs tracking-widest text-muted">DISCIPLINE OVER MOTIVATION</p>
+                </div>
+            </div>
+            <div id="auth-loading" class="py-8 text-center text-sm text-muted">Checking your account...</div>
+            <div id="auth-form-area" class="hidden space-y-4">
+                <div>
+                    <h2 id="auth-heading" class="text-2xl font-bold text-white">Welcome back</h2>
+                    <p id="auth-subheading" class="mt-1 text-sm text-muted">Sign in to access your personal Daily Space.</p>
+                </div>
+                <form id="email-auth-form" onsubmit="handleEmailAuth(event)" class="space-y-3">
+                    <label class="block text-xs font-semibold uppercase text-muted" for="auth-email">Email address</label>
+                    <input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com" class="w-full rounded-xl border border-white/10 bg-[#1E2640] px-4 py-3 text-sm text-white outline-none focus:border-primary">
+                    <label class="block text-xs font-semibold uppercase text-muted" for="auth-password">Password</label>
+                    <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters" class="w-full rounded-xl border border-white/10 bg-[#1E2640] px-4 py-3 text-sm text-white outline-none focus:border-primary">
+                    <button id="auth-submit" type="submit" class="w-full rounded-xl bg-primary px-4 py-3 font-bold text-white transition hover:bg-primaryHover">Sign In</button>
+                </form>
+                <button type="button" onclick="signInWithGoogle()" class="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-100">
+                    <span class="text-lg font-bold">G</span> Continue with Google
+                </button>
+                <div class="flex items-center justify-between gap-3 text-xs">
+                    <button id="auth-mode-toggle" type="button" onclick="toggleAuthMode()" class="text-primary hover:underline">Create an account</button>
+                    <button id="auth-reset" type="button" onclick="resetAuthPassword()" class="text-muted hover:text-white">Forgot password?</button>
+                </div>
+                <p id="auth-message" role="status" class="min-h-5 text-sm text-danger"></p>
+                <p class="text-center text-[11px] leading-relaxed text-muted">Your account data is private to your sign-in. Use your own email address; it is not shared with the app creator.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Desktop Sidebar Navigation -->
     <aside class="hidden md:flex flex-col w-64 bg-surface border-r border-white/5 p-5 shrink-0 justify-between select-none">
         <div>
@@ -367,10 +405,145 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
     appState.aiPersonalMemory = [];
         }
 
+        let currentFirebaseUser = null;
+        let cloudSyncReady = false;
+
         function saveState() {
             localStorage.setItem('daily_space_state', JSON.stringify(appState));
             updateSidebarXP();
+            if (currentFirebaseUser && cloudSyncReady && window.dailySpaceFirebase?.scheduleSave) {
+                window.dailySpaceFirebase.scheduleSave(currentFirebaseUser.uid, appState);
+            }
         }
+
+        function setAuthScreen(loading, message = '') {
+            const screen = document.getElementById('auth-screen');
+            const loadingEl = document.getElementById('auth-loading');
+            const formArea = document.getElementById('auth-form-area');
+            if (!screen) return;
+            screen.classList.remove('hidden');
+            if (loadingEl) {
+                loadingEl.classList.toggle('hidden', !loading);
+                loadingEl.textContent = message || 'Checking your account...';
+            }
+            if (formArea) formArea.classList.toggle('hidden', loading);
+        }
+
+        let authMode = 'signin';
+        function toggleAuthMode() {
+            authMode = authMode === 'signin' ? 'signup' : 'signin';
+            const heading = document.getElementById('auth-heading');
+            const subheading = document.getElementById('auth-subheading');
+            const submit = document.getElementById('auth-submit');
+            const toggle = document.getElementById('auth-mode-toggle');
+            const password = document.getElementById('auth-password');
+            const reset = document.getElementById('auth-reset');
+            if (heading) heading.textContent = authMode === 'signup' ? 'Create your account' : 'Welcome back';
+            if (subheading) subheading.textContent = authMode === 'signup' ? 'Create a private account to sync your Daily Space.' : 'Sign in to access your personal Daily Space.';
+            if (submit) submit.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In';
+            if (toggle) toggle.textContent = authMode === 'signup' ? 'Already have an account? Sign in' : 'Create an account';
+            if (password) password.autocomplete = authMode === 'signup' ? 'new-password' : 'current-password';
+            if (reset) reset.classList.toggle('hidden', authMode === 'signup');
+            const msg = document.getElementById('auth-message');
+            if (msg) msg.textContent = '';
+        }
+
+        function showAuthMessage(message, isError = true) {
+            const el = document.getElementById('auth-message');
+            if (el) {
+                el.textContent = message || '';
+                el.className = `min-h-5 text-sm ${isError ? 'text-danger' : 'text-success'}`;
+            }
+        }
+
+        async function handleEmailAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('auth-email')?.value.trim();
+            const password = document.getElementById('auth-password')?.value;
+            const submit = document.getElementById('auth-submit');
+            if (!email || !password || !window.dailySpaceFirebase) return;
+            if (submit) { submit.disabled = true; submit.textContent = 'Please wait...'; }
+            showAuthMessage('');
+            try {
+                if (authMode === 'signup') {
+                    await window.dailySpaceFirebase.createAccount(email, password);
+                } else {
+                    await window.dailySpaceFirebase.signIn(email, password);
+                }
+            } catch (error) {
+                showAuthMessage(window.dailySpaceFirebase.authError(error));
+            } finally {
+                if (submit) { submit.disabled = false; submit.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In'; }
+            }
+        }
+
+        async function signInWithGoogle() {
+            if (!window.dailySpaceFirebase) return showAuthMessage('Authentication is still loading. Please try again.');
+            showAuthMessage('');
+            try { await window.dailySpaceFirebase.googleSignIn(); }
+            catch (error) { showAuthMessage(window.dailySpaceFirebase.authError(error)); }
+        }
+
+        async function resetAuthPassword() {
+            const email = document.getElementById('auth-email')?.value.trim();
+            if (!email) return showAuthMessage('Enter your email address first.');
+            try {
+                await window.dailySpaceFirebase.resetPassword(email);
+                showAuthMessage('Password reset email sent. Check your inbox.', false);
+            } catch (error) { showAuthMessage(window.dailySpaceFirebase.authError(error)); }
+        }
+
+        async function signOutDailySpace() {
+            if (!window.dailySpaceFirebase || !currentFirebaseUser) return;
+            if (!confirm('Sign out of Daily Space on this device? Your cloud data will remain saved.')) return;
+            try { await window.dailySpaceFirebase.signOut(); }
+            catch (error) { showToast(window.dailySpaceFirebase.authError(error), 'danger'); }
+        }
+
+        window.handleFirebaseAuthState = async function(user) {
+            cloudSyncReady = false;
+            if (!user) {
+                currentFirebaseUser = null;
+                setAuthScreen(false);
+                if (window.dailySpaceAI) window.dailySpaceAI.chat = null;
+                return;
+            }
+            setAuthScreen(true, 'Loading your private Daily Space data...');
+            try {
+                const cloudState = await window.dailySpaceFirebase.loadUserState(user.uid);
+                const migrationOwner = localStorage.getItem('daily_space_migration_owner_uid');
+                if (cloudState) {
+                    appState = {
+                        ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
+                        ...cloudState.core,
+                        user: { ...DEFAULT_STATE.user, ...(cloudState.core?.user || {}) },
+                        aiMemory: cloudState.ai?.aiMemory || DEFAULT_STATE.aiMemory,
+                        aiPersonalMemory: cloudState.ai?.aiPersonalMemory || [],
+                        aiConversations: cloudState.ai?.aiConversations || DEFAULT_STATE.aiConversations
+                    };
+                    localStorage.setItem('daily_space_migration_owner_uid', user.uid);
+                } else if (!migrationOwner || migrationOwner === user.uid) {
+                    // First account on this browser: migrate the existing local state once.
+                    await window.dailySpaceFirebase.saveUserState(user.uid, appState);
+                    localStorage.setItem('daily_space_migration_owner_uid', user.uid);
+                } else {
+                    // A different account on this browser must never inherit another user's local data.
+                    appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                    await window.dailySpaceFirebase.saveUserState(user.uid, appState);
+                }
+                localStorage.setItem('daily_space_state', JSON.stringify(appState));
+                currentFirebaseUser = user;
+                cloudSyncReady = true;
+                document.getElementById('auth-screen')?.classList.add('hidden');
+                applyTheme();
+                router('home');
+                showToast(`Signed in${user.email ? ` as ${user.email}` : ''}.`, 'success');
+            } catch (error) {
+                console.error('Daily Space cloud load error:', error);
+                setAuthScreen(false);
+                showAuthMessage(`Could not load your cloud data: ${window.dailySpaceFirebase.authError(error)}. Your local backup has not been deleted.`);
+            }
+        };
 
         function applyTheme() {
             const html = document.documentElement;
@@ -1999,14 +2172,14 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                         </div>
                     </div>
 
-                    <!-- Gemini API Key Secure Box -->
-                    <div class="mt-4 pt-4 border-t border-white/10">
-                        <label class="text-xs font-semibold text-muted uppercase">Gemini API Key (Secret)</label>
-                        <input type="password" id="profile-apikey" value="${appState.user.geminiApiKey || ''}" placeholder="Paste your API key here" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                        <button onclick="saveApiKey()" class="mt-3 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">Save API Key</button>
-                    </div>
-
                     <button onclick="saveProfileChanges()" class="px-6 py-3 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Save Profile</button>
+                </div>
+
+                <div class="space-y-3 rounded-2xl border border-white/10 bg-surfaceLight/30 p-4">
+                    <h3 class="font-bold text-lg">Account</h3>
+                    <p class="text-sm text-muted">Signed in as <span class="font-semibold text-white">${currentFirebaseUser?.email || 'Google account'}</span></p>
+                    <p class="text-xs text-muted">Your personal data is synced to your private Firebase account. A local backup is also kept on this device.</p>
+                    <button onclick="signOutDailySpace()" class="rounded-xl bg-danger/20 px-4 py-2.5 text-sm font-semibold text-danger hover:bg-danger/30">Sign Out</button>
                 </div>
 
                 <div class="space-y-4 pt-4 border-t border-white/10">
@@ -2343,9 +2516,9 @@ window.sendAIMessage = sendAIMessage;
       }
         
         window.onload = function() {
+            // Temporary PRO test shortcut retained as requested.
             appState.user.isPremium = true;
             applyTheme();
-            router('home');
             lucide.createIcons();
             updateSidebarXP();
         };
@@ -2353,19 +2526,15 @@ window.sendAIMessage = sendAIMessage;
     
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-
+    import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app-check.js";
+    import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-ai.js";
     import {
-        initializeAppCheck,
-        ReCaptchaEnterpriseProvider
-    } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app-check.js";
+        getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
+        signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup,
+        sendPasswordResetEmail, signOut
+    } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-    import {
-        getAI,
-        getGenerativeModel,
-        GoogleAIBackend
-    } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-ai.js";
-
-    // Firebase project configuration
     const firebaseConfig = {
         apiKey: "AIzaSyBxiZJ7rh_2DhQRY6A4QKfNKFAbJyBiu0Y",
         authDomain: "dailyspace-51906.firebaseapp.com",
@@ -2375,26 +2544,109 @@ window.sendAIMessage = sendAIMessage;
         appId: "1:365433303545:web:0395a76deb227052d28d28",
         measurementId: "G-7WDDKC8QNB"
     };
+    const recaptchaSiteKey = "6LfYORwuAAAAAAhvnYDx-gq7CAWLyaeiyzQjmQ9h";
 
-    // Your reCAPTCHA Enterprise site key
-    const recaptchaSiteKey =
-        "6LfYORwuAAAAAAhvnYDx-gq7CAWLyaeiyzQjmQ9h";
-
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-
-    // Initialize App Check
     const appCheck = initializeAppCheck(app, {
         provider: new ReCaptchaEnterpriseProvider(recaptchaSiteKey),
         isTokenAutoRefreshEnabled: true
     });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
 
-    // Initialize Firebase AI Logic
-    const ai = getAI(app, {
-        backend: new GoogleAIBackend()
-    });
+    // Store core app data separately from AI history to keep Firestore documents smaller.
+    function splitState(state) {
+        const core = JSON.parse(JSON.stringify(state));
+        delete core.aiMemory;
+        delete core.aiPersonalMemory;
+        delete core.aiConversations;
+        if (core.user) delete core.user.geminiApiKey; // Never sync a manually entered API key.
+        const ai = {
+            aiMemory: Array.isArray(state.aiMemory) ? state.aiMemory : [],
+            aiPersonalMemory: Array.isArray(state.aiPersonalMemory) ? state.aiPersonalMemory : [],
+            aiConversations: Array.isArray(state.aiConversations) ? state.aiConversations : []
+        };
+        return { core, ai };
+    }
 
-    // Create SPACE AI model
+    async function saveUserState(uid, state) {
+        const { core, ai } = splitState(state);
+        await Promise.all([
+            setDoc(doc(db, 'users', uid, 'appData', 'main'), { state: core, updatedAt: serverTimestamp() }),
+            setDoc(doc(db, 'users', uid, 'appData', 'ai'), { state: ai, updatedAt: serverTimestamp() })
+        ]);
+    }
+
+    async function loadUserState(uid) {
+        const [coreSnap, aiSnap] = await Promise.all([
+            getDoc(doc(db, 'users', uid, 'appData', 'main')),
+            getDoc(doc(db, 'users', uid, 'appData', 'ai'))
+        ]);
+        if (!coreSnap.exists() && !aiSnap.exists()) return null;
+        return {
+            core: coreSnap.exists() ? (coreSnap.data().state || {}) : {},
+            ai: aiSnap.exists() ? (aiSnap.data().state || {}) : {}
+        };
+    }
+
+    let saveTimer = null;
+    let pendingSave = Promise.resolve();
+    let queuedSave = null;
+    function scheduleSave(uid, state) {
+        queuedSave = { uid, snapshot: JSON.parse(JSON.stringify(state)) };
+        if (saveTimer) clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => {
+            const job = queuedSave;
+            queuedSave = null;
+            saveTimer = null;
+            if (job) {
+                pendingSave = saveUserState(job.uid, job.snapshot).catch(error => {
+                    console.error('Daily Space cloud save failed:', error);
+                    window.dispatchEvent(new CustomEvent('dailyspace-cloud-save-error', { detail: error }));
+                });
+            }
+        }, 700);
+    }
+    async function flushSave() {
+        if (saveTimer) {
+            clearTimeout(saveTimer);
+            saveTimer = null;
+            const job = queuedSave;
+            queuedSave = null;
+            if (job) pendingSave = saveUserState(job.uid, job.snapshot);
+        }
+        await pendingSave;
+    }
+
+    window.dailySpaceFirebase = {
+        app, appCheck, auth, db,
+        createAccount: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+        signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
+        googleSignIn: () => signInWithPopup(auth, googleProvider),
+        resetPassword: email => sendPasswordResetEmail(auth, email),
+        signOut: async () => { await flushSave(); return signOut(auth); },
+        loadUserState,
+        saveUserState,
+        scheduleSave,
+        authError: error => {
+            const code = error?.code || '';
+            const messages = {
+                'auth/email-already-in-use': 'This email already has an account. Sign in instead.',
+                'auth/invalid-email': 'Please enter a valid email address.',
+                'auth/weak-password': 'Choose a stronger password with at least 6 characters.',
+                'auth/invalid-credential': 'Email or password is incorrect.',
+                'auth/user-not-found': 'No account was found for this email.',
+                'auth/wrong-password': 'Email or password is incorrect.',
+                'auth/popup-closed-by-user': 'Google sign-in was closed before it finished.',
+                'auth/unauthorized-domain': 'This website is not authorised in Firebase Authentication domains.',
+                'permission-denied': 'Firestore denied access. Please check the published database rules.'
+            };
+            return messages[code] || error?.message || 'Something went wrong. Please try again.';
+        }
+    };
+
+    const ai = getAI(app, { backend: new GoogleAIBackend() });
     const model = getGenerativeModel(ai, {
         model: "gemini-3.5-flash-lite",
         systemInstruction: `
@@ -2417,19 +2669,17 @@ You are an assistant for Daily Space, but you can also answer general questions.
 Never pretend to have accessed app data unless it has actually been provided to you.
 `
     });
+    window.dailySpaceAI = { app, appCheck, ai, model };
 
-    // Make Firebase AI available to the app
-    window.dailySpaceAI = {
-        app,
-        appCheck,
-        ai,
-        model
-    };
-
-    console.log("Daily Space Firebase AI initialized successfully.");
+    onAuthStateChanged(auth, user => {
+        if (typeof window.handleFirebaseAuthState === 'function') {
+            window.handleFirebaseAuthState(user);
+        }
+    });
+    window.addEventListener('dailyspace-cloud-save-error', () => {
+        if (typeof window.showToast === 'function') window.showToast('Cloud sync failed. Your local backup is still saved on this device.', 'danger');
+    });
+    console.log('Daily Space Firebase Auth, Firestore, and AI initialized.');
 </script>
-</body>
-</html>
-
 </body>
 </html>
