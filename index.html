@@ -362,6 +362,10 @@ aiPersonalMemory: [],
         };
 
         let appState = JSON.parse(localStorage.getItem('daily_space_state')) || DEFAULT_STATE;
+        // Ensure personal AI memory exists for existing users
+if (!Array.isArray(appState.aiPersonalMemory)) {
+    appState.aiPersonalMemory = [];
+        }
 
         function saveState() {
             localStorage.setItem('daily_space_state', JSON.stringify(appState));
