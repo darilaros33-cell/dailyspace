@@ -2095,6 +2095,91 @@ function saveApiKey() {
         }
         
 
+async function saveAIPersonalMemory(userMessage) {
+    if (!window.dailySpaceAI?.model || !userMessage) return;
+
+    try {
+        const prompt = `
+You are the personal memory manager for SPACE AI.
+
+Read the user's message and identify useful, long-term facts
+that the user explicitly shared about themselves.
+
+Only save facts such as:
+- Name or preferred name
+- Favourite apps or interests
+- Personal goals
+- Ongoing projects
+- General preferences
+
+NEVER save:
+- Passwords or login details
+- Contact details or precise location
+- Health or mental health information
+- Financial or account information
+- Religion or political beliefs
+- Sexual or other highly private information
+- Temporary or unimportant conversation details
+
+Do not guess or make assumptions.
+Only use facts explicitly stated by the user.
+If there are no suitable facts, return an empty array.
+
+Return ONLY a valid JSON array of short strings.
+Example: ["The user's favourite app is Daily Space."]
+
+USER MESSAGE:
+${JSON.stringify(userMessage)}
+`;
+
+        const result =
+            await window.dailySpaceAI.model.generateContent(prompt);
+
+        let responseText = result.response.text().trim();
+
+        responseText = responseText
+            .replace(/^```(?:json)?\s*/i, '')
+            .replace(/\s*```$/, '')
+            .trim();
+
+        const extractedMemories = JSON.parse(responseText);
+
+        if (!Array.isArray(extractedMemories)) return;
+
+        const existingMemories = Array.isArray(appState.aiPersonalMemory)
+            ? appState.aiPersonalMemory
+            : [];
+
+        const combinedMemories = [
+            ...existingMemories,
+            ...extractedMemories
+                .filter(item => typeof item === 'string')
+                .map(item => item.trim().slice(0, 160))
+                .filter(Boolean)
+        ];
+
+        const uniqueMemories = [];
+        const seen = new Set();
+
+        for (const memory of combinedMemories) {
+            const key = memory.toLowerCase();
+
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueMemories.push(memory);
+            }
+        }
+
+        // Keep the 30 most recent unique memories
+        appState.aiPersonalMemory = uniqueMemories.slice(-30);
+
+        saveState();
+
+    } catch (error) {
+        console.warn('SPACE AI Memory Error:', error);
+    }
+    }
+        
 
 async function sendAIMessage() {
     const input = document.getElementById('ai-user-input');
@@ -2163,18 +2248,31 @@ async function sendAIMessage() {
                 window.dailySpaceAI.model.startChat();
         }
 
-        // Include saved memory only when starting a new session
-        const messageToSend = isNewSession && memoryContext
-            ? `Here is the previous conversation for context.
-Use it to understand the user's earlier messages and remember relevant details.
-Do not repeat the conversation unless asked.
+        // Load saved personal memories
+const personalMemories = Array.isArray(appState.aiPersonalMemory)
+    ? appState.aiPersonalMemory
+    : [];
 
-PREVIOUS CONVERSATION:
-${memoryContext}
+const personalMemoryContext = personalMemories.length > 0
+    ? personalMemories.map(item => `- ${item}`).join('\n')
+    : 'No saved personal memories yet.';
+
+// Build context for a new Gemini session
+const messageToSend = isNewSession
+    ? `You are SPACE AI.
+
+Here are important personal details the user previously shared:
+${personalMemoryContext}
+
+Here is the previous conversation:
+${memoryContext || 'No previous conversation.'}
+
+Use this information naturally when relevant.
+Never invent personal details.
 
 CURRENT MESSAGE:
 ${txt}`
-            : txt;
+    : txt;
 
         // Send message to Gemini
         const result =
@@ -2185,16 +2283,19 @@ ${txt}`
             'I received an empty response. Please try again.';
 
         appState.aiConversations.push({
-            sender: 'ai',
-            text: aiReply
-        });
+    sender: 'ai',
+    text: aiReply
+});
 
-        appState.aiMemory.push({
-            role: 'assistant',
-            content: aiReply
-        });
+appState.aiMemory.push({
+    role: 'assistant',
+    content: aiReply
+});
 
-        saveState();
+saveState();
+
+// Extract and save important personal details
+await saveAIPersonalMemory(txt);
 
     } catch (error) {
         console.error('SPACE AI Error:', error);
