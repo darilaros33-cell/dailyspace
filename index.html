@@ -1882,11 +1882,23 @@
         }
 
         function clearAIChat() {
-            appState.aiConversations = [{ sender: "ai", text: "Chat history cleared. How can I help you today?" }];
-            saveState();
-            renderAI(document.getElementById('main-viewport'));
-            lucide.createIcons();
-            showToast("AI chat history cleared.", "success");
+    // Clear visible chat messages
+    appState.aiConversations = [
+        { sender: "ai", text: "Chat history cleared. How can I help you today?" }
+    ];
+
+    // Reset active Gemini chat session
+    if (window.dailySpaceAI) {
+        window.dailySpaceAI.chat = null;
+    }
+
+    // Preserve saved AI memory
+    saveState();
+
+    renderAI(document.getElementById('main-viewport'));
+    lucide.createIcons();
+
+    showToast("AI chat history cleared.", "success");
         }
 
         function triggerDeepAudit() {
