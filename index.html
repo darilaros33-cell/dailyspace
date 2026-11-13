@@ -54,6 +54,13 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.3); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #7657FF; }
+        #main-viewport { padding-bottom: 88px; }
+        .ds-bottom-nav { position:fixed; left:0; right:0; bottom:0; z-index:40; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; padding:8px 8px calc(8px + env(safe-area-inset-bottom)); background:rgba(8,11,24,.94); border-top:1px solid rgba(255,255,255,.1); backdrop-filter:blur(18px); }
+        .ds-bottom-nav button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-width:0; padding:7px 2px; color:#929BB2; font-size:10px; font-weight:600; border-radius:12px; }
+        .ds-bottom-nav button.active { color:#fff; background:rgba(118,87,255,.2); }
+        .ds-bottom-nav svg { width:19px; height:19px; }
+        .ds-mobile-toolbar { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(17,23,42,.75); position:sticky; top:0; z-index:30; }
+        @media(min-width:768px){ .ds-bottom-nav,.ds-mobile-toolbar{display:none!important} #main-viewport{padding-bottom:0} }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
@@ -81,7 +88,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-warning/20 text-warning flex items-center justify-center font-bold">RZP</div>
                     <div>
-                        <h3 class="font-bold text-lg">Razorpay Secure Checkout</h3>
+                        <h3 class="font-bold text-lg">UPI Payment</h3>
                         <p class="text-xs text-muted">Daily Space Pro Subscription</p>
                     </div>
                 </div>
@@ -100,13 +107,13 @@
                 <div class="space-y-2">
                     <label class="text-xs font-semibold text-muted uppercase">Select UPI App / Intent</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="triggerUpiAppIntent('gpay')" id="upi-gpay" class="upi-btn p-3 rounded-xl border border-primary/50 bg-primary/20 text-xs font-bold text-center transition flex flex-col items-center gap-1">
+                        <button onclick="triggerUpiAppIntent('gpay')" id="upi-gpay" aria-pressed="false" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
                             <i data-lucide="smartphone" class="w-4 h-4"></i> Google Pay
                         </button>
-                        <button onclick="triggerUpiAppIntent('phonepe')" id="upi-phonepe" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
+                        <button onclick="triggerUpiAppIntent('phonepe')" id="upi-phonepe" aria-pressed="false" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
                             <i data-lucide="smartphone" class="w-4 h-4"></i> PhonePe
                         </button>
-                        <button onclick="triggerUpiAppIntent('paytm')" id="upi-paytm" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
+                        <button onclick="triggerUpiAppIntent('paytm')" id="upi-paytm" aria-pressed="false" class="upi-btn p-3 rounded-xl border border-white/10 bg-surfaceLight/40 text-xs font-bold text-center transition flex flex-col items-center gap-1">
                             <i data-lucide="smartphone" class="w-4 h-4"></i> Paytm
                         </button>
                     </div>
@@ -120,7 +127,7 @@
 
             <div class="flex gap-3 pt-2">
                 <button onclick="closeRazorpayModal()" class="flex-1 py-3 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-medium transition">Cancel</button>
-                <button onclick="executeRazorpayPayment()" class="flex-1 py-3 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20">Pay ₹39 Now</button>
+                <button id="upi-pay-button" onclick="executeRazorpayPayment()" class="flex-1 py-3 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20">Pay ₹39 Now</button>
             </div>
         </div>
     </div>
@@ -243,28 +250,6 @@
         </div>
     </aside>
 
-    <!-- Mobile Header Bar -->
-    <header class="md:hidden flex items-center justify-between p-4 bg-surface border-b border-white/5 sticky top-0 z-45">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <i data-lucide="compass" class="w-4 h-4 text-white"></i>
-            </div>
-            <span class="font-bold text-base tracking-tight">DAILY SPACE</span>
-        </div>
-        <div class="flex items-center gap-2">
-            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white transition">
-                <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
-                <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
-            </button>
-            <button onclick="router('ai')" class="p-2 rounded-xl bg-primary/20 text-primary hover:bg-primary/30 transition">
-                <i data-lucide="bot" class="w-5 h-5"></i>
-            </button>
-            <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-surfaceLight text-muted hover:text-white transition">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-        </div>
-    </header>
-
     <!-- Mobile Slide-out Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-6 hidden md:hidden">
         <div class="flex items-center justify-between mb-6">
@@ -328,9 +313,22 @@
     </div>
 
     <!-- Main Content Area -->
+    <div class="ds-mobile-toolbar md:hidden">
+        <button onclick="goBackInApp()" aria-label="Go back" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+        <div class="min-w-0 flex-1"><div class="font-bold text-sm">DAILY SPACE</div><div id="ds-current-page" class="text-[11px] text-muted">Your personal space</div></div>
+        <button onclick="router('ai')" aria-label="Open SPACE AI" class="p-2 rounded-xl bg-primary/20 text-primary"><i data-lucide="bot" class="w-5 h-5"></i></button>
+        <button onclick="toggleMobileMenu()" aria-label="Open all sections" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
     <main class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-viewport">
         <!-- Dynamic content injected here by router -->
     </main>
+    <nav class="ds-bottom-nav md:hidden" aria-label="Main navigation">
+        <button data-bottom-nav="home" onclick="router('home')"><i data-lucide="house"></i><span>Home</span></button>
+        <button data-bottom-nav="routine" onclick="router('routine')"><i data-lucide="list-checks"></i><span>Tasks</span></button>
+        <button data-bottom-nav="habits" onclick="router('habits')"><i data-lucide="repeat"></i><span>Habits</span></button>
+        <button data-bottom-nav="goals" onclick="router('goals')"><i data-lucide="target"></i><span>Goals</span></button>
+        <button data-bottom-nav="profile" onclick="router('profile')"><i data-lucide="user-round"></i><span>Profile</span></button>
+    </nav>
 
     <!-- Application JavaScript Code -->
     <script>
@@ -612,61 +610,46 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
             document.getElementById('razorpay-modal').classList.add('hidden');
         }
 
+        let selectedUpiApp = null;
         function triggerUpiAppIntent(app) {
+            selectedUpiApp = app;
             document.querySelectorAll('.upi-btn').forEach(btn => {
-                btn.classList.remove('border-primary', 'bg-primary/20');
-                btn.classList.add('border-white/10', 'bg-surfaceLight/40');
+                btn.classList.remove('border-primary','bg-primary/20');
+                btn.classList.add('border-white/10','bg-surfaceLight/40');
+                btn.setAttribute('aria-pressed','false');
             });
             const selected = document.getElementById(`upi-${app}`);
-            selected.classList.add('border-primary', 'bg-primary/20');
-            selected.classList.remove('border-white/10', 'bg-surfaceLight/40');
-
-            const upiUrl = `upi://pay?pa=ganeshkumarrs07@okicici&pn=DailySpacePRO&am=39.00&cu=INR&tn=DailySpaceMonthlyPRO`;
-            showToast(`Opening ${app.toUpperCase()} UPI Intent...`, "success");
-            setTimeout(() => {
-                try { window.location.href = upiUrl; } catch(e) {}
-            }, 600);
+            if (selected) { selected.classList.add('border-primary','bg-primary/20'); selected.classList.remove('border-white/10','bg-surfaceLight/40'); selected.setAttribute('aria-pressed','true'); }
+            showToast(`${app.toUpperCase()} selected. Press Pay to continue.`, 'info');
         }
-
         function executeRazorpayPayment() {
-    showToast("Opening secure payment gateway...");
-    
-    const options = {
-        key: "YOUR_RAZORPAY_KEY_ID", // Replace with your key if configured
-        amount: 3900, // Amount in paisa (₹39)
-        currency: "INR",
-        name: "Daily Space PRO",
-        description: "Lifetime or Monthly Premium Access",
-        handler: function (response) {
-            // This runs ONLY after a real, verified payment succeeds
-            appState.user.isPremium = true;
-            const expiry = new Date();
-            expiry.setMonth(expiry.getMonth() + 1);
-            appState.user.premiumExpiry = expiry.toISOString();
-            
-            saveState();
-            closeRazorpayModal();
-            showToast("Payment Verified Successfully! Welcome to PRO.");
-            router(currentRoute);
-        },
-        modal: {
-            ondismiss: function() {
-                showToast("Payment cancelled.");
-            }
-        },
-        theme: {
-            color: "#6366f1"
+            if (!selectedUpiApp) { showToast('Please select a UPI app first.', 'danger'); return; }
+            const vpa = (document.getElementById('upi-vpa-input')?.value || '').trim();
+            if (!vpa || !vpa.includes('@')) { showToast('Please enter a valid UPI ID.', 'danger'); return; }
+            // This only hands off to the chosen UPI app. Real premium activation requires a verified payment backend.
+            const params = new URLSearchParams({pa:vpa,pn:'Daily Space',am:'39.00',cu:'INR',tn:'Daily Space PRO monthly'});
+            const schemes = {gpay:'tez://upi/pay?',phonepe:'phonepe://pay?',paytm:'paytmmp://pay?'};
+            const url = (schemes[selectedUpiApp] || 'upi://pay?') + params.toString();
+            showToast(`Opening ${selectedUpiApp.toUpperCase()}…`, 'info');
+            window.location.href = url;
         }
-    };
 
-    const rzp = new Razorpay(options);
-    rzp.open();
-}
 
 
         let currentRoute = 'home';
+        let routeHistory = ['home'];
+        let suppressRoutePush = false;
+        const routeTitles = {home:'Home',routine:'Routine & Tasks',habits:'Habits',goals:'Goals',calendar:'Calendar',selfcontrol:'Self-Control',focus:'Focus Timer',finance:'Expenses',analytics:'Analytics',games:'Brain Gym',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings'};
+        try { history.replaceState({dailySpace:true, route:'home'}, '', location.href); history.pushState({dailySpaceGuard:true, route:'home'}, '', location.href); } catch(e) {}
 
-        function router(route) {
+        function router(route, addHistory = true) {
+            if (!route) route = 'home';
+            if (currentRoute === 'games' && route !== 'games') { clearMemoryTimers(); gameActive = false; currentGameId = null; }
+            if (addHistory && route !== currentRoute) {
+                routeHistory.push(route);
+                if (routeHistory.length > 40) routeHistory.shift();
+                try { history.pushState({dailySpace:true, route}, '', `#${route}`); } catch(e) {}
+            }
             currentRoute = route;
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if (btn.getAttribute('data-nav') === route) {
@@ -677,54 +660,66 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                     btn.classList.add('text-muted');
                 }
             });
-
+            document.querySelectorAll('[data-bottom-nav]').forEach(btn => btn.classList.toggle('active', btn.dataset.bottomNav === route));
+            const pageLabel = document.getElementById('ds-current-page');
+            if (pageLabel) pageLabel.textContent = routeTitles[route] || 'Daily Space';
+            const menu = document.getElementById('mobile-menu');
+            if (menu) menu.classList.add('hidden');
             const viewport = document.getElementById('main-viewport');
+            if (!viewport) return;
             viewport.innerHTML = '';
-
             switch(route) {
                 case 'home': renderDashboard(viewport); break;
                 case 'routine': renderRoutine(viewport); break;
                 case 'habits': renderHabits(viewport); break;
                 case 'goals': renderGoals(viewport); break;
-                case 'calendar': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Calendar & Special Days", "Explore national holidays, historical milestones, and detailed educational specialty descriptions for each day.", "calendar-days");
-                    } else {
-                        renderCalendar(viewport);
-                    }
-                    break;
+                case 'calendar': renderCalendar(viewport); break;
                 case 'selfcontrol': renderSelfControl(viewport); break;
                 case 'focus': renderFocus(viewport); break;
-                case 'finance': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Expense Tracker", "Manage your income, expenses, and monthly financial reports with zero friction.", "wallet");
-                    } else {
-                        renderFinance(viewport);
-                    }
-                    break;
+                case 'finance': renderFinance(viewport); break;
                 case 'analytics': renderAnalytics(viewport); break;
-                case 'games': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "Brain Gym & Cognitive Games", "Boost your memory, reaction speed, pattern recognition, and focus with difficulty levels.", "gamepad-2");
-                    } else {
-                        renderGames(viewport);
-                    }
-                    break;
+                case 'games': renderGames(viewport); break;
                 case 'achievements': renderAchievements(viewport); break;
-                case 'ai': 
-                    if (!appState.user.isPremium) {
-                        renderLockedFeature(viewport, "SPACE AI Assistant", "Unlock deep thinking, reasoning, personalized routine generation, and productivity analysis.", "bot");
-                    } else {
-                        renderAI(viewport);
-                    }
-                    break;
+                case 'ai': renderAI(viewport); break;
                 case 'subscription': renderSubscription(viewport); break;
                 case 'profile': renderProfile(viewport); break;
-                default: renderDashboard(viewport);
+                default: renderDashboard(viewport); currentRoute = 'home';
             }
-            lucide.createIcons();
-            updateSidebarXP();
+            if (window.lucide) lucide.createIcons();
         }
+
+        function goBackInApp() {
+            if (routeHistory.length > 1) {
+                history.back();
+            } else {
+                showExitConfirmation();
+            }
+        }
+
+        function showExitConfirmation() {
+            const modal = document.getElementById('app-modal');
+            document.getElementById('modal-title').textContent = 'Do you want to quit?';
+            document.getElementById('modal-desc').textContent = 'Are you sure you want to leave Daily Space?';
+            document.getElementById('modal-content').innerHTML = '';
+            const cancel = document.getElementById('modal-cancel');
+            const confirmBtn = document.getElementById('modal-confirm');
+            cancel.textContent = 'No';
+            confirmBtn.textContent = 'Yes';
+            cancel.onclick = () => { modal.classList.add('hidden'); };
+            confirmBtn.onclick = () => { modal.classList.add('hidden'); try { window.close(); } catch(e) {} showToast('You can close Daily Space using your device controls.', 'info'); };
+            modal.classList.remove('hidden');
+        }
+
+        window.addEventListener('popstate', () => {
+            if (routeHistory.length > 1) {
+                routeHistory.pop();
+                const previous = routeHistory[routeHistory.length - 1] || 'home';
+                router(previous, false);
+            } else {
+                try { history.pushState({dailySpace:true, route:currentRoute}, '', `#${currentRoute}`); } catch(e) {}
+                showExitConfirmation();
+            }
+        });
 
         function renderLockedFeature(container, title, desc, icon) {
             container.innerHTML = `
@@ -762,7 +757,7 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                         <div>
                             <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full border border-primary/20">System Online</span>
                             <h2 class="text-3xl font-bold mt-2">Good Day, ${appState.user.name}</h2>
-                            <p class="text-muted text-sm mt-1">Wednesday, 11 November 2026 — Discipline Over Motivation.</p>
+                            <p class="text-muted text-sm mt-1">${new Date().toLocaleDateString(undefined, {weekday:'long', day:'numeric', month:'long', year:'numeric'})} — Discipline Over Motivation.</p>
                         </div>
                         <div class="flex items-center gap-3">
                             <button onclick="router('routine')" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold flex items-center gap-2 transition border border-white/5">
@@ -774,6 +769,13 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                         </div>
                     </div>
 
+                    <div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" aria-label="Quick spaces">
+                        ${[['routine','Tasks','list-checks'],['habits','Habits','repeat'],['goals','Goals','target'],['focus','Focus','timer'],['ai','SPACE AI','bot']].map(([route,label,icon]) => `<button onclick="router('${route}')" class="shrink-0 flex flex-col items-center gap-2 min-w-[72px]"><span class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/30 to-secondary/20 border border-white/10 flex items-center justify-center text-primary"><i data-lucide="${icon}" class="w-6 h-6"></i></span><span class="text-[11px] font-semibold text-muted">${label}</span></button>`).join('')}
+                    </div>
+                    <div class="glass-panel p-4 md:p-5 rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/15 to-secondary/10 flex items-center justify-between gap-3">
+                        <div><p class="text-xs font-bold uppercase tracking-wider text-primary">Your daily space</p><p class="font-semibold mt-1">Small actions. Consistent progress.</p><p class="text-xs text-muted mt-1">Pick one meaningful task and make a start.</p></div>
+                        <button onclick="router('ai')" class="shrink-0 rounded-2xl bg-primary px-4 py-3 text-xs font-bold text-white">Ask SPACE AI</button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="glass-panel p-5 rounded-3xl space-y-2">
                             <div class="flex items-center justify-between text-muted">
@@ -1210,9 +1212,10 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
             showToast("Goal deleted.", "success");
         }
 
-        let calendarYear = 2026;
-        let calendarMonth = 10;
-        let selectedCalendarDay = 11;
+        const initialCalendarDate = new Date();
+        let calendarYear = initialCalendarDate.getFullYear();
+        let calendarMonth = initialCalendarDate.getMonth();
+        let selectedCalendarDay = initialCalendarDate.getDate();
 
         const SPECIAL_DAYS_DATABASE = {
             "2026-11-11": {
@@ -1352,7 +1355,7 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                 calendarMonth = 11;
                 calendarYear--;
             }
-            selectedCalendarDay = 1;
+            selectedCalendarDay = Math.min(selectedCalendarDay, new Date(calendarYear, calendarMonth + 1, 0).getDate());
             renderCalendar(document.getElementById('main-viewport'));
             lucide.createIcons();
         }
@@ -1636,7 +1639,7 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                 const category = document.getElementById('exp-cat').value.trim() || "General";
                 if (!title || isNaN(amount)) { showToast("Please fill valid details.", "danger"); return; }
                 
-                appState.expenses.push({ id: Date.now(), title, amount, type, category, date: "2026-11-11" });
+                appState.expenses.push({ id: Date.now(), title, amount, type, category, date: `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-${String(new Date().getDate()).padStart(2,'0')}` });
                 saveState();
                 modal.classList.add('hidden');
                 router('finance');
@@ -1654,338 +1657,102 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
         }
 
         function renderAnalytics(container) {
-        function renderAnalytics(container) {
-    container.innerHTML = `
-        <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-            <div>
-                <h2 class="text-2xl font-bold flex items-center gap-2">
-                    <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i> Analytics & Trends
-                </h2>
-                <p class="text-muted text-sm">Visualize your productivity metrics, habit consistency, and focus distribution.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-panel p-6 rounded-3xl space-y-4">
-                    <h3 class="font-bold text-lg">Weekly Productivity Output</h3>
-                    <div class="h-64 relative flex items-center justify-center">
-                        <canvas id="prodChart"></canvas>
+            const tasks = Array.isArray(appState.tasks) ? appState.tasks : [];
+            const habits = Array.isArray(appState.habits) ? appState.habits : [];
+            const goals = Array.isArray(appState.goals) ? appState.goals : [];
+            const expenses = Array.isArray(appState.expenses) ? appState.expenses : [];
+            const doneTasks = tasks.filter(t => t.completed).length;
+            const habitDone = habits.filter(h => h.completedToday).length;
+            const income = expenses.filter(e => e.type === 'income').reduce((n,e) => n + (Number(e.amount)||0), 0);
+            const spent = expenses.filter(e => e.type !== 'income').reduce((n,e) => n + (Number(e.amount)||0), 0);
+            const goalAvg = goals.length ? Math.round(goals.reduce((n,g)=>n+(Number(g.progress)||0),0)/goals.length) : 0;
+            const weekLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+            const weeklyTaskData = weekLabels.map((_,i) => i === ((new Date().getDay()+6)%7) ? doneTasks : 0);
+            container.innerHTML = `
+                <div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6">
+                    <div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="chart-no-axes-combined" class="w-6 h-6 text-primary"></i> Analytics & Trends</h2><p class="text-muted text-sm">A live overview calculated from your Daily Space data.</p></div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Tasks completed</p><p class="text-2xl font-bold mt-1">${doneTasks}<span class="text-sm text-muted"> / ${tasks.length}</span></p></div>
+                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Habits completed today</p><p class="text-2xl font-bold mt-1">${habitDone}<span class="text-sm text-muted"> / ${habits.length}</span></p></div>
+                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Average goal progress</p><p class="text-2xl font-bold mt-1">${goalAvg}%</p></div>
+                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Current XP</p><p class="text-2xl font-bold mt-1">${Number(appState.user?.xp)||0}</p></div>
                     </div>
-                </div>
-
-                <div class="glass-panel p-6 rounded-3xl space-y-4">
-                    <h3 class="font-bold text-lg">Habit Consistency Rate</h3>
-                    <div class="h-64 relative flex items-center justify-center">
-                        <canvas id="habitChart"></canvas>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Today's task completion</h3><div class="h-64"><canvas id="prodChart"></canvas></div></div>
+                        <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Habits completed today</h3><div class="h-64"><canvas id="habitChart"></canvas></div></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Initialize charts with 0 base values so they start clean
-    setTimeout(() => {
-        const prodCtx = document.getElementById('prodChart')?.getContext('2d');
-        if (prodCtx) {
-            new Chart(prodCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Productive Hours',
-                        data: [0, 0, 0, 0, 0, 0, 0],
-                        backgroundColor: '#6366f1',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
+                    <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-3">Finance overview</h3><div class="grid grid-cols-2 gap-4"><div><p class="text-xs text-muted">Income recorded</p><p class="text-xl font-bold text-success">₹${income.toFixed(2)}</p></div><div><p class="text-xs text-muted">Expenses recorded</p><p class="text-xl font-bold text-warning">₹${spent.toFixed(2)}</p></div></div><p class="text-xs text-muted mt-3">Based on transactions saved in your Expense Tracker.</p></div>
+                </div>`;
+            if (!window.Chart) {
+                container.querySelectorAll('.h-64').forEach(el => el.innerHTML = '<p class="text-sm text-muted text-center py-20">Charts are unavailable right now, but your summary above is working.</p>');
+                return;
+            }
+            requestAnimationFrame(() => {
+                const a = document.getElementById('prodChart');
+                const b = document.getElementById('habitChart');
+                if (!a || !b) return;
+                try {
+                    new Chart(a, {type:'bar',data:{labels:['Completed','Remaining'],datasets:[{label:'Tasks',data:[doneTasks,Math.max(0,tasks.length-doneTasks)],backgroundColor:['#36C98F','#7657FF'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+                    new Chart(b, {type:'doughnut',data:{labels:['Completed today','Not completed'],datasets:[{data:[habitDone,Math.max(0,habits.length-habitDone)],backgroundColor:['#36C98F','#7657FF'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+                } catch(err) { console.warn('Analytics chart error',err); }
             });
-        }
-
-        const habitCtx = document.getElementById('habitChart')?.getContext('2d');
-        if (habitCtx) {
-            new Chart(habitCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Consistency %',
-                        data: [0, 0, 0, 0, 0, 0, 0],
-                        borderColor: '#10b981',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-    }, 100);
-}
-
-            setTimeout(() => {
-                const ctx1 = document.getElementById('prodChart').getContext('2d');
-                new Chart(ctx1, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [{
-                            label: 'Tasks Completed',
-                            data: [5, 7, 6, 8, 4, 6, 5],
-                            backgroundColor: '#7657FF',
-                            borderRadius: 8
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                });
-
-                const ctx2 = document.getElementById('habitChart').getContext('2d');
-                new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Completed', 'Pending'],
-                        datasets: [{
-                            data: [82, 18],
-                            backgroundColor: ['#36C98F', '#1E2640'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-            }, 100);
         }
 
         let currentGameId = null;
         let gameDifficulty = 'moderate';
         let gameScore = 0;
         let gameActive = false;
+        let memorySequence = [];
+        let memoryInputIndex = 0;
+        let memoryShowing = false;
+        let patternAnswer = 0;
+        let scrambleWord = { scrambled:'', original:'', hint:'' };
+        let mathProblem = { q:'', ans:0 };
+        let memoryTimers = [];
 
+        function clearMemoryTimers(){ memoryTimers.forEach(clearTimeout); memoryTimers=[]; }
         function renderGames(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="gamepad-2" class="w-6 h-6 text-success"></i> Brain Gym & Cognitive Games
-                            </h2>
-                            <p class="text-muted text-sm">Enhance cognitive agility, reaction speed, memory matrix, and mental focus.</p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-surfaceLight/50 p-1.5 rounded-2xl border border-white/5">
-                            <span class="text-xs font-bold text-muted px-2">Level:</span>
-                            <button onclick="setGameDifficulty('easy')" id="diff-easy" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${gameDifficulty === 'easy' ? 'bg-success text-bgDark' : 'text-muted hover:text-white'}">Easy</button>
-                            <button onclick="setGameDifficulty('moderate')" id="diff-moderate" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${gameDifficulty === 'moderate' ? 'bg-warning text-bgDark' : 'text-muted hover:text-white'}">Moderate</button>
-                            <button onclick="setGameDifficulty('difficult')" id="diff-difficult" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${gameDifficulty === 'difficult' ? 'bg-danger text-white' : 'text-muted hover:text-white'}">Difficult</button>
-                        </div>
-                    </div>
-
-                    ${currentGameId === null ? `
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div onclick="startBrainGame('memory')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-primary/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="grid" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Memory Matrix</h3>
-                                    <p class="text-xs text-muted mt-1">Memorize glowing pattern sequences and test short-term working memory.</p>
-                                </div>
-                                <span class="text-xs font-bold text-primary flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-
-                            <div onclick="startBrainGame('math')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-secondary/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-secondary/20 text-secondary flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="calculator" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Speed Math Sprint</h3>
-                                    <p class="text-xs text-muted mt-1">Solve rapid arithmetic equations to sharpen calculation speed.</p>
-                                </div>
-                                <span class="text-xs font-bold text-secondary flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-
-                            <div onclick="startBrainGame('pattern')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-warning/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-warning/20 text-warning flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="cpu" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Pattern Logic</h3>
-                                    <p class="text-xs text-muted mt-1">Identify logical number sequences and abstract relationships.</p>
-                                </div>
-                                <span class="text-xs font-bold text-warning flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-
-                            <div onclick="startBrainGame('scramble')" class="glass-panel p-6 rounded-3xl space-y-4 hover:border-success/50 transition cursor-pointer group">
-                                <div class="w-12 h-12 rounded-2xl bg-success/20 text-success flex items-center justify-center group-hover:scale-110 transition">
-                                    <i data-lucide="book-open" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-lg">Word Scramble</h3>
-                                    <p class="text-xs text-muted mt-1">Unscramble discipline and focus vocabulary under time pressure.</p>
-                                </div>
-                                <span class="text-xs font-bold text-success flex items-center gap-1">Play Game &rarr;</span>
-                            </div>
-                        </div>
-                    ` : `
-                        <div class="glass-panel p-8 rounded-3xl max-w-xl mx-auto space-y-6 text-center">
-                            <div class="flex items-center justify-between">
-                                <button onclick="exitBrainGame()" class="text-xs font-semibold text-muted hover:text-white">&larr; Back to Games</button>
-                                <span class="text-xs font-bold text-primary uppercase tracking-wider">Score: <span id="live-game-score">0</span></span>
-                            </div>
-                            <div id="game-arena" class="space-y-6 py-4"></div>
-                        </div>
-                    `}
-                </div>
-            `;
-            if (currentGameId) loadGameArena();
-        }
-
-        function setGameDifficulty(diff) {
-            gameDifficulty = diff;
-            renderGames(document.getElementById('main-viewport'));
+            container.innerHTML = `<div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-2xl font-bold">Brain Gym & Games</h2><p class="text-sm text-muted">Play, improve your score and earn XP for correct answers.</p></div><div class="flex items-center gap-1 p-1 rounded-xl bg-surfaceLight/50"><button onclick="setGameDifficulty('easy')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='easy'?'bg-success text-bgDark':'text-muted'}">Easy</button><button onclick="setGameDifficulty('moderate')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='moderate'?'bg-warning text-bgDark':'text-muted'}">Medium</button><button onclick="setGameDifficulty('difficult')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='difficult'?'bg-danger text-white':'text-muted'}">Hard</button></div></div>
+            ${!currentGameId ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${[['memory','Memory Matrix','Remember and repeat a sequence of tiles.','grid-3x3'],['math','Speed Math','Solve arithmetic questions.','calculator'],['pattern','Pattern Logic','Find the missing number.','brain'],['scramble','Word Scramble','Unscramble a useful word.','spell-check']].map(([id,title,desc,ico])=>`<button onclick="startBrainGame('${id}')" class="glass-panel p-6 rounded-3xl text-left space-y-3 hover:border-primary/50 border border-white/5"><i data-lucide="${ico}" class="w-7 h-7 text-primary"></i><h3 class="font-bold">${title}</h3><p class="text-xs text-muted">${desc}</p><span class="text-xs text-primary font-bold">Play game →</span></button>`).join('')}</div>` : `<div class="glass-panel p-6 rounded-3xl max-w-xl mx-auto space-y-5"><div class="flex items-center justify-between"><button onclick="exitBrainGame()" class="text-sm text-muted">← Back to games</button><span class="text-sm font-bold text-primary">Score: <span id="live-game-score">${gameScore}</span></span></div><div id="game-arena"></div></div>`}</div>`;
+            if(currentGameId) loadGameArena();
             lucide.createIcons();
         }
-
-        function startBrainGame(gameType) {
-            currentGameId = gameType;
-            gameScore = 0;
-            gameActive = true;
-            renderGames(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        function exitBrainGame() {
-            currentGameId = null;
-            gameActive = false;
-            renderGames(document.getElementById('main-viewport'));
-            lucide.createIcons();
-        }
-
-        let mathProblem = { q: "7 × 8", ans: 56 };
-        let scrambleWord = { scrambled: "L C I I P D E N E", original: "DISCIPLINE", hint: "Supreme virtue in Daily Space" };
-
-        function loadGameArena() {
-            const arena = document.getElementById('game-arena');
-            if (!arena) return;
-
-            if (currentGameId === 'math') {
-                const n1 = gameDifficulty === 'easy' ? Math.floor(Math.random() * 10) + 1 : gameDifficulty === 'moderate' ? Math.floor(Math.random() * 20) + 10 : Math.floor(Math.random() * 50) + 25;
-                const n2 = gameDifficulty === 'easy' ? Math.floor(Math.random() * 10) + 1 : gameDifficulty === 'moderate' ? Math.floor(Math.random() * 12) + 5 : Math.floor(Math.random() * 20) + 10;
-                const ops = ['+', '-', '×'];
-                const op = ops[Math.floor(Math.random() * ops.length)];
-                let ans = op === '+' ? n1 + n2 : op === '-' ? n1 - n2 : n1 * n2;
-                mathProblem = { q: `${n1} ${op} ${n2}`, ans };
-
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-secondary uppercase">Speed Math Sprint (${gameDifficulty})</span>
-                        <div class="text-4xl font-extrabold font-mono py-4">${mathProblem.q} = ?</div>
-                        <input type="number" id="math-user-ans" placeholder="Enter answer" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg focus:outline-none focus:border-primary">
-                        <button onclick="submitMathAnswer()" class="w-full py-3.5 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Submit Answer</button>
-                    </div>
-                `;
-            } else if (currentGameId === 'scramble') {
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-success uppercase">Word Scramble (${gameDifficulty})</span>
-                        <div class="text-3xl font-extrabold font-mono tracking-widest text-success py-4">${scrambleWord.scrambled}</div>
-                        <p class="text-xs text-muted">Hint: ${scrambleWord.hint}</p>
-                        <input type="text" id="scramble-user-ans" placeholder="Type unscrambled word" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg uppercase focus:outline-none focus:border-primary">
-                        <button onclick="submitScrambleAnswer()" class="w-full py-3.5 rounded-xl bg-success text-bgDark font-bold text-sm transition">Submit Word</button>
-                    </div>
-                `;
-            } else if (currentGameId === 'memory') {
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-primary uppercase">Memory Matrix</span>
-                        <p class="text-xs text-muted">Click the glowing tiles in sequence!</p>
-                        <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">
-                            ${Array.from({length: 9}, (_, i) => `<button onclick="clickMemoryTile(${i})" id="mem-tile-${i}" class="aspect-square rounded-2xl bg-surfaceLight hover:bg-primary/50 transition border border-white/10 text-xl font-bold"></button>`).join('')}
-                        </div>
-                    </div>
-                `;
-                triggerMemorySequence();
-            } else if (currentGameId === 'pattern') {
-                arena.innerHTML = `
-                    <div class="space-y-4">
-                        <span class="text-xs font-bold text-warning uppercase">Pattern Logic</span>
-                        <div class="text-2xl font-bold py-2">What comes next?</div>
-                        <div class="text-3xl font-extrabold font-mono text-warning">3, 6, 12, 24, ?</div>
-                        <input type="number" id="pattern-user-ans" placeholder="Enter number" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-center text-lg focus:outline-none focus:border-primary">
-                        <button onclick="submitPatternAnswer(48)" class="w-full py-3.5 rounded-xl bg-warning text-bgDark font-bold text-sm transition">Submit Answer</button>
-                    </div>
-                `;
+        function setGameDifficulty(diff){ gameDifficulty=diff; if(currentGameId) { gameScore=0; startBrainGame(currentGameId); } else renderGames(document.getElementById('main-viewport')); }
+        function startBrainGame(type){ clearMemoryTimers(); currentGameId=type; gameScore=0; gameActive=true; memorySequence=[]; memoryInputIndex=0; renderGames(document.getElementById('main-viewport')); }
+        function exitBrainGame(){ clearMemoryTimers(); currentGameId=null; gameActive=false; renderGames(document.getElementById('main-viewport')); }
+        function loadGameArena(){
+            const arena=document.getElementById('game-arena'); if(!arena) return;
+            if(currentGameId==='math'){
+                const max=gameDifficulty==='easy'?10:gameDifficulty==='moderate'?25:60;
+                const n1=Math.floor(Math.random()*max)+1, n2=Math.floor(Math.random()*(gameDifficulty==='easy'?10:gameDifficulty==='moderate'?15:30))+1;
+                const op=['+','−','×'][Math.floor(Math.random()*3)];
+                mathProblem={q:`${n1} ${op} ${n2}`,ans:op==='+'?n1+n2:op==='−'?n1-n2:n1*n2};
+                arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-secondary">SPEED MATH</p><div class="text-4xl font-bold py-5">${mathProblem.q} = ?</div><input id="math-user-ans" type="number" inputmode="numeric" class="w-full p-3 rounded-xl bg-surfaceLight text-center" placeholder="Your answer"><button onclick="submitMathAnswer()" class="w-full p-3 rounded-xl bg-primary font-bold">Submit</button></div>`;
+            } else if(currentGameId==='scramble'){
+                const words=[['DISCIPLINE','Consistency and self-control'],['FOCUS','Paying attention'],['HABIT','A repeated action'],['GOAL','Something you work towards'],['ROUTINE','A regular sequence']];
+                const [word,hint]=words[Math.floor(Math.random()*words.length)];
+                let chars=word.split(''); do { chars.sort(()=>Math.random()-.5); } while(chars.join('')===word && word.length>3);
+                scrambleWord={original:word,scrambled:chars.join(' '),hint};
+                arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-success">WORD SCRAMBLE</p><div class="text-3xl font-bold tracking-widest py-4">${scrambleWord.scrambled}</div><p class="text-sm text-muted">Hint: ${hint}</p><input id="scramble-user-ans" class="w-full p-3 rounded-xl bg-surfaceLight text-center uppercase" placeholder="Unscramble the word"><button onclick="submitScrambleAnswer()" class="w-full p-3 rounded-xl bg-success text-bgDark font-bold">Submit</button></div>`;
+            } else if(currentGameId==='pattern'){
+                const base=Math.floor(Math.random()*8)+2, factor=gameDifficulty==='easy'?2:gameDifficulty==='moderate'?3:4;
+                const seq=[base,base*factor,base*factor*factor]; patternAnswer=base*factor*factor*factor;
+                arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-warning">PATTERN LOGIC</p><p class="text-3xl font-bold py-4">${seq.join(', ')}, ?</p><input id="pattern-user-ans" type="number" inputmode="numeric" class="w-full p-3 rounded-xl bg-surfaceLight text-center" placeholder="Next number"><button onclick="submitPatternAnswer()" class="w-full p-3 rounded-xl bg-warning text-bgDark font-bold">Submit</button></div>`;
+            } else if(currentGameId==='memory'){
+                const count=gameDifficulty==='easy'?3:gameDifficulty==='moderate'?4:5;
+                if(!memorySequence.length){ memorySequence=Array.from({length:count},()=>Math.floor(Math.random()*9)); }
+                memoryInputIndex=0; memoryShowing=true;
+                arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-primary">MEMORY MATRIX</p><p id="memory-instruction" class="text-sm text-muted">Watch the sequence, then repeat it in order.</p><div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">${Array.from({length:9},(_,i)=>`<button id="mem-tile-${i}" onclick="clickMemoryTile(${i})" class="aspect-square rounded-2xl bg-surfaceLight border border-white/10 text-xl" disabled></button>`).join('')}</div></div>`;
+                const instruction=document.getElementById('memory-instruction'); let delay=500;
+                memorySequence.forEach((idx)=>{ const timer=setTimeout(()=>{const tile=document.getElementById(`mem-tile-${idx}`); if(tile){tile.classList.add('bg-primary'); setTimeout(()=>tile.classList.remove('bg-primary'),450);}},delay); memoryTimers.push(timer); delay+=750; });
+                const done=setTimeout(()=>{memoryShowing=false; document.querySelectorAll('[id^="mem-tile-"]').forEach(b=>b.disabled=false); if(instruction) instruction.textContent='Now repeat the sequence in the same order.';},delay); memoryTimers.push(done);
             }
         }
-
-        function submitMathAnswer() {
-            const val = parseInt(document.getElementById('math-user-ans').value);
-            if (val === mathProblem.ans) {
-                gameScore += 10;
-                addXP(5);
-                showToast("Good Job! Correct Calculation.", "success");
-            } else {
-                showToast(`Try Again! Correct answer was ${mathProblem.ans}`, "danger");
-            }
-            document.getElementById('live-game-score').innerText = gameScore;
-            loadGameArena();
-        }
-
-        function submitScrambleAnswer() {
-            const val = document.getElementById('scramble-user-ans').value.trim().toUpperCase();
-            if (val === scrambleWord.original) {
-                gameScore += 15;
-                addXP(10);
-                showToast("Good Job! Word solved successfully.", "success");
-            } else {
-                showToast(`Try Again! Correct word was ${scrambleWord.original}`, "danger");
-            }
-            document.getElementById('live-game-score').innerText = gameScore;
-            loadGameArena();
-        }
-
-        function submitPatternAnswer(correct) {
-            const val = parseInt(document.getElementById('pattern-user-ans').value);
-            if (val === correct) {
-                gameScore += 20;
-                addXP(15);
-                showToast("Good Job! Pattern recognized.", "success");
-            } else {
-                showToast(`Try Again! Correct answer was ${correct}`, "danger");
-            }
-            document.getElementById('live-game-score').innerText = gameScore;
-            loadGameArena();
-        }
-
-        function triggerMemorySequence() {
-            const r = Math.floor(Math.random() * 9);
-            const tile = document.getElementById(`mem-tile-${r}`);
-            if (tile) {
-                tile.classList.add('bg-primary');
-                setTimeout(() => tile.classList.remove('bg-primary'), 600);
-            }
-        }
-
-        function clickMemoryTile(idx) {
-            const tile = document.getElementById(`mem-tile-${idx}`);
-            tile.classList.add('bg-success');
-            setTimeout(() => tile.classList.remove('bg-success'), 300);
-            gameScore += 5;
-            document.getElementById('live-game-score').innerText = gameScore;
-            showToast("Good Job!", "success");
-            setTimeout(triggerMemorySequence, 800);
-        }
+        function updateGameScore(points,xp){gameScore+=points;const el=document.getElementById('live-game-score');if(el)el.textContent=gameScore;addXP(xp);}
+        function submitMathAnswer(){const el=document.getElementById('math-user-ans');if(!el||el.value.trim()==='')return showToast('Enter an answer first.','danger');if(Number(el.value)===mathProblem.ans){updateGameScore(10,5);showToast('Correct answer!','success');}else showToast('Not quite. Try the next question.','danger');loadGameArena();}
+        function submitScrambleAnswer(){const el=document.getElementById('scramble-user-ans');if(!el)return;if(el.value.trim().toUpperCase()===scrambleWord.original){updateGameScore(15,8);showToast('Word solved!','success');}else showToast('Not quite. Try again.','danger');loadGameArena();}
+        function submitPatternAnswer(){const el=document.getElementById('pattern-user-ans');if(!el||el.value.trim()==='')return showToast('Enter an answer first.','danger');if(Number(el.value)===patternAnswer){updateGameScore(20,10);showToast('Pattern solved!','success');}else showToast('Not quite. Try the next pattern.','danger');loadGameArena();}
+        function clickMemoryTile(idx){if(memoryShowing||!gameActive)return;const expected=memorySequence[memoryInputIndex];if(idx!==expected){showToast('Sequence incorrect. A new round is ready.','danger');memorySequence=[];loadGameArena();return;}const tile=document.getElementById(`mem-tile-${idx}`);if(tile)tile.classList.add('bg-success');memoryInputIndex++;if(memoryInputIndex===memorySequence.length){updateGameScore(20,10);showToast('Perfect sequence!','success');memorySequence=[];loadGameArena();}}
 
         function renderAchievements(container) {
             container.innerHTML = `
@@ -2071,7 +1838,11 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
         window.dailySpaceAI.chat = null;
     }
 
-    // Preserve saved AI memory
+    // Clear transient transcript while preserving the explicit long-term personal memory.
+    const systemPrompt = (Array.isArray(appState.aiMemory) ? appState.aiMemory : []).find(item => item.role === 'system') || {
+        role: 'system', content: 'You are SPACE AI, a helpful personal productivity assistant. Use saved personal memories only when relevant and never invent personal details.'
+    };
+    appState.aiMemory = [systemPrompt];
     saveState();
 
     renderAI(document.getElementById('main-viewport'));
@@ -2408,9 +2179,7 @@ async function sendAIMessage() {
 
         // Format previous messages as readable context
         const memoryContext = previousMemory
-            .map(item =>
-                `${item.role === 'user' ? 'User' : 'SPACE AI'}: ${item.content}`
-            )
+            .map(item => `${item.role === 'user' ? 'User' : 'SPACE AI'}: ${item.content}`)
             .join('\n');
 
         // Create a new Gemini chat session if needed
@@ -2437,10 +2206,7 @@ const messageToSend = isNewSession
 Here are important personal details the user previously shared:
 ${personalMemoryContext}
 
-Here is the previous conversation:
-${memoryContext || 'No previous conversation.'}
-
-Use this information naturally when relevant.
+Use these saved personal details naturally when relevant. The user may have cleared previous chat history, so do not rely on old conversation transcripts. Never invent personal details.
 Never invent personal details.
 
 CURRENT MESSAGE:
