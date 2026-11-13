@@ -2063,21 +2063,31 @@ function saveApiKey() {
         }
 
         function resetUserData() {
-            if (confirm("Are you sure you want to reset your data?")) {
-                const wasPremium = appState.user.isPremium;
-                const expiry = appState.user.premiumExpiry;
+    if (confirm("Are you sure you want to reset your data?")) {
+        const wasPremium = appState.user.isPremium;
+        const expiry = appState.user.premiumExpiry;
 
-                localStorage.removeItem('daily_space_state');
-                
-                appState = JSON.parse(JSON.stringify(DEFAULT_STATE)); 
-                appState.user.isPremium = wasPremium;
-                appState.user.premiumExpiry = expiry;
+        localStorage.removeItem('daily_space_state');
 
-                                saveState();
-                router('home');
-                showToast("Application reset successfully (PRO status preserved).");
-            }
+        // Restore default application data
+        appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+
+        // Preserve PRO status
+        appState.user.isPremium = wasPremium;
+        appState.user.premiumExpiry = expiry;
+
+        // Reset active Gemini conversation
+        if (window.dailySpaceAI) {
+            window.dailySpaceAI.chat = null;
         }
+
+        saveState();
+        router('home');
+
+        showToast("Application reset successfully (PRO status preserved).");
+    }
+        }
+        
 
 
 async function sendAIMessage() {
