@@ -67,6 +67,16 @@
         html:not(.dark) .ds-mobile-toolbar button { color:#334155; }
         .ds-mobile-toolbar { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(17,23,42,.75); position:sticky; top:0; z-index:30; }
         @media(min-width:768px){ .ds-bottom-nav,.ds-mobile-toolbar{display:none!important} #main-viewport{padding-bottom:0} }
+
+        /* SPACE AI: keep the app frame still; only the message history scrolls. */
+        body.ai-fullscreen { height:100dvh; min-height:0; overflow:hidden; }
+        body.ai-fullscreen #main-viewport { min-height:0; height:auto; overflow:hidden; padding-bottom:0; }
+        body.ai-fullscreen #main-viewport > .ds-ai-screen { height:100%; min-height:0; max-width:none; padding:12px 14px 92px; gap:10px; }
+        body.ai-fullscreen .ds-ai-chat { min-height:0; overscroll-behavior:contain; }
+        body.ai-fullscreen .ds-ai-composer { flex:0 0 auto; padding-top:4px; padding-bottom:env(safe-area-inset-bottom); }
+        @media(min-width:768px){
+            body.ai-fullscreen #main-viewport > .ds-ai-screen { padding:24px; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
@@ -665,6 +675,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 try { history.pushState({dailySpace:true, route}, '', `#${route}`); } catch(e) {}
             }
             currentRoute = route;
+            document.body.classList.toggle('ai-fullscreen', route === 'ai');
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if (btn.getAttribute('data-nav') === route) {
                     btn.classList.add('bg-primary/20', 'text-white', 'border', 'border-primary/30');
@@ -1842,7 +1853,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function renderAI(container) {
             container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-5xl mx-auto w-full flex flex-col h-[85vh] space-y-4 animate-in fade-in duration-300">
+                <div class="ds-ai-screen w-full flex flex-col flex-1 min-h-0 h-full space-y-4 animate-in fade-in duration-300">
                     <div class="flex items-center justify-between border-b border-white/10 pb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold">AI</div>
@@ -1861,7 +1872,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                         </div>
                     </div>
 
-                    <div id="ai-chat-box" class="flex-1 overflow-y-auto space-y-4 p-4 glass-panel rounded-3xl border border-white/10">
+                    <div id="ai-chat-box" class="ds-ai-chat flex-1 min-h-0 overflow-y-auto space-y-4 p-4 glass-panel rounded-3xl border border-white/10">
                         ${appState.aiConversations.map(msg => `
                             <div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}">
                                 <div class="max-w-xl p-4 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-surfaceLight/80 text-white rounded-bl-none border border-white/5'}">
@@ -1871,7 +1882,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                         `).join('')}
                     </div>
 
-                    <div class="flex gap-3 pt-2">
+                    <div class="ds-ai-composer flex gap-3 pt-2">
                         <input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')window.sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
                         <button onclick="window.sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
                             <i data-lucide="send" class="w-4 h-4"></i> Send
