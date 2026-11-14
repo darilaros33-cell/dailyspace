@@ -419,6 +419,12 @@ aiPersonalMemory: [],
 if (!Array.isArray(appState.aiPersonalMemory)) {
     appState.aiPersonalMemory = [];
 }
+if (!Array.isArray(appState.selfControlItems)) appState.selfControlItems = [];
+if (!Array.isArray(appState.habits)) appState.habits = [];
+if (!Array.isArray(appState.goals)) appState.goals = [];
+if (!Array.isArray(appState.tasks)) appState.tasks = [];
+appState.habits.forEach(h => { if (!Array.isArray(h.completedDates)) h.completedDates = h.completedToday ? [localDateKey()] : []; });
+appState.goals.forEach(g => { if (!Array.isArray(g.steps)) g.steps = (Array.isArray(g.milestones) ? g.milestones : []).map(text => ({ text, completed: false })); });
 if (!appState.focusStats || typeof appState.focusStats !== 'object') appState.focusStats = { totalSeconds: 0, sessions: [] };
 if (!Array.isArray(appState.focusStats.sessions)) appState.focusStats.sessions = [];
 if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusStats.totalSeconds = 0;
@@ -775,6 +781,10 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const completedCount = appState.tasks.filter(t => t.completed).length;
             const totalTasks = appState.tasks.length;
             const progressPct = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+            const habitTodayKey = localDateKey();
+            const habitDoneToday = appState.habits.filter(h => Array.isArray(h.completedDates) ? h.completedDates.includes(habitTodayKey) : !!h.completedToday).length;
+            const habitTotal = appState.habits.length;
+            const habitPct = habitTotal ? Math.round(habitDoneToday / habitTotal * 100) : 0;
 
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
@@ -818,14 +828,14 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                         <div class="glass-panel p-5 rounded-3xl space-y-2">
                             <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Streak Score</span>
-                                <i data-lucide="flame" class="w-5 h-5 text-warning"></i>
+                                <span class="text-xs font-semibold uppercase">Today's Habit Progress</span>
+                                <i data-lucide="repeat" class="w-5 h-5 text-warning"></i>
                             </div>
                             <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">${appState.user.streak} Days</span>
-                                <span class="text-xs text-success font-semibold">Active</span>
+                                <span class="text-3xl font-bold">${habitDoneToday}/${habitTotal}</span>
+                                <span class="text-xs text-success font-semibold">${habitPct}%</span>
                             </div>
-                            <p class="text-xs text-muted">Consistency compounds daily.</p>
+                            <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden"><div class="bg-success h-full rounded-full" style="width:${habitPct}%"></div></div>
                         </div>
 
                         <div class="glass-panel p-5 rounded-3xl space-y-2">
@@ -921,97 +931,41 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function renderRoutine(container) {
+            const today = new Date().toISOString().slice(0,10);
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="calendar-check" class="w-6 h-6 text-primary"></i> Routine Planner & Tasks
-                            </h2>
-                            <p class="text-muted text-sm">Organize your daily schedule and execute with precision.</p>
-                        </div>
-                        <button onclick="openAddTaskModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                            <i data-lucide="plus" class="w-4 h-4"></i> New Activity
-                        </button>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="calendar-check" class="w-6 h-6 text-primary"></i> Routine Planner & Tasks</h2><p class="text-muted text-sm">Organize your schedule and execute with precision.</p></div><button onclick="openAddTaskModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> New Activity</button></div>
+                    <div class="glass-panel p-4 md:p-6 rounded-3xl space-y-3">
+                        ${appState.tasks.length ? appState.tasks.map(t => `<div class="flex items-center justify-between gap-3 p-4 rounded-2xl bg-surfaceLight/40 border border-white/5"><div class="flex items-center gap-3 min-w-0"><input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleRoutineTask(${t.id})" class="w-5 h-5 accent-primary"><div class="min-w-0"><p class="font-semibold ${t.completed ? 'line-through text-muted' : ''}">${t.title}</p><div class="flex flex-wrap gap-2 mt-1 text-xs text-muted"><span>${t.date || 'Date not set'}</span><span>${t.time || 'Anytime'}</span><span class="text-primary">${t.category || 'General'}</span></div></div></div><div class="flex items-center gap-2 shrink-0"><span class="text-xs font-bold ${t.priority==='High'?'text-danger':t.priority==='Medium'?'text-warning':'text-success'}">${t.priority || 'Low'}</span><button onclick="deleteRoutineTask(${t.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div>`).join('') : '<p class="text-sm text-muted text-center py-8">No activities yet. Add your first task.</p>'}
                     </div>
-
-                    <div class="glass-panel p-6 rounded-3xl space-y-4">
-                        <div class="space-y-3">
-                            ${appState.tasks.map(t => `
-                                <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/40 border border-white/5 hover:bg-surfaceLight/70 transition">
-                                    <div class="flex items-center gap-4">
-                                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleRoutineTask(${t.id})" class="w-6 h-6 rounded-lg accent-primary cursor-pointer">
-                                        <div>
-                                            <p class="font-semibold text-base ${t.completed ? 'line-through text-muted' : ''}">${t.title}</p>
-                                            <div class="flex items-center gap-3 mt-1">
-                                                <span class="text-xs text-muted flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> ${t.time}</span>
-                                                <span class="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full font-medium">${t.category}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-xs px-2.5 py-1 rounded-full font-bold ${t.priority === 'High' ? 'bg-danger/20 text-danger' : t.priority === 'Medium' ? 'bg-warning/20 text-warning' : 'bg-success/20 text-success'}">${t.priority}</span>
-                                        <button onclick="deleteRoutineTask(${t.id})" class="p-2 rounded-xl hover:bg-danger/20 text-muted hover:text-danger transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
+                </div>`;
         }
 
         function openAddTaskModal() {
             const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Create New Activity";
-            document.getElementById('modal-desc').innerText = "Add a new item to your daily schedule.";
+            const now = new Date();
+            let hour = now.getHours() % 12 || 12;
+            const minute = String(now.getMinutes()).padStart(2,'0');
+            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            document.getElementById('modal-title').innerText = 'Create New Activity';
+            document.getElementById('modal-desc').innerText = 'Choose a date and set a time using a 12-hour clock.';
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Activity Title</label>
-                        <input type="text" id="new-task-title" placeholder="e.g. System Architecture Review" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                            <select id="new-task-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <option value="Work">Work</option>
-                                <option value="Study">Study</option>
-                                <option value="Fitness">Fitness</option>
-                                <option value="Health">Health</option>
-                                <option value="Growth">Growth</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Priority</label>
-                            <select id="new-task-pri" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Scheduled Time</label>
-                        <input type="text" id="new-task-time" placeholder="e.g. 02:00 PM" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                </div>
-            `;
+                    <div><label class="text-xs font-semibold text-muted uppercase">Activity Title</label><input type="text" id="new-task-title" placeholder="e.g. Study for 1 hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
+                    <div><label class="text-xs font-semibold text-muted uppercase">Date</label><input type="date" id="new-task-date" value="${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
+                    <div><label class="text-xs font-semibold text-muted uppercase">Scheduled Time</label><div class="grid grid-cols-3 gap-2 mt-1"><select id="new-task-hour" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${i+1===hour?'selected':''}>${i+1}</option>`).join('')}</select><select id="new-task-minute" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}" ${String(i).padStart(2,'0')===minute?'selected':''}>${String(i).padStart(2,'0')}</option>`).join('')}</select><select id="new-task-ampm" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"><option ${ampm==='AM'?'selected':''}>AM</option><option ${ampm==='PM'?'selected':''}>PM</option></select></div></div>
+                    <div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-semibold text-muted uppercase">Category</label><select id="new-task-cat" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option>Work</option><option>Study</option><option>Fitness</option><option>Health</option><option>Growth</option><option>Personal</option></select></div><div><label class="text-xs font-semibold text-muted uppercase">Priority</label><select id="new-task-pri" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option>High</option><option selected>Medium</option><option>Low</option></select></div></div>
+                </div>`;
             document.getElementById('modal-confirm').onclick = () => {
                 const title = document.getElementById('new-task-title').value.trim();
-                const category = document.getElementById('new-task-cat').value;
-                const priority = document.getElementById('new-task-pri').value;
-                const time = document.getElementById('new-task-time').value.trim() || "Anytime";
-                if (!title) { showToast("Please enter an activity title.", "danger"); return; }
-                
-                appState.tasks.push({ id: Date.now(), title, category, priority, time, completed: false });
-                saveState();
-                modal.classList.add('hidden');
-                router('routine');
-                showToast("Activity added successfully!", "success");
+                const date = document.getElementById('new-task-date').value;
+                if (!title) return showToast('Please enter an activity title.','danger');
+                if (!date) return showToast('Please choose a date.','danger');
+                const time = `${document.getElementById('new-task-hour').value}:${document.getElementById('new-task-minute').value} ${document.getElementById('new-task-ampm').value}`;
+                appState.tasks.push({id:Date.now(),title,date,time,category:document.getElementById('new-task-cat').value,priority:document.getElementById('new-task-pri').value,completed:false});
+                saveState(); modal.classList.add('hidden'); router('routine'); showToast('Activity added successfully!','success');
             };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
+            document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden'); modal.classList.remove('hidden');
         }
 
         function toggleRoutineTask(id) {
@@ -1033,98 +987,39 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             showToast("Activity removed.", "success");
         }
 
+        let activeHabitCalendarId = null;
+        let habitCalendarYear = new Date().getFullYear();
+        let habitCalendarMonth = new Date().getMonth();
+        function localDateKey(date=new Date()) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
+        function getHabitStreak(h) {
+            const dates = new Set(Array.isArray(h.completedDates)?h.completedDates:[]);
+            if (!dates.size) return Math.max(0, Number(h.streak) || 0);
+            let cursor = new Date();
+            if (!dates.has(localDateKey(cursor))) cursor.setDate(cursor.getDate()-1);
+            let count=0;
+            while (dates.has(localDateKey(cursor)) && count<5000) { count++; cursor.setDate(cursor.getDate()-1); }
+            return count;
+        }
         function renderHabits(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker
-                            </h2>
-                            <p class="text-muted text-sm">Build unbreakable daily discipline and track streak consistency.</p>
-                        </div>
-                        <button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                            <i data-lucide="plus" class="w-4 h-4"></i> New Habit
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        ${appState.habits.map(h => `
-                            <div class="glass-panel p-6 rounded-3xl space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${h.category}</span>
-                                        <h3 class="font-bold text-lg mt-2">${h.title}</h3>
-                                    </div>
-                                    <button onclick="deleteHabit(${h.id})" class="p-2 rounded-xl hover:bg-danger/20 text-muted hover:text-danger transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                </div>
-                                <div class="flex items-center justify-between pt-2 border-t border-white/5">
-                                    <div class="flex items-center gap-2">
-                                        <i data-lucide="flame" class="w-5 h-5 text-warning"></i>
-                                        <span class="font-bold text-lg">${h.streak} Day Streak</span>
-                                    </div>
-                                    <button onclick="toggleHabitToday(${h.id})" class="px-4 py-2 rounded-xl font-semibold text-sm transition ${h.completedToday ? 'bg-success text-bgDark' : 'bg-surfaceLight hover:bg-surfaceLight/80 text-white'}">
-                                        ${h.completedToday ? 'Completed ✓' : 'Mark Done'}
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            if (activeHabitCalendarId !== null) return renderHabitCalendar(container, activeHabitCalendarId);
+            const today=localDateKey();
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="text-muted text-sm">Tap a habit to view its activity calendar.</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=h.completedDates.includes(today);return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${h.category||'Personal'}</span><h3 class="font-bold text-lg mt-2">${h.title}</h3></div><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="font-bold"><i data-lucide="flame" class="inline w-4 h-4 text-warning"></i> ${getHabitStreak(h)} day streak</span><span class="text-xs ${done?'text-success':'text-muted'}">${done?'Completed today':'Not completed today'}</span></div><p class="text-xs text-primary/80">Tap to view your activity calendar.</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
         }
-
+        function openHabitCalendar(id){activeHabitCalendarId=id;habitCalendarYear=new Date().getFullYear();habitCalendarMonth=new Date().getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
+        function changeHabitCalendarMonth(delta){habitCalendarMonth+=delta;const d=new Date(habitCalendarYear,habitCalendarMonth,1);habitCalendarYear=d.getFullYear();habitCalendarMonth=d.getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
+        function renderHabitCalendar(container,id){
+            const h=appState.habits.find(x=>x.id===id);if(!h){activeHabitCalendarId=null;return renderHabits(container);}if(!Array.isArray(h.completedDates))h.completedDates=[];
+            const first=new Date(habitCalendarYear,habitCalendarMonth,1),offset=first.getDay(),days=new Date(habitCalendarYear,habitCalendarMonth+1,0).getDate(),today=localDateKey();
+            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':future?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/30'}">${day}</button>`)}
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="text-sm text-primary">← Back to Habits</button><div><h2 class="text-2xl font-bold">${h.title}</h2><p class="text-sm text-muted">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} days</p></div></div>`;
+        }
+        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey())return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function openAddHabitModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Create New Habit";
-            document.getElementById('modal-desc').innerText = "Establish a new daily recurring habit.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Habit Title</label>
-                        <input type="text" id="new-habit-title" placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                        <select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                            <option value="Development">Development</option>
-                            <option value="Health">Health</option>
-                            <option value="Discipline">Discipline</option>
-                            <option value="Mind">Mind</option>
-                        </select>
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('new-habit-title').value.trim();
-                const category = document.getElementById('new-habit-cat').value;
-                if (!title) { showToast("Please enter a habit title.", "danger"); return; }
-                
-                appState.habits.push({ id: Date.now(), title, category, streak: 1, targetDays: 30, completedToday: false });
-                saveState();
-                modal.classList.add('hidden');
-                router('habits');
-                showToast("Habit added successfully!", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
+            const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
+            document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><input type="text" id="new-habit-title" placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select></div>`;
+            document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-habit-title').value.trim();if(!title)return showToast('Please enter a habit title.','danger');appState.habits.push({id:Date.now(),title,category:document.getElementById('new-habit-cat').value,completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();modal.classList.add('hidden');activeHabitCalendarId=null;router('habits');showToast('Habit added successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
         }
-
-        function toggleHabitToday(id) {
-            const habit = appState.habits.find(h => h.id === id);
-            if (habit) {
-                habit.completedToday = !habit.completedToday;
-                if (habit.completedToday) {
-                    habit.streak += 1;
-                    addXP(5);
-                } else {
-                    habit.streak = Math.max(0, habit.streak - 1);
-                }
-                saveState();
-                renderHabits(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }
-        }
+        function toggleHabitToday(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];toggleHabitDate(id,localDateKey());}
 
         function deleteHabit(id) {
             appState.habits = appState.habits.filter(h => h.id !== id);
@@ -1134,100 +1029,19 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             showToast("Habit deleted.", "success");
         }
 
-        function renderGoals(container) {
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="target" class="w-6 h-6 text-secondary"></i> Goal Management
-                            </h2>
-                            <p class="text-muted text-sm">Define milestones and execute long-term strategic objectives.</p>
-                        </div>
-                        <button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                            <i data-lucide="plus" class="w-4 h-4"></i> New Goal
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        ${appState.goals.map(g => `
-                            <div class="glass-panel p-6 rounded-3xl space-y-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs font-semibold text-secondary bg-secondary/10 px-3 py-1 rounded-full">${g.category}</span>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-xs text-muted">Target: ${g.targetDate}</span>
-                                        <button onclick="deleteGoal(${g.id})" class="p-2 rounded-xl hover:bg-danger/20 text-muted hover:text-danger transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-xl mb-1">${g.title}</h3>
-                                    <div class="flex justify-between text-xs text-muted mb-2">
-                                        <span>Overall Progress</span>
-                                        <span>${g.progress}%</span>
-                                    </div>
-                                    <div class="w-full bg-surfaceLight h-2.5 rounded-full overflow-hidden">
-                                        <div class="bg-gradient-to-r from-primary to-secondary h-full rounded-full" style="width: ${g.progress}%"></div>
-                                    </div>
-                                </div>
-                                <div class="space-y-2 pt-2 border-t border-white/5">
-                                    <span class="text-xs font-semibold text-muted uppercase">Milestones</span>
-                                    <div class="space-y-1.5">
-                                        ${g.milestones.map((m, idx) => `
-                                            <div class="flex items-center gap-2 text-xs text-muted">
-                                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-success"></i>
-                                                <span>${m}</span>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+        let activeGoalDetailId=null;
+        function normalizeGoal(g){if(!Array.isArray(g.steps))g.steps=(Array.isArray(g.milestones)?g.milestones:[]).map(text=>({text,completed:false}));g.steps=g.steps.map(x=>typeof x==='string'?{text:x,completed:false}:x);g.progress=g.steps.length?Math.round(g.steps.filter(x=>x.completed).length/g.steps.length*100):0;g.status=g.progress===100?'Completed':'Active';}
+        function renderGoals(container){
+            if(activeGoalDetailId!==null)return renderGoalDetail(container,activeGoalDetailId);
+            appState.goals.forEach(normalizeGoal);
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold"><i data-lucide="target" class="inline w-6 h-6 text-secondary"></i> Goal Management</h2><p class="text-sm text-muted">Tap a goal to view and update its steps.</p></div><button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Goal</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5">${appState.goals.map(g=>`<div onclick="openGoalDetail(${g.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex justify-between gap-3"><span class="text-xs text-secondary">${g.category||'Personal'}</span><button onclick="event.stopPropagation();deleteGoal(${g.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><h3 class="text-lg font-bold">${g.title}</h3><div class="flex justify-between text-xs text-muted"><span>${g.status}</span><span>${g.steps.filter(x=>x.completed).length}/${g.steps.length} steps · ${g.progress}%</span></div><div class="h-2.5 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><p class="text-xs text-primary">Tap to view progress.</p></div>`).join('')||'<p class="text-sm text-muted">No goals yet. Create your first goal.</p>'}</div></div>`;
         }
-
-        function openAddGoalModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Create New Goal";
-            document.getElementById('modal-desc').innerText = "Set a major objective and milestones.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Goal Title</label>
-                        <input type="text" id="new-goal-title" placeholder="e.g. Master Machine Learning" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                        <select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                            <option value="Career">Career</option>
-                            <option value="Education">Education</option>
-                            <option value="Fitness">Fitness</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Growth">Growth</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Target Date</label>
-                        <input type="date" id="new-goal-date" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('new-goal-title').value.trim();
-                const category = document.getElementById('new-goal-cat').value;
-                const targetDate = document.getElementById('new-goal-date').value || "2026-12-31";
-                if (!title) { showToast("Please enter a goal title.", "danger"); return; }
-                
-                appState.goals.push({ id: Date.now(), title, category, progress: 10, targetDate, milestones: ["Define roadmap", "Initial execution", "Mid-term review", "Final completion"] });
-                saveState();
-                modal.classList.add('hidden');
-                router('goals');
-                showToast("Goal created successfully!", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
-        }
+        function openGoalDetail(id){activeGoalDetailId=id;renderGoals(document.getElementById('main-viewport'));lucide.createIcons();}
+        function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="text-sm text-primary">← Back to Goals</button><div><h2 class="text-2xl font-bold">${g.title}</h2><p class="text-sm text-muted">${g.status} · Target ${g.targetDate||'Not set'}</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${step.text}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
+        function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;normalizeGoal(g);saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed!','success');}
+        function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
+        function openAddGoalModal(){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Goal';document.getElementById('modal-desc').innerText='Every goal starts with at least one clear step.';document.getElementById('modal-content').innerHTML=`<div class="space-y-3"><input id="new-goal-title" placeholder="Goal title" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><option>Career</option><option>Education</option><option>Fitness</option><option>Finance</option><option>Growth</option><option>Personal</option></select><input type="date" id="new-goal-date" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><div id="goal-step-inputs" class="space-y-2"><input class="goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10" placeholder="Step 1 (required)"></div><button type="button" onclick="addGoalStepInput()" class="text-sm text-primary font-semibold">+ Add another step</button></div>`;document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-goal-title').value.trim(),steps=[...document.querySelectorAll('.goal-step-input')].map(x=>x.value.trim()).filter(Boolean);if(!title)return showToast('Please enter a goal title.','danger');if(!steps.length)return showToast('Add at least one goal step.','danger');const g={id:Date.now(),title,category:document.getElementById('new-goal-cat').value,targetDate:document.getElementById('new-goal-date').value||'',steps:steps.map(text=>({text,completed:false})),progress:0,status:'Active'};appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=g.id;router('goals');showToast('Goal created successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
+        function addGoalStepInput(){const box=document.getElementById('goal-step-inputs');if(!box)return;const input=document.createElement('input');input.className='goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10';input.placeholder=`Step ${box.children.length+1}`;box.appendChild(input);}
 
         function deleteGoal(id) {
             appState.goals = appState.goals.filter(g => g.id !== id);
@@ -1401,6 +1215,10 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                         <p class="text-muted text-sm">Forge impenetrable discipline, eliminate distractions, and manage personal rules.</p>
                     </div>
 
+                    <div class="glass-panel p-6 rounded-3xl space-y-4">
+                        <div class="flex items-center justify-between gap-3"><div><h3 class="font-bold text-lg">My Self-Control Commitments</h3><p class="text-xs text-muted">Personal behaviours, challenges and commitments you want to work on.</p></div><button onclick="openAddSelfControlItemModal()" class="px-3 py-2 rounded-xl bg-primary text-white text-sm font-semibold">+ Add</button></div>
+                        <div class="space-y-2">${(appState.selfControlItems||[]).map(item=>`<div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-surfaceLight/40"><span class="text-sm">${item.text}</span><button onclick="deleteSelfControlItem(${item.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('')||'<p class="text-sm text-muted">No personal commitments yet. Tap Add to create one.</p>'}</div>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="glass-panel p-6 rounded-3xl space-y-4">
                             <h3 class="font-bold text-lg flex items-center gap-2">
@@ -1439,6 +1257,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 </div>
             `;
         }
+
+        function openAddSelfControlItemModal(){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Add Personal Commitment';document.getElementById('modal-desc').innerText='Add a behaviour, challenge or commitment you want to manage.';document.getElementById('modal-content').innerHTML='<textarea id="new-self-control-item" rows="3" placeholder="e.g. Avoid social media during study time" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></textarea>';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-self-control-item').value.trim();if(!text)return showToast('Please describe your commitment.','danger');if(!Array.isArray(appState.selfControlItems))appState.selfControlItems=[];appState.selfControlItems.push({id:Date.now(),text,createdAt:localDateKey()});saveState();modal.classList.add('hidden');renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();showToast('Personal commitment added.','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
+        function deleteSelfControlItem(id){if(!confirm('Delete this personal commitment?'))return;appState.selfControlItems=(appState.selfControlItems||[]).filter(x=>x.id!==id);saveState();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();showToast('Commitment deleted.','success');}
 
         function toggleChallenge(id) {
             const ch = appState.challenges.find(c => c.id === id);
