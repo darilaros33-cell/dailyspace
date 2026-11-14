@@ -673,6 +673,11 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function router(route, addHistory = true) {
             if (!route) route = 'home';
             if (currentRoute === 'games' && route !== 'games') { clearMemoryTimers(); gameActive = false; currentGameId = null; }
+            // Clear nested screens when leaving their parent section so they never reopen unexpectedly.
+            if (route !== currentRoute) {
+                if (currentRoute === 'habits') activeHabitCalendarId = null;
+                if (currentRoute === 'goals') activeGoalDetailId = null;
+            }
             if (addHistory && route !== currentRoute) {
                 routeHistory.push(route);
                 if (routeHistory.length > 40) routeHistory.shift();
@@ -1031,7 +1036,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderHabitCalendar(container,id){
             const h=appState.habits.find(x=>x.id===id);if(!h){activeHabitCalendarId=null;return renderHabits(container);}if(!Array.isArray(h.completedDates))h.completedDates=[];
             const first=new Date(habitCalendarYear,habitCalendarMonth,1),offset=first.getDay(),days=new Date(habitCalendarYear,habitCalendarMonth+1,0).getDate(),today=localDateKey();
-            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||beforeStart)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
+            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':future?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
             container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${h.title}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} days</p></div></div>`;
         }
         function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey())return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
@@ -1076,7 +1081,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 if(!firstStep)return showFieldError('goal-step-1','Step 1 is mandatory. Please enter your first action.');
                 const steps=inputs.map(x=>x.value.trim()).filter(Boolean);
                 const g={id:Date.now(),title,category:document.getElementById('new-goal-cat').value,targetDate:date,steps:steps.map(text=>({text,completed:false})),progress:0,status:'Active'};
-                appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=g.id;router('goals');showToast('Goal created successfully!','success');
+                appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=null;router('goals');showToast('Goal created successfully!','success');
             };
             document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
         }
