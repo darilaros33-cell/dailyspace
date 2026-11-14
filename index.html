@@ -234,7 +234,7 @@
                     <i data-lucide="timer" class="w-5 h-5"></i> Focus Timer
                 </button>
                 <button onclick="router('finance')" data-nav="finance" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-                    <i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Expense Tracker <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
+                    <i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Income & Expense Tracker <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
                 </button>
                 <button onclick="router('analytics')" data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
                     <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends
@@ -267,7 +267,7 @@
     </aside>
 
     <!-- Mobile Slide-out Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-6 hidden md:hidden">
+    <div id="mobile-menu" onclick="if(event.target===this)toggleMobileMenu()" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-6 hidden md:hidden">
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
@@ -282,49 +282,17 @@
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
         </div>
+        <div class="mb-3"><p class="text-[11px] font-bold uppercase tracking-widest text-muted">More spaces</p></div>
         <div class="flex-1 overflow-y-auto space-y-2 py-2" id="mobile-nav">
-            <button onclick="router('home'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium bg-surfaceLight/50 text-white">
-                <i data-lucide="layout-dashboard" class="w-5 h-5 text-primary"></i> Dashboard
-            </button>
-            <button onclick="router('routine'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="calendar-check" class="w-5 h-5"></i> Routine & Tasks
-            </button>
-            <button onclick="router('habits'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="repeat" class="w-5 h-5"></i> Habits Tracker
-            </button>
-            <button onclick="router('goals'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="target" class="w-5 h-5"></i> Goal Management
-            </button>
-            <button onclick="router('calendar'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="calendar-days" class="w-5 h-5 text-warning"></i> Calendar & Special Days (PRO)
-            </button>
-            <button onclick="router('selfcontrol'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center
-            </button>
-            <button onclick="router('focus'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="timer" class="w-5 h-5"></i> Focus Timer
-            </button>
-            <button onclick="router('finance'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Expense Tracker (PRO)
-            </button>
-            <button onclick="router('analytics'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends
-            </button>
-            <button onclick="router('games'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="gamepad-2" class="w-5 h-5 text-success"></i> Brain Gym & Games (PRO)
-            </button>
-            <button onclick="router('achievements'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="award" class="w-5 h-5"></i> Achievements
-            </button>
-            <button onclick="router('ai'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="bot" class="w-5 h-5 text-primary"></i> SPACE AI Assistant
-            </button>
-            <button onclick="router('subscription'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="crown" class="w-5 h-5 text-warning"></i> Premium Plans
-            </button>
-            <button onclick="router('profile'); toggleMobileMenu();" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50">
-                <i data-lucide="settings" class="w-5 h-5"></i> Settings & Profile
-            </button>
+            <button onclick="router('calendar')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="calendar-days" class="w-5 h-5"></i> Calendar & Special Days <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
+            <button onclick="router('selfcontrol')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center</button>
+            <button onclick="router('focus')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="timer" class="w-5 h-5"></i> Focus Timer</button>
+            <button onclick="router('finance')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="wallet" class="w-5 h-5"></i> Income & Expense Tracker <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
+            <button onclick="router('analytics')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="chart-no-axes-combined" class="w-5 h-5"></i> Analytics & Trends <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
+            <button onclick="router('games')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="gamepad-2" class="w-5 h-5"></i> Brain Gym & Games <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
+            <button onclick="router('achievements')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="award" class="w-5 h-5"></i> Achievements</button>
+            <button onclick="router('subscription')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="crown" class="w-5 h-5"></i> Premium Plans</button>
+            <button onclick="router('profile')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="settings" class="w-5 h-5"></i> Settings & Profile</button>
         </div>
     </div>
 
@@ -332,7 +300,7 @@
     <div class="ds-mobile-toolbar md:hidden">
         <button onclick="goBackInApp()" aria-label="Go back" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
         <div class="min-w-0 flex-1"><div class="font-bold text-sm">DAILY SPACE</div><div id="ds-current-page" class="text-[11px] text-muted">Your personal space</div></div>
-        <button onclick="router('profile')" aria-label="Open profile and settings" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="user-round" class="w-5 h-5"></i></button>
+        <button onclick="router('profile')" aria-label="Open profile and settings" class="w-9 h-9 rounded-full bg-primary/20 border border-primary/40 text-primary font-bold text-sm flex items-center justify-center"><span id="ds-profile-avatar">U</span></button>
         <button onclick="toggleMobileMenu()" aria-label="Open all sections" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="menu" class="w-5 h-5"></i></button>
     </div>
     <main class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-viewport">
@@ -383,6 +351,7 @@ aiPersonalMemory: [],
                 { sender: "ai", text: "Greetings, Commander. I am SPACE AI, your Personal Life OS assistant. Discipline over motivation. How shall we optimize your execution today?" }
             ],
             focusStats: { totalSeconds: 0, sessions: [] },
+            gameStats: { gamesPlayed: 0, totalCorrect: 0, totalPoints: 0, highScores: {} },
             remindersEnabled: false,
             quietHoursStart: "00:00",
             quietHoursEnd: "00:00"
@@ -393,6 +362,7 @@ aiPersonalMemory: [],
 if (!Array.isArray(appState.aiPersonalMemory)) {
     appState.aiPersonalMemory = [];
 }
+if(appState.user)delete appState.user.geminiApiKey;
 if (!Array.isArray(appState.selfControlItems)) appState.selfControlItems = [];
 if (!Array.isArray(appState.habits)) appState.habits = [];
 if (!Array.isArray(appState.goals)) appState.goals = [];
@@ -417,6 +387,12 @@ appState.habits.forEach(h => { if (!Array.isArray(h.completedDates)) h.completed
 appState.goals.forEach(g => { if (!Array.isArray(g.steps)) g.steps = (Array.isArray(g.milestones) ? g.milestones : []).map(text => ({ text, completed: false })); });
 if (!appState.focusStats || typeof appState.focusStats !== 'object') appState.focusStats = { totalSeconds: 0, sessions: [] };
 if (!Array.isArray(appState.focusStats.sessions)) appState.focusStats.sessions = [];
+if (!appState.financeBudgets || typeof appState.financeBudgets !== 'object') appState.financeBudgets = {};
+if (!Array.isArray(appState.notifiedTaskKeys)) appState.notifiedTaskKeys = [];
+if (!Array.isArray(appState.achievementsList)) appState.achievementsList = JSON.parse(JSON.stringify(DEFAULT_STATE.achievementsList));
+if (!Number.isFinite(Number(appState.lifetimeTasksCompleted))) appState.lifetimeTasksCompleted = 0;
+if (!Number.isFinite(Number(appState.lifetimeHabitsCompleted))) appState.lifetimeHabitsCompleted = 0;
+if(!appState.gameStats||typeof appState.gameStats!=='object')appState.gameStats={gamesPlayed:0,totalCorrect:0,totalPoints:0,highScores:{}};if(!appState.gameStats.highScores)appState.gameStats.highScores={};
 if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusStats.totalSeconds = 0;
 
         function removeBuiltInDemoEntries() {
@@ -525,6 +501,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             cloudSyncReady = false;
             if (!user) {
                 currentFirebaseUser = null;
+                appState.remindersEnabled = false;
                 setAuthScreen(false);
                 if (window.dailySpaceAI) window.dailySpaceAI.chat = null;
                 return;
@@ -603,14 +580,32 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function addXP(amount) {
-            appState.user.xp += amount;
-            const requiredXP = appState.user.level * 100;
-            if (appState.user.xp >= requiredXP) {
-                appState.user.level += 1;
-                appState.user.xp -= requiredXP;
+            const gain = Math.max(0, Math.floor(Number(amount) || 0));
+            if (!gain) return;
+            appState.user.xp = (Number(appState.user.xp) || 0) + gain;
+            while (appState.user.xp >= (Number(appState.user.level) || 1) * 100) {
+                appState.user.xp -= (Number(appState.user.level) || 1) * 100;
+                appState.user.level = (Number(appState.user.level) || 1) + 1;
                 showToast(`Level Up! You are now Level ${appState.user.level}!`, 'success');
             }
+            evaluateAchievements();
             saveState();
+        }
+        function unlockAchievement(id) {
+            const item=(appState.achievementsList||[]).find(a=>Number(a.id)===Number(id));
+            if(!item||item.unlocked)return false;
+            item.unlocked=true;item.unlockedAt=new Date().toISOString();
+            showToast(`Achievement unlocked: ${item.title}`,'success');
+            return true;
+        }
+        function evaluateAchievements() {
+            if(!Array.isArray(appState.achievementsList))appState.achievementsList=JSON.parse(JSON.stringify(DEFAULT_STATE.achievementsList));
+            const completedTasks=(appState.tasks||[]).filter(t=>t.completed).length;
+            if(completedTasks>=1)unlockAchievement(1);
+            if((Number(appState.lifetimeTasksCompleted)||0)>=10)unlockAchievement(5);
+            if((appState.focusStats?.totalSeconds||0)>=7200)unlockAchievement(3);
+            if((appState.goals||[]).some(g=>g.status==='Completed'||(Number(g.progress)||0)>=100))unlockAchievement(4);
+            if((appState.habits||[]).some(h=>getHabitStreak(h)>=3))unlockAchievement(2);
         }
 
         function updateSidebarXP() {
@@ -667,20 +662,22 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         let currentRoute = 'home';
         let routeHistory = ['home'];
         let suppressRoutePush = false;
-        const routeTitles = {home:'Home',routine:'Routine & Tasks',habits:'Habits',goals:'Goals',calendar:'Calendar',selfcontrol:'Self-Control',focus:'Focus Timer',finance:'Expenses',analytics:'Analytics',games:'Brain Gym',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings'};
+        let lastRouteRenderError = null;
+        const routeTitles = {home:'Home',routine:'Tasks',habits:'Habits',goals:'Goals',calendar:'Calendar & Special Days',selfcontrol:'Self-Control Center',focus:'Focus Timer',finance:'Income & Expense Tracker',analytics:'Analytics & Trends',games:'Brain Gym & Games',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings & Profile'};
         try { history.replaceState({dailySpace:true, route:'home'}, '', location.href); history.pushState({dailySpaceGuard:true, route:'home'}, '', location.href); } catch(e) {}
 
         function router(route, addHistory = true) {
             if (!route) route = 'home';
-            if (currentRoute === 'games' && route !== 'games') { clearMemoryTimers(); gameActive = false; currentGameId = null; }
+            if (currentRoute === 'games' && route !== 'games') { clearMemoryTimers();clearInterval(gameTimerInterval);gameTimerInterval=null;gameActive = false; currentGameId = null;gameStartedAt=null; }
             // Clear nested screens when leaving their parent section so they never reopen unexpectedly.
             if (route !== currentRoute) {
                 if (currentRoute === 'habits') activeHabitCalendarId = null;
                 if (currentRoute === 'goals') activeGoalDetailId = null;
+                if (currentRoute === 'selfcontrol') activeSelfControlCalendarId = null;
             }
             if (addHistory && route !== currentRoute) {
-                routeHistory.push(route);
-                if (routeHistory.length > 40) routeHistory.shift();
+                if (routeHistory[routeHistory.length - 1] !== route) routeHistory.push(route);
+                if (routeHistory.length > 30) routeHistory.splice(1, routeHistory.length - 30);
                 try { history.pushState({dailySpace:true, route}, '', `#${route}`); } catch(e) {}
             }
             currentRoute = route;
@@ -695,6 +692,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 }
             });
             document.querySelectorAll('[data-bottom-nav]').forEach(btn => btn.classList.toggle('active', btn.dataset.bottomNav === route));
+            const avatar=document.getElementById('ds-profile-avatar');if(avatar)avatar.textContent=String(appState.user?.name||'U').trim().charAt(0).toUpperCase()||'U';
             const pageLabel = document.getElementById('ds-current-page');
             if (pageLabel) pageLabel.textContent = routeTitles[route] || 'Daily Space';
             const menu = document.getElementById('mobile-menu');
@@ -707,11 +705,11 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 case 'routine': renderRoutine(viewport); break;
                 case 'habits': renderHabits(viewport); break;
                 case 'goals': renderGoals(viewport); break;
-                case 'calendar': renderCalendar(viewport); break;
+                case 'calendar': if(appState.user?.isPremium)renderCalendar(viewport);else renderLockedFeature(viewport,'Calendar & Special Days','Calendar & Special Days is part of Daily Space PRO.','calendar-days'); break;
                 case 'selfcontrol': renderSelfControl(viewport); break;
                 case 'focus': renderFocus(viewport); break;
-                case 'finance': renderFinance(viewport); break;
-                case 'analytics': renderAnalytics(viewport); break;
+                case 'finance': if(appState.user?.isPremium)renderFinance(viewport);else renderLockedFeature(viewport,'Income & Expense Tracker','Income & Expense Tracker is part of Daily Space PRO.','wallet'); break;
+                case 'analytics': if(appState.user?.isPremium)renderAnalytics(viewport);else renderLockedFeature(viewport,'Analytics & Trends','Detailed Analytics & Trends is part of Daily Space PRO.','chart-no-axes-combined'); break;
                 case 'games': renderGames(viewport); break;
                 case 'achievements': renderAchievements(viewport); break;
                 case 'ai': renderAI(viewport); break;
@@ -723,11 +721,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function goBackInApp() {
-            if (routeHistory.length > 1) {
-                history.back();
-            } else {
-                showExitConfirmation();
-            }
+            if (currentRoute === 'games' && currentGameId) { exitBrainGame(); return; }
+            if (currentRoute === 'habits' && activeHabitCalendarId !== null) { activeHabitCalendarId = null; renderHabits(document.getElementById('main-viewport')); lucide.createIcons(); return; }
+            if (currentRoute === 'goals' && activeGoalDetailId !== null) { activeGoalDetailId = null; renderGoals(document.getElementById('main-viewport')); lucide.createIcons(); return; }
+            if (currentRoute === 'selfcontrol' && activeSelfControlCalendarId !== null) { activeSelfControlCalendarId = null; renderSelfControl(document.getElementById('main-viewport')); lucide.createIcons(); return; }
+            if (currentRoute !== 'home') { routeHistory=['home']; try{history.replaceState({dailySpace:true,route:'home'},'',location.pathname+location.search+'#home');}catch(e){} router('home',false); return; }
+            showExitConfirmation();
         }
 
         function showExitConfirmation() {
@@ -745,14 +744,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         window.addEventListener('popstate', () => {
-            if (routeHistory.length > 1) {
-                routeHistory.pop();
-                const previous = routeHistory[routeHistory.length - 1] || 'home';
-                router(previous, false);
-            } else {
-                try { history.pushState({dailySpace:true, route:currentRoute}, '', `#${currentRoute}`); } catch(e) {}
-                showExitConfirmation();
-            }
+            if(currentRoute==='games'&&currentGameId){exitBrainGame();try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
+            if(currentRoute==='habits'&&activeHabitCalendarId!==null){activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
+            if(currentRoute==='goals'&&activeGoalDetailId!==null){activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
+            if(currentRoute==='selfcontrol'&&activeSelfControlCalendarId!==null){activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
+            if(currentRoute!=='home'){routeHistory=['home'];router('home',false);try{history.pushState({dailySpace:true,route:'home'},'','#home');}catch(e){}return;}
+            try{history.pushState({dailySpace:true,route:'home'},'','#home');}catch(e){}showExitConfirmation();
         });
 
         function renderLockedFeature(container, title, desc, icon) {
@@ -771,7 +768,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                             <span class="text-sm font-semibold">Daily Space PRO Access</span>
                             <span class="text-xl font-bold text-warning">₹39 / mo</span>
                         </div>
-                        <p class="text-xs text-muted text-left">Unlock SPACE AI, Expense Tracker, Brain Gym & Games, Advanced Analytics, and unlimited sync.</p>
+                        <p class="text-xs text-muted text-left">Unlock Calendar & Special Days, Income & Expense Tracker, Analytics & Trends, Brain Gym & Games, and expanded SPACE AI features.</p>
                         <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
                             <i data-lucide="crown" class="w-4 h-4"></i> Upgrade to PRO Now
                         </button>
@@ -781,12 +778,14 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function renderDashboard(container) {
-            const completedCount = appState.tasks.filter(t => t.completed).length;
-            const totalTasks = appState.tasks.length;
+            const todayTasks=appState.tasks.filter(t=>t.date===localDateKey());
+            const completedCount = todayTasks.filter(t => t.completed).length;
+            const totalTasks = todayTasks.length;
             const progressPct = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
             const habitTodayKey = localDateKey();
-            const habitDoneToday = appState.habits.filter(h => Array.isArray(h.completedDates) ? h.completedDates.includes(habitTodayKey) : !!h.completedToday).length;
-            const habitTotal = appState.habits.length;
+            const dueHabitsToday = appState.habits.filter(h => isHabitScheduledDate(h,habitTodayKey));
+            const habitDoneToday = dueHabitsToday.filter(h => Array.isArray(h.completedDates) ? isHabitCompleteForPeriod(h,habitTodayKey) : !!h.completedToday).length;
+            const habitTotal = dueHabitsToday.length;
             const habitPct = habitTotal ? Math.round(habitDoneToday / habitTotal * 100) : 0;
 
             container.innerHTML = `
@@ -794,7 +793,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full border border-primary/20">System Online</span>
-                            <h2 class="text-3xl font-bold mt-2">Good Day, ${appState.user.name}</h2>
+                            <h2 class="text-3xl font-bold mt-2">Good Day, ${escapeHTML(appState.user.name)}</h2>
                             <p class="text-muted text-sm mt-1">${new Date().toLocaleDateString(undefined, {weekday:'long', day:'numeric', month:'long', year:'numeric'})} — Discipline Over Motivation.</p>
                         </div>
                         <div class="flex items-center gap-3">
@@ -850,7 +849,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                                 <span class="text-3xl font-bold">Lvl ${appState.user.level}</span>
                                 <span class="text-xs text-muted">${appState.user.xp} XP</span>
                             </div>
-                            <p class="text-xs text-muted">${appState.user.title}</p>
+                            <p class="text-xs text-muted">${escapeHTML(appState.user.title)}</p>
                         </div>
 
                         <div class="glass-panel p-5 rounded-3xl space-y-2">
@@ -875,18 +874,18 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                                 <button onclick="router('routine')" class="text-xs text-muted hover:text-white transition">View All &rarr;</button>
                             </div>
                             <div class="space-y-2.5">
-                                ${appState.tasks.map(t => `
+                                ${todayTasks.map(t => `
                                     <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 hover:bg-surfaceLight/70 transition">
                                         <div class="flex items-center gap-3">
                                             <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTaskDashboard(${t.id})" class="w-5 h-5 rounded-lg accent-primary cursor-pointer">
                                             <div>
-                                                <p class="text-sm font-medium ${t.completed ? 'line-through text-muted' : ''}">${t.title}</p>
-                                                <span class="text-[10px] text-muted">${t.time} • ${t.category}</span>
+                                                <p class="text-sm font-medium ${t.completed ? 'line-through text-muted' : ''}">${escapeHTML(t.title)}</p>
+                                                <span class="text-[10px] text-muted">${escapeHTML(t.time||'Anytime')} • ${escapeHTML(t.category||'General')}</span>
                                             </div>
                                         </div>
                                         <span class="text-[10px] px-2.5 py-1 rounded-full font-bold ${t.priority === 'High' ? 'bg-danger/20 text-danger' : t.priority === 'Medium' ? 'bg-warning/20 text-warning' : 'bg-success/20 text-success'}">${t.priority}</span>
                                     </div>
-                                `).join('')}
+                                `).join('') || '<p class="text-sm text-muted py-5 text-center">No tasks scheduled for today. Add one when you are ready.</p>'}
                             </div>
                         </div>
 
@@ -899,7 +898,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                                     ${appState.goals.map(g => `
                                         <div class="space-y-1.5">
                                             <div class="flex justify-between text-xs font-semibold">
-                                                <span>${g.title}</span>
+                                                <span>${escapeHTML(g.title)}</span>
                                                 <span class="text-muted">${g.progress}%</span>
                                             </div>
                                             <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden">
@@ -926,7 +925,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const task = appState.tasks.find(t => t.id === id);
             if (task) {
                 task.completed = !task.completed;
-                if (task.completed) addXP(10);
+                if(task.completed){task.completedAt=new Date().toISOString();if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;addXP(10);}}else task.completedAt=null;
                 saveState();
                 renderDashboard(document.getElementById('main-viewport'));
                 lucide.createIcons();
@@ -934,12 +933,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function renderRoutine(container) {
-            const today = new Date().toISOString().slice(0,10);
+            const today = localDateKey();
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="calendar-check" class="w-6 h-6 text-primary"></i> Routine Planner & Tasks</h2><p class="text-muted text-sm">Organize your schedule and execute with precision.</p></div><button onclick="openAddTaskModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> New Activity</button></div>
                     <div class="glass-panel p-4 md:p-6 rounded-3xl space-y-3">
-                        ${appState.tasks.length ? appState.tasks.map(t => `<div class="flex items-center justify-between gap-3 p-4 rounded-2xl bg-surfaceLight/40 border border-white/5"><div class="flex items-center gap-3 min-w-0"><input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleRoutineTask(${t.id})" class="w-5 h-5 accent-primary"><div class="min-w-0"><p class="font-semibold ${t.completed ? 'line-through text-muted' : ''}">${t.title}</p><div class="flex flex-wrap gap-2 mt-1 text-xs text-muted"><span>${t.date || 'Date not set'}</span><span>${t.time || 'Anytime'}</span><span class="text-primary">${t.category || 'General'}</span></div></div></div><div class="flex items-center gap-2 shrink-0"><span class="text-xs font-bold ${t.priority==='High'?'text-danger':t.priority==='Medium'?'text-warning':'text-success'}">${t.priority || 'Low'}</span><button onclick="deleteRoutineTask(${t.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div>`).join('') : '<p class="text-sm text-muted text-center py-8">No activities yet. Add your first task.</p>'}
+                        ${appState.tasks.length ? appState.tasks.map(t => `<div class="flex items-center justify-between gap-3 p-4 rounded-2xl bg-surfaceLight/40 border border-white/5"><div class="flex items-center gap-3 min-w-0"><input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleRoutineTask(${t.id})" class="w-5 h-5 accent-primary"><div class="min-w-0"><p class="font-semibold ${t.completed ? 'line-through text-muted' : ''}">${escapeHTML(t.title)}</p><div class="flex flex-wrap gap-2 mt-1 text-xs text-muted"><span>${t.date || 'Date not set'}</span><span>${t.time || 'Anytime'}</span><span class="text-primary">${escapeHTML(t.category || 'General')}</span></div></div></div><div class="flex items-center gap-2 shrink-0"><span class="text-xs font-bold ${t.priority==='High'?'text-danger':t.priority==='Medium'?'text-warning':'text-success'}">${t.priority || 'Low'}</span><button onclick="openAddTaskModal(${t.id})" class="p-2 text-muted hover:text-primary" aria-label="Edit task"><i data-lucide="pencil" class="w-4 h-4"></i></button><button onclick="deleteRoutineTask(${t.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div>`).join('') : '<p class="text-sm text-muted text-center py-8">No activities yet. Add your first task.</p>'}
                     </div>
                 </div>`;
         }
@@ -966,20 +965,23 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             document.getElementById(fieldId + '-error')?.remove();
         }
 
-        function openAddTaskModal() {
+        function openAddTaskModal(taskId=null) {
             const modal = document.getElementById('app-modal');
+            document.getElementById('modal-confirm').textContent='Save Activity';document.getElementById('modal-cancel').textContent='Cancel';
+            const existing=taskId==null?null:appState.tasks.find(t=>String(t.id)===String(taskId));
             const now = new Date();
             let hour = now.getHours() % 12 || 12;
-            const minute = String(now.getMinutes()).padStart(2,'0');
-            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-            document.getElementById('modal-title').innerText = 'Create New Activity';
+            let minute = String(now.getMinutes()).padStart(2,'0');
+            let ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            if(existing?.time){const tm=String(existing.time).match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);if(tm){hour=Number(tm[1]);minute=tm[2];ampm=tm[3].toUpperCase();}}
+            document.getElementById('modal-title').innerText = existing?'Edit Activity':'Create New Activity';
             document.getElementById('modal-desc').innerText = 'Choose a date and set a time using a 12-hour clock.';
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
-                    <div><label for="new-task-title" class="block text-sm font-semibold">Activity Title <span class="text-red-500">*</span></label><input type="text" id="new-task-title" required placeholder="e.g. Study for 1 hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
-                    <div><label for="new-task-date" class="block text-sm font-semibold text-white">Add Date <span class="text-red-500">*</span></label><input type="date" id="new-task-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"><p class="mt-1 text-xs text-muted">A date is required to save this activity.</p></div>
+                    <div><label for="new-task-title" class="block text-sm font-semibold">Activity Title <span class="text-red-500">*</span></label><input type="text" id="new-task-title" required value="${escapeHTML(existing?.title||'')}" placeholder="e.g. Study for 1 hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
+                    <div><label for="new-task-date" class="block text-sm font-semibold text-white">Add Date <span class="text-red-500">*</span></label><input type="date" id="new-task-date" required value="${existing?.date||''}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"><p class="mt-1 text-xs text-muted">A date is required to save this activity.</p></div>
                     <div><label class="text-xs font-semibold text-muted uppercase">Scheduled Time</label><div class="grid grid-cols-3 gap-2 mt-1"><select id="new-task-hour" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${i+1===hour?'selected':''}>${i+1}</option>`).join('')}</select><select id="new-task-minute" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}" ${String(i).padStart(2,'0')===minute?'selected':''}>${String(i).padStart(2,'0')}</option>`).join('')}</select><select id="new-task-ampm" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"><option ${ampm==='AM'?'selected':''}>AM</option><option ${ampm==='PM'?'selected':''}>PM</option></select></div></div>
-                    <div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-semibold text-muted uppercase">Category</label><select id="new-task-cat" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option>Work</option><option>Study</option><option>Fitness</option><option>Health</option><option>Growth</option><option>Personal</option></select></div><div><label class="text-xs font-semibold text-muted uppercase">Priority</label><select id="new-task-pri" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option>High</option><option selected>Medium</option><option>Low</option></select></div></div>
+                    <div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-semibold text-muted uppercase">Category</label><select id="new-task-cat" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option ${existing?.category==='Work'?'selected':''}>Work</option><option ${existing?.category==='Study'?'selected':''}>Study</option><option ${existing?.category==='Fitness'?'selected':''}>Fitness</option><option ${existing?.category==='Health'?'selected':''}>Health</option><option ${existing?.category==='Growth'?'selected':''}>Growth</option><option ${!existing||existing?.category==='Personal'?'selected':''}>Personal</option></select></div><div><label class="text-xs font-semibold text-muted uppercase">Priority</label><select id="new-task-pri" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option ${existing?.priority==='High'?'selected':''}>High</option><option ${!existing||existing?.priority==='Medium'?'selected':''}>Medium</option><option ${existing?.priority==='Low'?'selected':''}>Low</option></select></div></div>
                 </div>`;
             document.getElementById('modal-confirm').onclick = () => {
                 const title = document.getElementById('new-task-title').value.trim();
@@ -987,8 +989,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 if (!title) return showFieldError('new-task-title','Please enter an activity title to save.');
                 if (!date) return showFieldError('new-task-date','Please select a date to save this activity.');
                 const time = `${document.getElementById('new-task-hour').value}:${document.getElementById('new-task-minute').value} ${document.getElementById('new-task-ampm').value}`;
-                appState.tasks.push({id:Date.now(),title,date,time,category:document.getElementById('new-task-cat').value,priority:document.getElementById('new-task-pri').value,completed:false});
-                saveState(); modal.classList.add('hidden'); router('routine'); showToast('Activity added successfully!','success');
+                const row={...(existing||{}),id:existing?.id??Date.now(),title,date,time,category:document.getElementById('new-task-cat').value,priority:document.getElementById('new-task-pri').value,completed:existing?.completed||false};
+                if(existing)appState.tasks=appState.tasks.map(t=>t.id===existing.id?row:t);else appState.tasks.push(row);
+                saveState(); modal.classList.add('hidden'); router('routine'); showToast(existing?'Activity updated successfully!':'Activity added successfully!','success');
             };
             document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden'); modal.classList.remove('hidden');
         }
@@ -997,7 +1000,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const task = appState.tasks.find(t => t.id === id);
             if (task) {
                 task.completed = !task.completed;
-                if (task.completed) addXP(10);
+                if(task.completed){task.completedAt=new Date().toISOString();if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;addXP(10);}}else task.completedAt=null;
                 saveState();
                 renderRoutine(document.getElementById('main-viewport'));
                 lucide.createIcons();
@@ -1005,6 +1008,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function deleteRoutineTask(id) {
+            if(!confirm('Delete this task?'))return;
             appState.tasks = appState.tasks.filter(t => t.id !== id);
             saveState();
             renderRoutine(document.getElementById('main-viewport'));
@@ -1017,37 +1021,56 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         let habitCalendarYear = new Date().getFullYear();
         let habitCalendarMonth = new Date().getMonth();
         function localDateKey(date=new Date()) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
-        function getHabitStreak(h) {
-            const dates = new Set(Array.isArray(h.completedDates)?h.completedDates:[]);
-            if (!dates.size) return Math.max(0, Number(h.streak) || 0);
-            let cursor = new Date();
-            if (!dates.has(localDateKey(cursor))) cursor.setDate(cursor.getDate()-1);
+        function isHabitScheduledDate(h,key){if(h.paused)return false;const d=new Date(key+'T12:00:00');const day=d.getDay();const f=(h.frequency||'Daily').toLowerCase();if(f==='weekdays')return day>=1&&day<=5;if(f==='weekends')return day===0||day===6;return true;}
+        function isHabitCompletedInWeek(h,key=localDateKey()){const d=new Date(key+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));const start=localDateKey(d);const endDate=new Date(d);endDate.setDate(endDate.getDate()+6);const end=localDateKey(endDate);return (h.completedDates||[]).some(date=>date>=start&&date<=end);}
+        function isHabitCompleteForPeriod(h,key=localDateKey()){return (h.frequency||'Daily').toLowerCase()==='weekly'?isHabitCompletedInWeek(h,key):(h.completedDates||[]).includes(key);}
+        function getHabitStreak(h){
+            if(h.paused)return 0;
+            const dates=new Set(Array.isArray(h.completedDates)?h.completedDates:[]);
+            if(!dates.size)return 0;
+            const frequency=(h.frequency||'Daily').toLowerCase();
+            if(frequency==='weekly'){
+                const weekKey=date=>{const d=new Date(date);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return localDateKey(d);};
+                const completedWeeks=new Set([...dates].map(key=>weekKey(new Date(key+'T12:00:00'))));
+                let cursor=new Date();cursor.setHours(12,0,0,0);let currentWeek=weekKey(cursor);
+                if(!completedWeeks.has(currentWeek)){cursor.setDate(cursor.getDate()-7);currentWeek=weekKey(cursor);}
+                let count=0;while(completedWeeks.has(currentWeek)&&count<5000){count++;const d=new Date(currentWeek+'T12:00:00');d.setDate(d.getDate()-7);currentWeek=weekKey(d);}return count;
+            }
+            let cursor=new Date();cursor.setHours(12,0,0,0);
+            if(!isHabitScheduledDate(h,localDateKey(cursor))||!dates.has(localDateKey(cursor))){
+                cursor.setDate(cursor.getDate()-1);
+                while(!isHabitScheduledDate(h,localDateKey(cursor))&&cursor.getFullYear()>2000)cursor.setDate(cursor.getDate()-1);
+            }
             let count=0;
-            while (dates.has(localDateKey(cursor)) && count<5000) { count++; cursor.setDate(cursor.getDate()-1); }
+            while(count<5000){const key=localDateKey(cursor);if(!isHabitScheduledDate(h,key))break;if(!dates.has(key))break;count++;cursor.setDate(cursor.getDate()-1);while(!isHabitScheduledDate(h,localDateKey(cursor))&&cursor.getFullYear()>2000)cursor.setDate(cursor.getDate()-1);}
             return count;
         }
+
         function renderHabits(container) {
             if (activeHabitCalendarId !== null) return renderHabitCalendar(container, activeHabitCalendarId);
             const today=localDateKey();
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=h.completedDates.includes(today);return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${h.category||'Personal'}</span><h3 class="font-bold text-lg mt-2">${h.title}</h3></div><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="font-bold"><i data-lucide="flame" class="inline w-4 h-4 text-warning"></i> ${getHabitStreak(h)} day streak</span><span class="text-xs ${done?'text-success':'text-muted'}">${done?'Completed today':'Not completed today'}</span></div><p class="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=isHabitCompleteForPeriod(h,today);const status=done?((h.frequency||'Daily').toLowerCase()==='weekly'?'Completed this week':'Completed today'):h.paused?'Tracking paused':(h.frequency||'Daily')==='Weekly'?'Due this week':isHabitScheduledDate(h,today)?'Not completed today':'Not scheduled today';return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${escapeHTML(h.category||'Personal')}</span><h3 class="font-bold text-lg mt-2">${escapeHTML(h.title)}</h3></div></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="text-xs font-semibold text-muted">${h.paused?'Paused':(h.frequency||'Daily')}</span><span class="text-xs ${done?'text-success':'text-muted'}">${status}</span></div><div class="flex gap-2"><button onclick="event.stopPropagation();toggleHabitPause(${h.id})" class="flex-1 py-2 rounded-xl bg-surfaceLight text-xs font-semibold">${h.paused?'Resume':'Pause'}</button><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="px-3 py-2 rounded-xl bg-danger/10 text-danger text-xs font-semibold">Delete</button></div><p class="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
         }
         function openHabitCalendar(id){activeHabitCalendarId=id;habitCalendarYear=new Date().getFullYear();habitCalendarMonth=new Date().getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function changeHabitCalendarMonth(delta){habitCalendarMonth+=delta;const d=new Date(habitCalendarYear,habitCalendarMonth,1);habitCalendarYear=d.getFullYear();habitCalendarMonth=d.getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function renderHabitCalendar(container,id){
             const h=appState.habits.find(x=>x.id===id);if(!h){activeHabitCalendarId=null;return renderHabits(container);}if(!Array.isArray(h.completedDates))h.completedDates=[];
             const first=new Date(habitCalendarYear,habitCalendarMonth,1),offset=first.getDay(),days=new Date(habitCalendarYear,habitCalendarMonth+1,0).getDate(),today=localDateKey();
-            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':future?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${h.title}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} days</p></div></div>`;
+            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today,notScheduled=!isHabitScheduledDate(h,key);cells.push(`<button ${(future||notScheduled)?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||notScheduled)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${escapeHTML(h.title)}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} ${(h.frequency||'Daily').toLowerCase()==='weekly'?'weeks':'days'}</p></div></div>`;
         }
-        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey())return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
+        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey()||!isHabitScheduledDate(h,date))return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);if(!Array.isArray(h.xpAwardedDates))h.xpAwardedDates=[];if(!h.xpAwardedDates.includes(date)){h.xpAwardedDates.push(date);appState.lifetimeHabitsCompleted=(Number(appState.lifetimeHabitsCompleted)||0)+1;}}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);evaluateAchievements();saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function openAddHabitModal() {
-            const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
-            document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><div><label for="new-habit-title" class="block text-sm font-semibold">Habit Name <span class="text-red-500">*</span></label><input type="text" id="new-habit-title" required placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></div><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select></div>`;
-            document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-habit-title').value.trim();if(!title)return showFieldError('new-habit-title','Please enter a habit name to save.');appState.habits.push({id:Date.now(),title,category:document.getElementById('new-habit-cat').value,completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();modal.classList.add('hidden');activeHabitCalendarId=null;router('habits');showToast('Habit added successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
+            const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent='Add Habit';document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
+            document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><div><label for="new-habit-title" class="block text-sm font-semibold">Habit Name <span class="text-red-500">*</span></label><input type="text" id="new-habit-title" required placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></div><div class="grid grid-cols-2 gap-3"><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select><select id="new-habit-frequency" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Daily</option><option>Weekdays</option><option>Weekends</option><option>Weekly</option></select></div></div>`;
+            document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-habit-title').value.trim();if(!title)return showFieldError('new-habit-title','Please enter a habit name to save.');appState.habits.push({id:Date.now(),title,category:document.getElementById('new-habit-cat').value,frequency:document.getElementById('new-habit-frequency').value,completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();modal.classList.add('hidden');activeHabitCalendarId=null;router('habits');showToast('Habit added successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
         }
         function toggleHabitToday(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];toggleHabitDate(id,localDateKey());}
 
+        function toggleHabitPause(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;h.paused=!h.paused;saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();showToast(h.paused?'Habit tracking paused.':'Habit tracking resumed.','info');}
+
         function deleteHabit(id) {
+            if(!confirm('Delete this habit and its calendar history?'))return;
             appState.habits = appState.habits.filter(h => h.id !== id);
             saveState();
             renderHabits(document.getElementById('main-viewport'));
@@ -1060,12 +1083,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderGoals(container){
             if(activeGoalDetailId!==null)return renderGoalDetail(container,activeGoalDetailId);
             appState.goals.forEach(normalizeGoal);
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold"><i data-lucide="target" class="inline w-6 h-6 text-secondary"></i> Goal Management</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-secondary/30 bg-secondary/10 px-3 py-2 text-sm font-semibold text-secondary"><i data-lucide="list-checks" class="w-4 h-4"></i> Tap a goal to view and update its steps</p></div><button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Goal</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5">${appState.goals.map(g=>`<div onclick="openGoalDetail(${g.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex justify-between gap-3"><span class="text-xs text-secondary">${g.category||'Personal'}</span><button onclick="event.stopPropagation();deleteGoal(${g.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><h3 class="text-lg font-bold">${g.title}</h3><div class="flex justify-between text-xs text-muted"><span>${g.status}</span><span>${g.steps.filter(x=>x.completed).length}/${g.steps.length} steps · ${g.progress}%</span></div><div class="h-2.5 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><p class="mt-2 rounded-lg border border-secondary/30 bg-secondary/10 px-3 py-2 text-sm font-semibold text-secondary">↗ Tap to view progress</p></div>`).join('')||'<p class="text-sm text-muted">No goals yet. Create your first goal.</p>'}</div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold"><i data-lucide="target" class="inline w-6 h-6 text-secondary"></i> Goal Management</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-secondary/30 bg-secondary/10 px-3 py-2 text-sm font-semibold text-secondary"><i data-lucide="list-checks" class="w-4 h-4"></i> Tap a goal to view and update its steps</p></div><button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Goal</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5">${appState.goals.map(g=>`<div onclick="openGoalDetail(${g.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex justify-between gap-3"><span class="text-xs text-secondary">${escapeHTML(g.category||'Personal')}</span><button onclick="event.stopPropagation();deleteGoal(${g.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><h3 class="text-lg font-bold">${escapeHTML(g.title)}</h3><div class="flex justify-between text-xs text-muted"><span>${g.status}</span><span>${g.steps.filter(x=>x.completed).length}/${g.steps.length} steps · ${g.progress}%</span></div><div class="h-2.5 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><p class="mt-2 rounded-lg border border-secondary/30 bg-secondary/10 px-3 py-2 text-sm font-semibold text-secondary">↗ Tap to view progress</p></div>`).join('')||'<p class="text-sm text-muted">No goals yet. Create your first goal.</p>'}</div></div>`;
         }
         function openGoalDetail(id){activeGoalDetailId=id;renderGoals(document.getElementById('main-viewport'));lucide.createIcons();}
-        function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Goals</button><div><h2 class="text-2xl font-bold">${g.title}</h2><p class="text-sm text-muted">${g.status} · Target ${g.targetDate||'Not set'}</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${step.text}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
-        function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;normalizeGoal(g);saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed!','success');}
-        function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
+        function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Goals</button><div><h2 class="text-2xl font-bold">${escapeHTML(g.title)}</h2><p class="text-sm text-muted">${escapeHTML(g.status)} · Target ${escapeHTML(g.targetDate||'Not set')}</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${escapeHTML(step.text)}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
+        function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;normalizeGoal(g);if(g.status==='Completed'&&!g.xpAwarded){g.xpAwarded=true;}evaluateAchievements();saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed!','success');}
+        function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent='Add Step';document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
         function openAddGoalModal(){
             const modal=document.getElementById('app-modal');
             document.getElementById('modal-title').innerText='Create New Goal';
@@ -1096,6 +1119,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function deleteGoal(id) {
+            const goal=appState.goals.find(g=>g.id===id);if(!goal||!confirm(`Delete goal \"${goal.title}\" and its steps?`))return;
             appState.goals = appState.goals.filter(g => g.id !== id);
             saveState();
             renderGoals(document.getElementById('main-viewport'));
@@ -1180,7 +1204,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                         <div class="flex items-center gap-3 bg-surfaceLight/50 p-2 rounded-2xl border border-white/5">
                             <button onclick="changeCalendarMonth(-1)" class="p-2 rounded-xl hover:bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
                             <span class="font-bold text-sm min-w-[140px] text-center">${monthNames[calendarMonth]} ${calendarYear}</span>
-                            <button onclick="changeCalendarMonth(1)" class="p-2 rounded-xl hover:bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                            <button onclick="changeCalendarMonth(1)" ${calendarYear===new Date().getFullYear()&&calendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl hover:bg-surfaceLight text-muted hover:text-white transition"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
                         </div>
                     </div>
 
@@ -1238,6 +1262,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function changeCalendarMonth(direction) {
+            if(direction>0 && calendarYear===new Date().getFullYear() && calendarMonth>=new Date().getMonth()) return;
             calendarMonth += direction;
             if (calendarMonth > 11) {
                 calendarMonth = 0;
@@ -1264,10 +1289,10 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     <div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="shield" class="w-6 h-6 text-primary"></i> Self-Control Center</h2><p class="text-muted text-sm">Build your own commitments and track the days you successfully follow them.</p></div>
                     <div class="glass-panel p-6 rounded-3xl space-y-4">
                         <div class="flex items-center justify-between gap-3"><div><h3 class="font-bold text-lg">My Self-Control Commitments</h3><p class="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">Tap a commitment to view your activity calendar</p></div><button onclick="openAddSelfControlItemModal()" class="px-3 py-2 rounded-xl bg-primary text-white text-sm font-semibold">+ Add</button></div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${(appState.selfControlItems||[]).map(item=>`<div role="button" tabindex="0" onclick="openSelfControlCalendar(${item.id})" onkeydown="if(event.key==='Enter')openSelfControlCalendar(${item.id})" class="p-4 rounded-2xl bg-surfaceLight/40 border border-white/10 cursor-pointer hover:border-primary/40 space-y-3"><div class="flex items-start justify-between gap-3"><span class="font-semibold text-sm">${item.text}</span><button onclick="event.stopPropagation();deleteSelfControlItem(${item.id})" class="p-2 text-muted hover:text-danger" aria-label="Delete commitment"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><p class="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`).join('')||'<p class="text-sm text-muted py-4">No personal commitments yet. Add your first commitment to begin tracking.</p>'}</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${(appState.selfControlItems||[]).map(item=>`<div role="button" tabindex="0" onclick="openSelfControlCalendar(${item.id})" onkeydown="if(event.key==='Enter')openSelfControlCalendar(${item.id})" class="p-4 rounded-2xl bg-surfaceLight/40 border border-white/10 cursor-pointer hover:border-primary/40 space-y-3"><div class="flex items-start justify-between gap-3"><span class="font-semibold text-sm">${escapeHTML(item.text)}</span><button onclick="event.stopPropagation();deleteSelfControlItem(${item.id})" class="p-2 text-muted hover:text-danger" aria-label="Delete commitment"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><p class="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`).join('')||'<p class="text-sm text-muted py-4">No personal commitments yet. Add your first commitment to begin tracking.</p>'}</div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="lock" class="w-5 h-5 text-secondary"></i> Personal Rules</h3><button onclick="openAddRuleModal()" class="text-sm text-primary font-semibold hover:underline">+ Add Rule</button></div><div class="space-y-3">${(appState.rules||[]).map(r=>`<div class="p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 flex items-center justify-between"><p class="text-sm text-muted">"${r.rule}"</p><button onclick="deleteRule(${r.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('')||'<p class="text-sm text-muted">No personal rules yet. Add your first rule.</p>'}</div></div>
+                        <div class="glass-panel p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="lock" class="w-5 h-5 text-secondary"></i> Personal Rules</h3><button onclick="openAddRuleModal()" class="text-sm text-primary font-semibold hover:underline">+ Add Rule</button></div><div class="space-y-3">${(appState.rules||[]).map(r=>`<div class="p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 flex items-center justify-between"><p class="text-sm text-muted">"${escapeHTML(r.rule)}"</p><button onclick="deleteRule(${r.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('')||'<p class="text-sm text-muted">No personal rules yet. Add your first rule.</p>'}</div></div>
                     </div>
                 </div>`;
         }
@@ -1281,7 +1306,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const first=new Date(selfControlCalendarYear,selfControlCalendarMonth,1),offset=first.getDay(),days=new Date(selfControlCalendarYear,selfControlCalendarMonth+1,0).getDate(),today=localDateKey();
             const cells=Array.from({length:offset},()=>'<div></div>');
             for(let day=1;day<=days;day++){const key=`${selfControlCalendarYear}-${String(selfControlCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=item.completedDates.includes(key),future=key>today,beforeStart=!!item.startDate&&key<item.startDate;cells.push(`<button ${(future||beforeStart)?'disabled':''} onclick="toggleSelfControlDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||beforeStart)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`);}
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Self-Control</button><div><h2 class="text-2xl font-bold">${item.text}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark each day you successfully followed this commitment. Future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeSelfControlCalendarMonth(-1)" class="p-3 rounded-xl bg-surfaceLight font-bold" aria-label="Previous month">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeSelfControlCalendarMonth(1)" ${selfControlCalendarYear===new Date().getFullYear()&&selfControlCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-3 rounded-xl bg-surfaceLight font-bold disabled:opacity-30" aria-label="Next month">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-sm font-medium text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Successfully followed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Successful days recorded: ${item.completedDates.length}</p></div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Self-Control</button><div><h2 class="text-2xl font-bold">${escapeHTML(item.text)}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark each day you successfully followed this commitment. Future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeSelfControlCalendarMonth(-1)" class="p-3 rounded-xl bg-surfaceLight font-bold" aria-label="Previous month">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeSelfControlCalendarMonth(1)" ${selfControlCalendarYear===new Date().getFullYear()&&selfControlCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-3 rounded-xl bg-surfaceLight font-bold disabled:opacity-30" aria-label="Next month">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-sm font-medium text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Successfully followed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Successful days recorded: ${item.completedDates.length}</p></div></div>`;
         }
         function toggleSelfControlDate(id,date){const item=(appState.selfControlItems||[]).find(x=>x.id===id);if(!item||date>localDateKey()||(item.startDate&&date<item.startDate))return;if(!Array.isArray(item.completedDates))item.completedDates=[];const i=item.completedDates.indexOf(date);if(i>=0)item.completedDates.splice(i,1);else item.completedDates.push(date);item.completedDates=[...new Set(item.completedDates)].sort();saveState();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();}
         function toggleChallenge(id) {
@@ -1297,6 +1322,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function openAddSelfControlItemModal() {
             const modal = document.getElementById('app-modal');
+            document.getElementById('modal-confirm').textContent='Add Commitment';document.getElementById('modal-cancel').textContent='Cancel';
             document.getElementById('modal-title').innerText = 'Add Self-Control Commitment';
             document.getElementById('modal-desc').innerText = 'Create a personal commitment and choose when you want to start tracking it.';
             document.getElementById('modal-content').innerHTML = `
@@ -1328,6 +1354,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function deleteSelfControlItem(id) {
             const modal = document.getElementById('app-modal');
+            document.getElementById('modal-confirm').textContent='Delete';document.getElementById('modal-cancel').textContent='Cancel';
             document.getElementById('modal-title').innerText = 'Delete commitment?';
             document.getElementById('modal-desc').innerText = 'This will also delete its activity calendar history. This cannot be undone.';
             document.getElementById('modal-content').innerHTML = '';
@@ -1346,6 +1373,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function openAddRuleModal() {
             const modal = document.getElementById('app-modal');
+            document.getElementById('modal-confirm').textContent='Add Rule';document.getElementById('modal-cancel').textContent='Cancel';
             document.getElementById('modal-title').innerText = "Add Personal Rule";
             document.getElementById('modal-desc').innerText = "Create an unyielding law for your daily routine.";
             document.getElementById('modal-content').innerHTML = `
@@ -1368,6 +1396,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function deleteRule(id) {
+            const rule=appState.rules.find(r=>r.id===id);if(!rule||!confirm('Delete this personal rule?'))return;
             appState.rules = appState.rules.filter(r => r.id !== id);
             saveState();
             renderSelfControl(document.getElementById('main-viewport'));
@@ -1499,125 +1528,50 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function resetFocusTimer() { stopFocusTimer(); }
 
+        let financeSearchText = '';
+        let financeTypeFilter = 'all';
+        let financeReportPeriod = 'month';
+        function financeMonthKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;}
         function renderFinance(container) {
-            const totalIncome = appState.expenses.filter(e => e.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
-            const totalExpense = appState.expenses.filter(e => e.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
-            const balance = totalIncome - totalExpense;
-
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-2xl font-bold flex items-center gap-2">
-                                <i data-lucide="wallet" class="w-6 h-6 text-warning"></i> Personal Expense Tracker
-                            </h2>
-                            <p class="text-muted text-sm">Monitor your cash flow, savings, and monthly financial balance.</p>
-                        </div>
-                        <button onclick="openAddExpenseModal()" class="px-4 py-2.5 rounded-xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm flex items-center gap-2 transition shadow-lg shadow-warning/20">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Add Transaction
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="glass-panel p-5 rounded-3xl space-y-1">
-                            <span class="text-xs font-semibold text-muted uppercase">Total Income</span>
-                            <p class="text-3xl font-bold text-success">₹${totalIncome.toLocaleString()}</p>
-                        </div>
-                        <div class="glass-panel p-5 rounded-3xl space-y-1">
-                            <span class="text-xs font-semibold text-muted uppercase">Total Expenses</span>
-                            <p class="text-3xl font-bold text-danger">₹${totalExpense.toLocaleString()}</p>
-                        </div>
-                        <div class="glass-panel p-5 rounded-3xl space-y-1">
-                            <span class="text-xs font-semibold text-muted uppercase">Net Balance</span>
-                            <p class="text-3xl font-bold text-warning">₹${balance.toLocaleString()}</p>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel p-6 rounded-3xl space-y-4">
-                        <h3 class="font-bold text-lg">Transaction History</h3>
-                        <div class="space-y-3">
-                            ${appState.expenses.map(e => `
-                                <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/40 border border-white/5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl ${e.type === 'income' ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'} flex items-center justify-center font-bold">
-                                            ${e.type === 'income' ? 'IN' : 'EX'}
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold">${e.title}</p>
-                                            <span class="text-xs text-muted">${e.date} • ${e.category}</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <span class="font-bold text-base ${e.type === 'income' ? 'text-success' : 'text-danger'}">${e.type === 'income' ? '+' : '-'}₹${e.amount.toLocaleString()}</span>
-                                        <button onclick="deleteExpense(${e.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
+            if(!Array.isArray(appState.expenses))appState.expenses=[];
+            if(!appState.financeBudgets||typeof appState.financeBudgets!=='object')appState.financeBudgets={};
+            const month=financeMonthKey();const budget=Number(appState.financeBudgets[month]?.total)||0;
+            const monthRows=appState.expenses.filter(e=>(e.date||'').startsWith(month));
+            const todayKey=localDateKey();const weekStart=new Date();weekStart.setHours(12,0,0,0);weekStart.setDate(weekStart.getDate()-6);const weekStartKey=localDateKey(weekStart);const reportRows=appState.expenses.filter(e=>financeReportPeriod==='day'?e.date===todayKey:financeReportPeriod==='week'?e.date>=weekStartKey&&e.date<=todayKey:(e.date||'').startsWith(month));const reportIncome=reportRows.filter(e=>e.type==='income').reduce((n,e)=>n+(Number(e.amount)||0),0);const reportExpense=reportRows.filter(e=>e.type!=='income').reduce((n,e)=>n+(Number(e.amount)||0),0);const reportCategories=[...new Set(reportRows.filter(e=>e.type!=='income').map(e=>e.category||'General'))].map(name=>({name,total:reportRows.filter(e=>e.type!=='income'&&(e.category||'General')===name).reduce((n,e)=>n+(Number(e.amount)||0),0)})).sort((a,b)=>b.total-a.total).slice(0,5);
+            const totalIncome=monthRows.filter(e=>e.type==='income').reduce((a,e)=>a+(Number(e.amount)||0),0);
+            const totalExpense=monthRows.filter(e=>e.type!=='income').reduce((a,e)=>a+(Number(e.amount)||0),0);
+            const balance=totalIncome-totalExpense;const budgetPct=budget?Math.min(100,Math.round(totalExpense/budget*100)):0;
+            const filtered=appState.expenses.filter(e=>(financeTypeFilter==='all'||e.type===financeTypeFilter)&&(`${e.title} ${e.category} ${e.date} ${e.notes||''}`).toLowerCase().includes(financeSearchText.toLowerCase())).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+            container.innerHTML=`<div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="wallet" class="w-6 h-6 text-primary"></i> Income & Expense Tracker</h2><p class="text-sm text-muted">Track money you receive and spend. No bank connection or banking credentials are used.</p></div><div class="flex flex-wrap gap-2"><button onclick="openAddExpenseModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-bold">+ Add Transaction</button><button onclick="document.getElementById('finance-import-file').click()" class="px-4 py-2.5 rounded-xl bg-surfaceLight text-sm font-semibold">Import Statement</button><button onclick="exportFinanceCSV()" class="px-4 py-2.5 rounded-xl bg-surfaceLight text-sm font-semibold">Export CSV</button><input id="finance-import-file" type="file" accept=".csv,.pdf,text/csv,application/pdf" class="hidden" onchange="importFinanceStatement(this)"></div></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3"><div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Income this month</p><p class="text-2xl font-bold text-success">₹${totalIncome.toFixed(2)}</p></div><div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Expenses this month</p><p class="text-2xl font-bold text-danger">₹${totalExpense.toFixed(2)}</p></div><div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Monthly balance</p><p class="text-2xl font-bold">₹${balance.toFixed(2)}</p></div></div>
+                <div class="glass-panel p-5 rounded-2xl space-y-3"><div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-bold">Monthly budget</h3><p class="text-xs text-muted">${month} · Set a spending limit for this month</p></div><div class="flex gap-2"><input id="finance-budget-input" type="number" min="0" step="0.01" value="${budget||''}" placeholder="Set budget ₹" class="w-36 px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><button onclick="saveFinanceBudget()" class="px-3 py-2 rounded-xl bg-primary text-white text-sm font-bold">Save</button></div></div><div class="h-3 rounded-full bg-surfaceLight overflow-hidden"><div class="h-full rounded-full ${budgetPct>=100?'bg-danger':budgetPct>=75?'bg-warning':'bg-primary'}" style="width:${budgetPct}%"></div></div><p class="text-xs text-muted">${budget?`₹${totalExpense.toFixed(2)} of ₹${budget.toFixed(2)} used (${budgetPct}%). ${budgetPct>=100?'Budget reached or exceeded.':budgetPct>=90?'Warning: 90% of budget used.':budgetPct>=75?'Heads up: 75% of budget used.':'Within budget.'}`:'No monthly budget set yet.'}</p><div class="pt-3 border-t border-white/10 space-y-2"><p class="text-sm font-semibold">Category budgets</p><div class="grid grid-cols-1 sm:grid-cols-3 gap-2"><input id="finance-category-name" placeholder="Category name" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><input id="finance-category-amount" type="number" min="0.01" step="0.01" placeholder="Limit ₹" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><button onclick="saveFinanceCategoryBudget()" class="px-3 py-2 rounded-xl bg-surfaceLight text-sm font-bold">Save category limit</button></div>${Object.entries(appState.financeBudgets[month]?.categories||{}).map(([name,limit])=>{const spent=monthRows.filter(e=>e.type!=='income'&&(e.category||'General').toLowerCase()===name.toLowerCase()).reduce((n,e)=>n+(Number(e.amount)||0),0);const pct=limit?Math.min(100,Math.round(spent/limit*100)):0;return `<div class="flex items-center justify-between gap-3 text-xs"><span>${escapeHTML(name)} · ₹${spent.toFixed(2)} / ₹${Number(limit).toFixed(2)}</span><span class="font-bold ${pct>=100?'text-danger':pct>=75?'text-warning':'text-muted'}">${pct}%</span></div>`}).join('')}</div></div>
+                <div class="glass-panel p-5 rounded-2xl space-y-3"><div class="flex items-center justify-between gap-3"><div><h3 class="font-bold">Reports & spending breakdown</h3><p class="text-xs text-muted">Compare your recorded income and expenses.</p></div><select onchange="financeReportPeriod=this.value;renderFinance(document.getElementById('main-viewport'))" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option value="day" ${financeReportPeriod==='day'?'selected':''}>Daily</option><option value="week" ${financeReportPeriod==='week'?'selected':''}>Last 7 days</option><option value="month" ${financeReportPeriod==='month'?'selected':''}>Monthly</option></select></div><div class="grid grid-cols-2 gap-3"><div><p class="text-xs text-muted">Income</p><p class="text-xl font-bold text-success">₹${reportIncome.toFixed(2)}</p></div><div><p class="text-xs text-muted">Expenses</p><p class="text-xl font-bold text-danger">₹${reportExpense.toFixed(2)}</p></div></div><div class="pt-2 border-t border-white/10"><p class="text-xs font-semibold text-muted mb-2">Top expense categories</p>${reportCategories.map(c=>`<div class="flex justify-between text-xs py-1"><span>${escapeHTML(c.name)}</span><strong>₹${c.total.toFixed(2)}</strong></div>`).join('')||'<p class="text-xs text-muted">No expenses in this period.</p>'}</div></div>
+                <div class="glass-panel p-5 rounded-2xl space-y-3"><div class="flex flex-col sm:flex-row gap-2"><input value="${escapeHTML(financeSearchText)}" onchange="financeSearchText=this.value;renderFinance(document.getElementById('main-viewport'))" onkeydown="if(event.key==='Enter'){financeSearchText=this.value;renderFinance(document.getElementById('main-viewport'))}" placeholder="Search transactions..." class="flex-1 px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><select onchange="financeTypeFilter=this.value;renderFinance(document.getElementById('main-viewport'))" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option value="all" ${financeTypeFilter==='all'?'selected':''}>All types</option><option value="income" ${financeTypeFilter==='income'?'selected':''}>Income</option><option value="expense" ${financeTypeFilter==='expense'?'selected':''}>Expenses</option></select></div><h3 class="font-bold">Transaction history</h3>${filtered.map(e=>`<div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-surfaceLight/40 border border-white/5"><div class="min-w-0"><p class="font-semibold truncate">${escapeHTML(e.title||'Transaction')}</p><p class="text-xs text-muted">${escapeHTML(e.date||'')} · ${escapeHTML(e.category||'General')} ${e.paymentMethod?'· '+escapeHTML(e.paymentMethod):''}</p>${e.notes?`<p class="text-xs text-muted mt-1">${escapeHTML(e.notes)}</p>`:''}</div><div class="flex items-center gap-2 shrink-0"><strong class="text-sm ${e.type==='income'?'text-success':'text-danger'}">${e.type==='income'?'+':'−'}₹${(Number(e.amount)||0).toFixed(2)}</strong><button onclick="openAddExpenseModal(${e.id})" class="p-2 text-muted" aria-label="Edit transaction"><i data-lucide="pencil" class="w-4 h-4"></i></button><button onclick="deleteExpense(${e.id})" class="p-2 text-muted hover:text-danger" aria-label="Delete transaction"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div>`).join('')||'<p class="text-sm text-muted py-5 text-center">No matching transactions yet.</p>'}</div>
+            </div>`;
+            if(window.lucide)lucide.createIcons();
         }
-
-        function openAddExpenseModal() {
-            const modal = document.getElementById('app-modal');
-            document.getElementById('modal-title').innerText = "Add Transaction";
-            document.getElementById('modal-desc').innerText = "Record income or expense transaction.";
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
-                    <div>
-                        <label for="exp-title" class="block text-sm font-semibold">Title / Description <span class="text-red-500">*</span></label>
-                        <input type="text" id="exp-title" required placeholder="e.g. Freelance Client Payment" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label for="exp-amount" class="block text-sm font-semibold">Amount (₹) <span class="text-red-500">*</span></label>
-                            <input type="number" id="exp-amount" required min="0.01" placeholder="1500" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Type</label>
-                            <select id="exp-type" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                                <option value="expense">Expense</option>
-                                <option value="income">Income</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="exp-date" class="block text-sm font-semibold">Add Date <span class="text-red-500">*</span></label>
-                        <input type="date" id="exp-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Category</label>
-                        <input type="text" id="exp-cat" placeholder="Work / Living / Server" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
-                    </div>
-                </div>
-            `;
-            document.getElementById('modal-confirm').onclick = () => {
-                const title = document.getElementById('exp-title').value.trim();
-                const amount = parseFloat(document.getElementById('exp-amount').value);
-                const type = document.getElementById('exp-type').value;
-                const category = document.getElementById('exp-cat').value.trim() || "General";
-                const date = document.getElementById('exp-date').value;
-                if (!title) return showFieldError('exp-title','Please enter a transaction title to save.');
-                if (isNaN(amount) || amount <= 0) return showFieldError('exp-amount','Please enter an amount greater than zero.');
-                if (!date) return showFieldError('exp-date','Please select a date to save this transaction.');
-                
-                appState.expenses.push({ id: Date.now(), title, amount, type, category, date });
-                saveState();
-                modal.classList.add('hidden');
-                router('finance');
-                showToast("Transaction recorded.", "success");
-            };
-            document.getElementById('modal-cancel').onclick = () => modal.classList.add('hidden');
-            modal.classList.remove('hidden');
+        function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+        function saveFinanceCategoryBudget(){const name=document.getElementById('finance-category-name')?.value.trim(),value=Number(document.getElementById('finance-category-amount')?.value);if(!name){showToast('Enter a category name.','danger');return;}if(!Number.isFinite(value)||value<=0){showToast('Enter a category limit greater than zero.','danger');return;}const month=financeMonthKey();if(!appState.financeBudgets)appState.financeBudgets={};if(!appState.financeBudgets[month])appState.financeBudgets[month]={total:0,categories:{}};if(!appState.financeBudgets[month].categories)appState.financeBudgets[month].categories={};appState.financeBudgets[month].categories[name]=value;saveState();renderFinance(document.getElementById('main-viewport'));showToast('Category budget saved.','success');}
+        function saveFinanceBudget(){const value=Number(document.getElementById('finance-budget-input')?.value);if(!Number.isFinite(value)||value<0){showToast('Enter a valid budget amount.','danger');return;}const month=financeMonthKey();if(!appState.financeBudgets)appState.financeBudgets={};appState.financeBudgets[month]={...(appState.financeBudgets[month]||{}),total:value};saveState();renderFinance(document.getElementById('main-viewport'));showToast('Monthly budget saved.','success');}
+        function openAddExpenseModal(id=null){
+            const existing=id==null?null:appState.expenses.find(x=>String(x.id)===String(id));const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent=existing?'Save Changes':'Add Transaction';document.getElementById('modal-cancel').textContent='Cancel';
+            document.getElementById('modal-title').innerText=existing?'Edit Transaction':'Add Transaction';document.getElementById('modal-desc').innerText='Record income or an expense manually.';
+            document.getElementById('modal-content').innerHTML=`<div class="space-y-3"><div><label for="exp-title" class="block text-sm font-semibold">Title <span class="text-red-500">*</span></label><input id="exp-title" required value="${escapeHTML(existing?.title||'')}" placeholder="Description" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><div class="grid grid-cols-2 gap-2"><div><label for="exp-amount" class="block text-sm font-semibold">Amount ₹ <span class="text-red-500">*</span></label><input id="exp-amount" type="number" min="0.01" step="0.01" required value="${existing?.amount??''}" placeholder="0.00" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><div><label class="block text-sm font-semibold">Type</label><select id="exp-type" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"><option value="expense" ${existing?.type!=='income'?'selected':''}>Expense</option><option value="income" ${existing?.type==='income'?'selected':''}>Income</option></select></div></div><div><label for="exp-date" class="block text-sm font-semibold">Date <span class="text-red-500">*</span></label><input id="exp-date" type="date" required value="${escapeHTML(existing?.date||'')}" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><div><label for="exp-cat" class="block text-sm font-semibold">Category</label><input id="exp-cat" value="${escapeHTML(existing?.category||'General')}" placeholder="Food, travel, salary..." class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><div><label for="exp-method" class="block text-sm font-semibold">Payment method (optional)</label><input id="exp-method" value="${escapeHTML(existing?.paymentMethod||'')}" placeholder="Cash, UPI, card..." class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><div><label for="exp-notes" class="block text-sm font-semibold">Notes (optional)</label><textarea id="exp-notes" rows="2" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${escapeHTML(existing?.notes||'')}</textarea></div></div>`;
+            document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('exp-title').value.trim(),amount=Number(document.getElementById('exp-amount').value),type=document.getElementById('exp-type').value,date=document.getElementById('exp-date').value;if(!title)return showFieldError('exp-title','Please enter a transaction title.');if(!Number.isFinite(amount)||amount<=0)return showFieldError('exp-amount','Please enter an amount greater than zero.');if(!date)return showFieldError('exp-date','Please select a transaction date.');const row={...(existing||{}),id:existing?.id??Date.now(),title,amount,type,date,category:document.getElementById('exp-cat').value.trim()||'General',paymentMethod:document.getElementById('exp-method').value.trim(),notes:document.getElementById('exp-notes').value.trim()};if(existing)appState.expenses=appState.expenses.map(x=>x.id===existing.id?row:x);else appState.expenses.push(row);saveState();modal.classList.add('hidden');renderFinance(document.getElementById('main-viewport'));showToast(existing?'Transaction updated.':'Transaction recorded.','success');};
+            document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
         }
-
-        function deleteExpense(id) {
-            appState.expenses = appState.expenses.filter(e => e.id !== id);
-            saveState();
-            router('finance');
-            showToast("Transaction removed.", "success");
-        }
+        function deleteExpense(id){if(!confirm('Delete this transaction?'))return;appState.expenses=appState.expenses.filter(e=>e.id!==id);saveState();renderFinance(document.getElementById('main-viewport'));showToast('Transaction removed.','success');}
+        function exportFinanceCSV(){const rows=[['Date','Title','Type','Amount','Category','Payment Method','Notes'],...appState.expenses.map(e=>[e.date,e.title,e.type,e.amount,e.category,e.paymentMethod||'',e.notes||''])];const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadTextFile('daily-space-transactions.csv',csv,'text/csv');}
+        function downloadTextFile(filename,content,mime='text/plain'){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+        function normalizeFinanceDate(raw){const value=String(raw||'').trim();if(/^\d{4}-\d{2}-\d{2}$/.test(value)){const d=new Date(value+'T12:00:00');return !Number.isNaN(d.getTime())&&localDateKey(d)===value?value:'';}const m=value.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);if(m){const date=`${m[3]}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`,d=new Date(date+'T12:00:00');return !Number.isNaN(d.getTime())&&localDateKey(d)===date?date:'';}return '';}
+        function parseCSVRows(text){const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++;}else if(c==='"'){quoted=!quoted;}else if(c===','&&!quoted){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);if(row.some(x=>x.trim()))rows.push(row);row=[];cell='';}else cell+=c;}row.push(cell);if(row.some(x=>x.trim()))rows.push(row);return rows;}
+        let pendingPDFTransactions=[];
+        function importFinanceStatement(input){const file=input.files?.[0];if(!file)return;if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')){importFinancePDF(input);return;}importFinanceCSV(input);}
+        function loadPDFJS(){return new Promise((resolve,reject)=>{if(window.pdfjsLib){resolve(window.pdfjsLib);return;}const script=document.createElement('script');script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';script.onload=()=>window.pdfjsLib?resolve(window.pdfjsLib):reject(new Error('PDF reader could not be initialized.'));script.onerror=()=>reject(new Error('Could not load the PDF reader. Check your internet connection.'));document.head.appendChild(script);});}
+        async function importFinancePDF(input){const file=input.files?.[0];if(!file)return;try{showToast('Reading PDF statement…','info');const pdfjs=await loadPDFJS();const bytes=new Uint8Array(await file.arrayBuffer());const pdf=await pdfjs.getDocument({data:bytes,disableWorker:true}).promise;const lines=[];for(let pageNo=1;pageNo<=pdf.numPages;pageNo++){const page=await pdf.getPage(pageNo),content=await page.getTextContent();const grouped=new Map();for(const item of content.items){if(!item.str?.trim())continue;const y=Math.round(item.transform?.[5]||0);if(!grouped.has(y))grouped.set(y,[]);grouped.get(y).push({x:item.transform?.[4]||0,text:item.str});}for(const y of [...grouped.keys()].sort((a,b)=>b-a)){lines.push(grouped.get(y).sort((a,b)=>a.x-b.x).map(x=>x.text).join(' ').replace(/\s+/g,' ').trim());}}const dateRe=/(\d{4}-\d{2}-\d{2}|\d{1,2}[/-]\d{1,2}[/-]\d{4})/;const amountRe=/(?:₹|INR\s*)?(-?\d[\d,]*(?:\.\d{1,2})?)/g;const candidates=[];for(const line of lines){const dm=line.match(dateRe);if(!dm)continue;const amounts=[...line.matchAll(amountRe)].map(m=>m[1]).filter(x=>/[0-9]/.test(x));if(!amounts.length)continue;let date=dm[1];if(/^\d{1,2}[/-]/.test(date)){const parts=date.split(/[/-]/);date=`${parts[2]}-${String(parts[1]).padStart(2,'0')}-${String(parts[0]).padStart(2,'0')}`;}const parsed=new Date(date+'T12:00:00');if(Number.isNaN(parsed.getTime())||localDateKey(parsed)!==date)continue;let title=line.replace(dm[0],' ').replace(amountRe,' ').replace(/\s+/g,' ').trim();title=title.replace(/^(?:opening balance|closing balance|balance brought forward)\s*/i,'').trim();if(title.length<2)title='Imported statement transaction';const raw=amounts[amounts.length-1].replace(/,/g,'');const amount=Math.abs(Number(raw));if(!Number.isFinite(amount)||amount<=0)continue;candidates.push({date,title,amount,type:/\b(?:credit|credited|deposit|cr)\b/i.test(line)?'income':'expense'});}if(!candidates.length)throw new Error('No transaction rows could be identified. This PDF layout may need manual entry or a CSV export from your bank.');pendingPDFTransactions=candidates.slice(0,500);showPDFImportPreview(file.name);}catch(e){showToast(e.message||'Could not read this PDF statement.','danger');}finally{input.value='';}}
+        function showPDFImportPreview(filename){const modal=document.getElementById('app-modal');document.getElementById('modal-title').textContent='Review PDF statement import';document.getElementById('modal-desc').textContent=`${filename} · Check every extracted date, description, amount and transaction type before importing. PDF layouts vary, so values may need correction.`;document.getElementById('modal-content').innerHTML=`<div class="space-y-3 max-h-[52vh] overflow-y-auto">${pendingPDFTransactions.map((r,i)=>`<div class="rounded-xl border border-white/10 bg-surfaceLight/30 p-3 space-y-2"><p class="text-xs font-bold text-primary">Transaction ${i+1}</p><input id="pdf-date-${i}" type="date" value="${r.date}" class="w-full px-2 py-2 rounded-lg bg-surfaceLight border border-white/10 text-sm"><input id="pdf-title-${i}" value="${escapeHTML(r.title)}" class="w-full px-2 py-2 rounded-lg bg-surfaceLight border border-white/10 text-sm"><div class="grid grid-cols-2 gap-2"><input id="pdf-amount-${i}" type="number" min="0.01" step="0.01" value="${r.amount}" class="w-full px-2 py-2 rounded-lg bg-surfaceLight border border-white/10 text-sm"><select id="pdf-type-${i}" class="w-full px-2 py-2 rounded-lg bg-surfaceLight border border-white/10 text-sm"><option value="expense" ${r.type==='expense'?'selected':''}>Expense</option><option value="income" ${r.type==='income'?'selected':''}>Income</option></select></div></div>`).join('')}</div><p class="text-xs text-warning">Review the extracted values carefully. Daily Space does not connect to your bank or verify statement contents.</p>`;document.getElementById('modal-confirm').textContent='Import reviewed rows';document.getElementById('modal-confirm').onclick=()=>{const fresh=[];for(let i=0;i<pendingPDFTransactions.length;i++){const date=document.getElementById(`pdf-date-${i}`).value,title=document.getElementById(`pdf-title-${i}`).value.trim(),amount=Number(document.getElementById(`pdf-amount-${i}`).value),type=document.getElementById(`pdf-type-${i}`).value;if(!date||!title||!Number.isFinite(amount)||amount<=0){showToast(`Please correct transaction ${i+1}.`,'danger');return;}fresh.push({id:Date.now()+i,date,title,amount,type,category:'Imported',paymentMethod:'Statement import',notes:'Imported from PDF statement'});}const existing=new Set(appState.expenses.map(e=>`${e.date}|${e.title.toLowerCase()}|${Number(e.amount).toFixed(2)}|${e.type}`));const unique=fresh.filter(e=>!existing.has(`${e.date}|${e.title.toLowerCase()}|${Number(e.amount).toFixed(2)}|${e.type}`));if(!unique.length){showToast('No new transactions found; possible duplicates were skipped.','info');modal.classList.add('hidden');return;}appState.expenses.push(...unique);saveState();modal.classList.add('hidden');pendingPDFTransactions=[];renderFinance(document.getElementById('main-viewport'));showToast(`${unique.length} reviewed PDF transactions imported.`,'success');};document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-cancel').onclick=()=>{pendingPDFTransactions=[];modal.classList.add('hidden');};modal.classList.remove('hidden');}
+        function importFinanceCSV(input){const file=input.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const rows=parseCSVRows(String(reader.result||''));if(rows.length<2)throw new Error('No transaction rows found.');const header=rows.shift().map(x=>x.trim().toLowerCase());const pick=(r,names)=>{const i=header.findIndex(h=>names.some(n=>h.includes(n)));return i>=0?r[i]?.trim():'';};const parsed=[];for(const r of rows){const date=normalizeFinanceDate(pick(r,['date','transaction date'])),title=pick(r,['description','narration','particular','title','details']),amountRaw=pick(r,['amount','withdrawal','deposit','debit','credit']),typeRaw=pick(r,['type','dr/cr','transaction type']).toLowerCase();let amount=Number(String(amountRaw).replace(/[₹, ]/g,''));if(!date||!title||!Number.isFinite(amount)||amount===0)continue;let type=typeRaw.includes('credit')||typeRaw.includes('income')?'income':'expense';const debit=Number(String(pick(r,['debit'])).replace(/[₹, ]/g,'')),credit=Number(String(pick(r,['credit'])).replace(/[₹, ]/g,''));if(credit>0){amount=credit;type='income';}else if(debit>0){amount=debit;type='expense';}else if(amount<0){amount=Math.abs(amount);type='expense';}else if(typeRaw.includes('cr'))type='income';parsed.push({id:Date.now()+parsed.length,title,amount:Math.abs(amount),type,date,category:pick(r,['category'])||'Imported',paymentMethod:'Statement import',notes:'Imported from '+file.name});}if(!parsed.length)throw new Error('Could not identify transaction rows. Use columns such as Date, Description, Amount, Type, Category.');const existing=new Set(appState.expenses.map(e=>`${e.date}|${e.title.toLowerCase()}|${Number(e.amount).toFixed(2)}|${e.type}`));const fresh=parsed.filter(e=>!existing.has(`${e.date}|${e.title.toLowerCase()}|${Number(e.amount).toFixed(2)}|${e.type}`));if(!fresh.length){showToast('No new transactions found; possible duplicates were skipped.','info');return;}if(!confirm(`Import ${fresh.length} new transactions? ${parsed.length-fresh.length} duplicates will be skipped.`))return;appState.expenses.push(...fresh);saveState();renderFinance(document.getElementById('main-viewport'));showToast(`${fresh.length} transactions imported.`,'success');}catch(e){showToast(e.message||'Could not import this CSV.','danger');}finally{input.value='';}};reader.readAsText(file);}
 
         function renderAnalytics(container) {
             const tasks = Array.isArray(appState.tasks) ? appState.tasks : [];
@@ -1625,29 +1579,34 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const goals = Array.isArray(appState.goals) ? appState.goals : [];
             const expenses = Array.isArray(appState.expenses) ? appState.expenses : [];
             const doneTasks = tasks.filter(t => t.completed).length;
-            const habitDone = habits.filter(h => h.completedToday).length;
+            const todayKey=localDateKey();const dueHabits=habits.filter(h=>isHabitScheduledDate(h,todayKey));const habitDone=dueHabits.filter(h=>isHabitCompleteForPeriod(h,todayKey)).length;
             const income = expenses.filter(e => e.type === 'income').reduce((n,e) => n + (Number(e.amount)||0), 0);
             const spent = expenses.filter(e => e.type !== 'income').reduce((n,e) => n + (Number(e.amount)||0), 0);
             const goalAvg = goals.length ? Math.round(goals.reduce((n,g)=>n+(Number(g.progress)||0),0)/goals.length) : 0;
             const focusTotalSeconds = Number(appState.focusStats?.totalSeconds) || 0;
             const focusHours = Math.floor(focusTotalSeconds / 3600);
             const focusMinutes = Math.floor((focusTotalSeconds % 3600) / 60);
-            const weekLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-            const weeklyTaskData = weekLabels.map((_,i) => i === ((new Date().getDay()+6)%7) ? doneTasks : 0);
+            const last7=Array.from({length:7},(_,i)=>{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-6+i);return d;});
+            const weekLabels=last7.map(d=>d.toLocaleDateString(undefined,{weekday:'short'}));
+            const weeklyTaskData=last7.map(d=>{const key=localDateKey(d);return tasks.filter(t=>t.completed&&((t.completedAt&&localDateKey(new Date(t.completedAt))===key)||(!t.completedAt&&t.date===key))).length;});
+            const weeklyHabitData=last7.map(d=>{const key=localDateKey(d);return habits.filter(h=>(h.completedDates||[]).includes(key)).length;});
+            const weekStartDate=new Date();weekStartDate.setHours(12,0,0,0);weekStartDate.setDate(weekStartDate.getDate()-((weekStartDate.getDay()+6)%7));const previousWeekStart=new Date(weekStartDate);previousWeekStart.setDate(previousWeekStart.getDate()-7);const currentWeekTasks=tasks.filter(t=>t.completed&&new Date(t.completedAt||t.date+'T12:00:00')>=weekStartDate).length;const previousWeekTasks=tasks.filter(t=>t.completed&&new Date(t.completedAt||t.date+'T12:00:00')>=previousWeekStart&&new Date(t.completedAt||t.date+'T12:00:00')<weekStartDate).length;
+            const monthPrefix=localDateKey().slice(0,7),previousMonthDate=new Date();previousMonthDate.setDate(1);previousMonthDate.setMonth(previousMonthDate.getMonth()-1);const previousMonthPrefix=localDateKey(previousMonthDate).slice(0,7);const monthHabits=habits.reduce((n,h)=>n+(h.completedDates||[]).filter(d=>d.startsWith(monthPrefix)).length,0);const previousMonthHabits=habits.reduce((n,h)=>n+(h.completedDates||[]).filter(d=>d.startsWith(previousMonthPrefix)).length,0);
             container.innerHTML = `
                 <div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6">
                     <div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="chart-no-axes-combined" class="w-6 h-6 text-primary"></i> Analytics & Trends</h2><p class="text-muted text-sm">A live overview calculated from your Daily Space data.</p></div>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Tasks completed</p><p class="text-2xl font-bold mt-1">${doneTasks}<span class="text-sm text-muted"> / ${tasks.length}</span></p></div>
-                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Habits completed today</p><p class="text-2xl font-bold mt-1">${habitDone}<span class="text-sm text-muted"> / ${habits.length}</span></p></div>
+                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Habits completed today</p><p class="text-2xl font-bold mt-1">${habitDone}<span class="text-sm text-muted"> / ${dueHabits.length}</span></p></div>
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Average goal progress</p><p class="text-2xl font-bold mt-1">${goalAvg}%</p></div>
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Current XP</p><p class="text-2xl font-bold mt-1">${Number(appState.user?.xp)||0}</p></div>
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Completed focus time</p><p class="text-2xl font-bold mt-1">${focusHours}h ${focusMinutes}m</p><p class="text-[11px] text-muted mt-1">${appState.focusStats?.sessions?.length || 0} sessions</p></div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                        <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Today's task completion</h3><div class="h-64"><canvas id="prodChart"></canvas></div></div>
-                        <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Habits completed today</h3><div class="h-64"><canvas id="habitChart"></canvas></div></div>
+                        <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Tasks completed · Last 7 days</h3><div class="h-64"><canvas id="prodChart"></canvas></div></div>
+                        <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Habits completed · Last 7 days</h3><div class="h-64"><canvas id="habitChart"></canvas></div></div>
                     </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-3">Weekly comparison</h3><p class="text-xs text-muted">Tasks completed</p><p class="text-xl font-bold">${currentWeekTasks} <span class="text-xs text-muted font-normal">this week</span></p><p class="text-xs text-muted">${previousWeekTasks} last week</p></div><div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-3">Monthly comparison</h3><p class="text-xs text-muted">Habit completions</p><p class="text-xl font-bold">${monthHabits} <span class="text-xs text-muted font-normal">this month</span></p><p class="text-xs text-muted">${previousMonthHabits} last month</p></div></div>
                     <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-3">Finance overview</h3><div class="grid grid-cols-2 gap-4"><div><p class="text-xs text-muted">Income recorded</p><p class="text-xl font-bold text-success">₹${income.toFixed(2)}</p></div><div><p class="text-xs text-muted">Expenses recorded</p><p class="text-xl font-bold text-warning">₹${spent.toFixed(2)}</p></div></div><p class="text-xs text-muted mt-3">Based on transactions saved in your Expense Tracker.</p></div>
                 </div>`;
             if (!window.Chart) {
@@ -1659,8 +1618,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 const b = document.getElementById('habitChart');
                 if (!a || !b) return;
                 try {
-                    new Chart(a, {type:'bar',data:{labels:['Completed','Remaining'],datasets:[{label:'Tasks',data:[doneTasks,Math.max(0,tasks.length-doneTasks)],backgroundColor:['#36C98F','#20C9B0'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0D2635',titleColor:'#E6FFFA',bodyColor:'#D1FAF3'}},scales:{x:{ticks:{color:'#929BB2'},grid:{color:'rgba(148,163,184,.10)'}},y:{ticks:{color:'#929BB2'},grid:{color:'rgba(148,163,184,.10)'}}}}});
-                    new Chart(b, {type:'doughnut',data:{labels:['Completed today','Not completed'],datasets:[{data:[habitDone,Math.max(0,habits.length-habitDone)],backgroundColor:['#36C98F','#20C9B0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A7C7C5'}},tooltip:{backgroundColor:'#0D2635',titleColor:'#E6FFFA',bodyColor:'#D1FAF3'}}}});
+                    new Chart(a, {type:'bar',data:{labels:weekLabels,datasets:[{label:'Tasks completed',data:weeklyTaskData,backgroundColor:'#20C9B0',borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0D2635',titleColor:'#E6FFFA',bodyColor:'#D1FAF3'}},scales:{x:{ticks:{color:'#929BB2'},grid:{color:'rgba(148,163,184,.10)'}},y:{ticks:{color:'#929BB2'},grid:{color:'rgba(148,163,184,.10)'}}}}});
+                    new Chart(b, {type:'line',data:{labels:weekLabels,datasets:[{label:'Habits completed',data:weeklyHabitData,borderColor:'#36C98F',backgroundColor:'rgba(54,201,143,.15)',fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A7C7C5'}},tooltip:{backgroundColor:'#0D2635',titleColor:'#E6FFFA',bodyColor:'#D1FAF3'}}}});
                 } catch(err) { console.warn('Analytics chart error',err); }
             });
         }
@@ -1669,6 +1628,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         let gameDifficulty = 'moderate';
         let gameScore = 0;
         let gameActive = false;
+        let gameCanNext = false;
+        let gameStartedAt = null;
+        let gameTimerInterval = null;
         let memorySequence = [];
         let memoryInputIndex = 0;
         let memoryShowing = false;
@@ -1679,47 +1641,44 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function clearMemoryTimers(){ memoryTimers.forEach(clearTimeout); memoryTimers=[]; }
         function renderGames(container) {
-            container.innerHTML = `<div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-2xl font-bold">Brain Gym & Games</h2><p class="text-sm text-muted">Play, improve your score and earn XP for correct answers.</p></div><div class="flex items-center gap-1 p-1 rounded-xl bg-surfaceLight/50"><button onclick="setGameDifficulty('easy')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='easy'?'bg-success text-bgDark':'text-muted'}">Easy</button><button onclick="setGameDifficulty('moderate')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='moderate'?'bg-warning text-bgDark':'text-muted'}">Medium</button><button onclick="setGameDifficulty('difficult')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='difficult'?'bg-danger text-white':'text-muted'}">Hard</button></div></div>
-            ${!currentGameId ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${[['memory','Memory Matrix','Remember and repeat a sequence of tiles.','grid-3x3'],['math','Speed Math','Solve arithmetic questions.','calculator'],['pattern','Pattern Logic','Find the missing number.','brain'],['scramble','Word Scramble','Unscramble a useful word.','spell-check']].map(([id,title,desc,ico])=>`<button onclick="startBrainGame('${id}')" class="glass-panel p-6 rounded-3xl text-left space-y-3 hover:border-primary/50 border border-white/5"><i data-lucide="${ico}" class="w-7 h-7 text-primary"></i><h3 class="font-bold">${title}</h3><p class="text-xs text-muted">${desc}</p><span class="text-xs text-primary font-bold">Play game →</span></button>`).join('')}</div>` : `<div class="glass-panel p-6 rounded-3xl max-w-xl mx-auto space-y-5"><div class="flex items-center justify-between"><button onclick="exitBrainGame()" class="text-sm text-muted">← Back to games</button><span class="text-sm font-bold text-primary">Score: <span id="live-game-score">${gameScore}</span></span></div><div id="game-arena"></div></div>`}</div>`;
+            container.innerHTML = `<div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-2xl font-bold">Brain Gym & Games</h2><p class="text-sm text-muted">Play, improve your score and earn XP for correct answers.</p><p class="text-xs text-primary mt-1">${appState.gameStats?.totalCorrect||0} correct answers · ${appState.gameStats?.gamesPlayed||0} games played</p></div><div class="flex items-center gap-1 p-1 rounded-xl bg-surfaceLight/50"><button onclick="setGameDifficulty('easy')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='easy'?'bg-success text-bgDark':'text-muted'}">Easy</button><button onclick="setGameDifficulty('moderate')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='moderate'?'bg-warning text-bgDark':'text-muted'}">Medium</button><button onclick="setGameDifficulty('difficult')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='difficult'?'bg-danger text-white':'text-muted'}">Hard</button></div></div>
+            ${!currentGameId ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${[['memory','Memory Matrix','Remember and repeat a sequence of tiles.','grid-3x3'],['math','Speed Math','Solve arithmetic questions.','calculator'],['pattern','Pattern Logic','Find the missing number.','brain'],['scramble','Word Scramble','Unscramble a useful word.','spell-check']].map(([id,title,desc,ico])=>`<button onclick="startBrainGame('${id}')" class="glass-panel p-6 rounded-3xl text-left space-y-3 hover:border-primary/50 border border-white/5"><i data-lucide="${ico}" class="w-7 h-7 text-primary"></i><h3 class="font-bold">${title}</h3><p class="text-xs text-muted">${desc}</p><span class="text-xs text-primary font-bold">${!appState.user?.isPremium&&id!=='memory'?'PRO · Upgrade to play':'Play game →'}</span></button>`).join('')}</div>` : `<div class="glass-panel p-6 rounded-3xl max-w-xl mx-auto space-y-5"><div class="flex items-center justify-between"><button onclick="exitBrainGame()" class="text-sm text-muted">← Back to games</button><div class="text-right"><span class="text-sm font-bold text-primary">Score: <span id="live-game-score">${gameScore}</span></span><p class="text-[11px] text-muted">Time: <span id="game-elapsed">00:00</span> · Best: ${appState.gameStats?.highScores?.[currentGameId]||0}</p></div></div><div id="game-arena"></div></div>`}</div>`;
             if(currentGameId) loadGameArena();
             lucide.createIcons();
         }
         function setGameDifficulty(diff){ gameDifficulty=diff; if(currentGameId) { gameScore=0; startBrainGame(currentGameId); } else renderGames(document.getElementById('main-viewport')); }
-        function startBrainGame(type){ clearMemoryTimers(); currentGameId=type; gameScore=0; gameActive=true; memorySequence=[]; memoryInputIndex=0; renderGames(document.getElementById('main-viewport')); }
-        function exitBrainGame(){ clearMemoryTimers(); currentGameId=null; gameActive=false; renderGames(document.getElementById('main-viewport')); }
+        function startBrainGame(type){ if(!appState.user?.isPremium&&type!=='memory'){showToast('This game is available with Daily Space PRO.','info');return;} clearMemoryTimers();clearInterval(gameTimerInterval);currentGameId=type;gameScore=0;gameActive=true;gameCanNext=false;memorySequence=[];memoryInputIndex=0;gameStartedAt=Date.now();if(!appState.gameStats)appState.gameStats={gamesPlayed:0,totalCorrect:0,totalPoints:0,highScores:{}};appState.gameStats.gamesPlayed=(Number(appState.gameStats.gamesPlayed)||0)+1;saveState();gameTimerInterval=setInterval(updateGameElapsed,1000);renderGames(document.getElementById('main-viewport')); }
+        function exitBrainGame(){ clearMemoryTimers();clearInterval(gameTimerInterval);gameTimerInterval=null;currentGameId=null;gameActive=false;gameStartedAt=null;renderGames(document.getElementById('main-viewport')); }
         function loadGameArena(){
-            const arena=document.getElementById('game-arena'); if(!arena) return;
+            const arena=document.getElementById('game-arena');if(!arena)return;gameCanNext=false;
             if(currentGameId==='math'){
-                const max=gameDifficulty==='easy'?10:gameDifficulty==='moderate'?25:60;
-                const n1=Math.floor(Math.random()*max)+1, n2=Math.floor(Math.random()*(gameDifficulty==='easy'?10:gameDifficulty==='moderate'?15:30))+1;
-                const op=['+','−','×'][Math.floor(Math.random()*3)];
+                const max=gameDifficulty==='easy'?10:gameDifficulty==='moderate'?25:60,n1=Math.floor(Math.random()*max)+1,n2=Math.floor(Math.random()*(gameDifficulty==='easy'?10:gameDifficulty==='moderate'?15:30))+1,op=['+','−','×'][Math.floor(Math.random()*3)];
                 mathProblem={q:`${n1} ${op} ${n2}`,ans:op==='+'?n1+n2:op==='−'?n1-n2:n1*n2};
                 arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-secondary">SPEED MATH</p><div class="text-4xl font-bold py-5">${mathProblem.q} = ?</div><input id="math-user-ans" type="number" inputmode="numeric" class="w-full p-3 rounded-xl bg-surfaceLight text-center" placeholder="Your answer"><button onclick="submitMathAnswer()" class="w-full p-3 rounded-xl bg-primary font-bold">Submit</button></div>`;
-            } else if(currentGameId==='scramble'){
-                const words=[['DISCIPLINE','Consistency and self-control'],['FOCUS','Paying attention'],['HABIT','A repeated action'],['GOAL','Something you work towards'],['ROUTINE','A regular sequence']];
-                const [word,hint]=words[Math.floor(Math.random()*words.length)];
-                let chars=word.split(''); do { chars.sort(()=>Math.random()-.5); } while(chars.join('')===word && word.length>3);
-                scrambleWord={original:word,scrambled:chars.join(' '),hint};
+            }else if(currentGameId==='scramble'){
+                const words=[['DISCIPLINE','Consistency and self-control'],['FOCUS','Paying attention'],['HABIT','A repeated action'],['GOAL','Something you work towards'],['ROUTINE','A regular sequence']];const [word,hint]=words[Math.floor(Math.random()*words.length)];let chars=word.split('');let tries=0;do{chars.sort(()=>Math.random()-.5);tries++;}while(chars.join('')===word&&word.length>3&&tries<12);scrambleWord={original:word,scrambled:chars.join(' '),hint};
                 arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-success">WORD SCRAMBLE</p><div class="text-3xl font-bold tracking-widest py-4">${scrambleWord.scrambled}</div><p class="text-sm text-muted">Hint: ${hint}</p><input id="scramble-user-ans" class="w-full p-3 rounded-xl bg-surfaceLight text-center uppercase" placeholder="Unscramble the word"><button onclick="submitScrambleAnswer()" class="w-full p-3 rounded-xl bg-success text-bgDark font-bold">Submit</button></div>`;
-            } else if(currentGameId==='pattern'){
-                const base=Math.floor(Math.random()*8)+2, factor=gameDifficulty==='easy'?2:gameDifficulty==='moderate'?3:4;
-                const seq=[base,base*factor,base*factor*factor]; patternAnswer=base*factor*factor*factor;
+            }else if(currentGameId==='pattern'){
+                const base=Math.floor(Math.random()*8)+2,factor=gameDifficulty==='easy'?2:gameDifficulty==='moderate'?3:4,seq=[base,base*factor,base*factor*factor];patternAnswer=base*factor*factor*factor;
                 arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-warning">PATTERN LOGIC</p><p class="text-3xl font-bold py-4">${seq.join(', ')}, ?</p><input id="pattern-user-ans" type="number" inputmode="numeric" class="w-full p-3 rounded-xl bg-surfaceLight text-center" placeholder="Next number"><button onclick="submitPatternAnswer()" class="w-full p-3 rounded-xl bg-warning text-bgDark font-bold">Submit</button></div>`;
-            } else if(currentGameId==='memory'){
-                const count=gameDifficulty==='easy'?3:gameDifficulty==='moderate'?4:5;
-                if(!memorySequence.length){ memorySequence=Array.from({length:count},()=>Math.floor(Math.random()*9)); }
-                memoryInputIndex=0; memoryShowing=true;
-                arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-primary">MEMORY MATRIX</p><p id="memory-instruction" class="text-sm text-muted">Watch the sequence, then repeat it in order.</p><div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">${Array.from({length:9},(_,i)=>`<button id="mem-tile-${i}" onclick="clickMemoryTile(${i})" class="aspect-square rounded-2xl bg-surfaceLight border border-white/10 text-xl" disabled></button>`).join('')}</div></div>`;
-                const instruction=document.getElementById('memory-instruction'); let delay=500;
-                memorySequence.forEach((idx)=>{ const timer=setTimeout(()=>{const tile=document.getElementById(`mem-tile-${idx}`); if(tile){tile.classList.add('bg-primary'); setTimeout(()=>tile.classList.remove('bg-primary'),450);}},delay); memoryTimers.push(timer); delay+=750; });
-                const done=setTimeout(()=>{memoryShowing=false; document.querySelectorAll('[id^="mem-tile-"]').forEach(b=>b.disabled=false); if(instruction) instruction.textContent='Now repeat the sequence in the same order.';},delay); memoryTimers.push(done);
+            }else if(currentGameId==='memory'){
+                const count=gameDifficulty==='easy'?3:gameDifficulty==='moderate'?4:5;if(!memorySequence.length)memorySequence=Array.from({length:count},()=>Math.floor(Math.random()*9));memoryInputIndex=0;memoryShowing=true;
+                arena.innerHTML=`<div class="space-y-4 text-center"><p class="text-xs font-bold text-primary">MEMORY MATRIX</p><p id="memory-instruction" class="text-sm text-muted">Watch the sequence, then repeat it in order.</p><div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">${Array.from({length:9},(_,i)=>`<button id="mem-tile-${i}" onclick="clickMemoryTile(${i})" class="aspect-square rounded-2xl bg-surfaceLight border border-white/10 text-xl" disabled>${i+1}</button>`).join('')}</div></div>`;
+                const instruction=document.getElementById('memory-instruction');let delay=500;memorySequence.forEach(idx=>{const timer=setTimeout(()=>{const tile=document.getElementById(`mem-tile-${idx}`);if(tile){tile.classList.add('bg-primary');setTimeout(()=>tile.classList.remove('bg-primary'),450);}},delay);memoryTimers.push(timer);delay+=750;});const done=setTimeout(()=>{memoryShowing=false;document.querySelectorAll('[id^="mem-tile-"]').forEach(b=>b.disabled=false);if(instruction)instruction.textContent='Now repeat the sequence in the same order.';},delay);memoryTimers.push(done);
             }
+            arena.insertAdjacentHTML('beforeend',`<div class="mt-5 space-y-3"><p id="game-feedback" class="text-sm text-muted text-center" aria-live="polite">Try your answer. Wrong answers let you retry the same round.</p><div class="grid grid-cols-2 gap-2"><button onclick="showGameAnswer()" class="py-3 rounded-xl bg-surfaceLight text-sm font-semibold">Show Answer</button><button id="game-next-button" onclick="nextGameQuestion()" disabled class="py-3 rounded-xl bg-primary text-white text-sm font-bold disabled:opacity-40">Next</button></div><button onclick="startBrainGame(currentGameId)" class="w-full py-2 rounded-xl text-xs text-muted hover:text-white">Reset this game</button></div>`);
         }
-        function updateGameScore(points,xp){gameScore+=points;const el=document.getElementById('live-game-score');if(el)el.textContent=gameScore;addXP(xp);}
-        function submitMathAnswer(){const el=document.getElementById('math-user-ans');if(!el||el.value.trim()==='')return showToast('Enter an answer first.','danger');if(Number(el.value)===mathProblem.ans){updateGameScore(10,5);showToast('Correct answer!','success');}else showToast('Not quite. Try the next question.','danger');loadGameArena();}
-        function submitScrambleAnswer(){const el=document.getElementById('scramble-user-ans');if(!el)return;if(el.value.trim().toUpperCase()===scrambleWord.original){updateGameScore(15,8);showToast('Word solved!','success');}else showToast('Not quite. Try again.','danger');loadGameArena();}
-        function submitPatternAnswer(){const el=document.getElementById('pattern-user-ans');if(!el||el.value.trim()==='')return showToast('Enter an answer first.','danger');if(Number(el.value)===patternAnswer){updateGameScore(20,10);showToast('Pattern solved!','success');}else showToast('Not quite. Try the next pattern.','danger');loadGameArena();}
-        function clickMemoryTile(idx){if(memoryShowing||!gameActive)return;const expected=memorySequence[memoryInputIndex];if(idx!==expected){showToast('Sequence incorrect. A new round is ready.','danger');memorySequence=[];loadGameArena();return;}const tile=document.getElementById(`mem-tile-${idx}`);if(tile)tile.classList.add('bg-success');memoryInputIndex++;if(memoryInputIndex===memorySequence.length){updateGameScore(20,10);showToast('Perfect sequence!','success');memorySequence=[];loadGameArena();}}
+        function updateGameElapsed(){const el=document.getElementById('game-elapsed');if(!el||!gameStartedAt)return;const sec=Math.floor((Date.now()-gameStartedAt)/1000);el.textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;}
+        function gameFeedback(message,good=false){const el=document.getElementById('game-feedback');if(el){el.textContent=message;el.className=`text-sm text-center ${good?'text-success':'text-muted'}`;}}
+        function updateGameScore(points,xp){gameScore+=points;if(!appState.gameStats)appState.gameStats={gamesPlayed:0,totalCorrect:0,totalPoints:0,highScores:{}};appState.gameStats.totalCorrect=(Number(appState.gameStats.totalCorrect)||0)+1;appState.gameStats.totalPoints=(Number(appState.gameStats.totalPoints)||0)+points;appState.gameStats.highScores=appState.gameStats.highScores||{};appState.gameStats.highScores[currentGameId]=Math.max(Number(appState.gameStats.highScores[currentGameId])||0,gameScore);const el=document.getElementById('live-game-score');if(el)el.textContent=gameScore;saveState();addXP(xp);}
+        function markGameRoundComplete(message,points,xp){if(gameCanNext)return;gameCanNext=true;if(points)updateGameScore(points,xp);const next=document.getElementById('game-next-button');if(next)next.disabled=false;gameFeedback(message,true);}
+        function submitMathAnswer(){const el=document.getElementById('math-user-ans');if(!el||el.value.trim()==='')return gameFeedback('Enter an answer first.');if(Number(el.value)===mathProblem.ans)markGameRoundComplete('Correct answer! You can continue to the next question.',10,5);else gameFeedback('Not quite. Try again — the question has not changed.');}
+        function submitScrambleAnswer(){const el=document.getElementById('scramble-user-ans');if(!el)return;if(el.value.trim().toUpperCase()===scrambleWord.original)markGameRoundComplete('Word solved! Ready for the next word.',15,8);else gameFeedback('Not quite. Try again — the word has not changed.');}
+        function submitPatternAnswer(){const el=document.getElementById('pattern-user-ans');if(!el||el.value.trim()==='')return gameFeedback('Enter an answer first.');if(Number(el.value)===patternAnswer)markGameRoundComplete('Pattern solved! Ready for the next one.',20,10);else gameFeedback('Not quite. Try again — the pattern has not changed.');}
+        function clickMemoryTile(idx){if(memoryShowing||!gameActive||gameCanNext)return;const expected=memorySequence[memoryInputIndex];if(idx!==expected){memoryInputIndex=0;document.querySelectorAll('[id^="mem-tile-"]').forEach(b=>b.classList.remove('bg-success'));gameFeedback('Not quite. Start the same sequence again.');return;}const tile=document.getElementById(`mem-tile-${idx}`);if(tile)tile.classList.add('bg-success');memoryInputIndex++;if(memoryInputIndex===memorySequence.length)markGameRoundComplete('Perfect sequence! You can continue.',20,10);}
+        function showGameAnswer(){let answer='';if(currentGameId==='math')answer=String(mathProblem.ans);else if(currentGameId==='scramble')answer=scrambleWord.original;else if(currentGameId==='pattern')answer=String(patternAnswer);else if(currentGameId==='memory'){answer=memorySequence.map(x=>x+1).join(' → ');memoryShowing=false;document.querySelectorAll('[id^="mem-tile-"]').forEach(b=>b.disabled=true);}gameCanNext=true;const next=document.getElementById('game-next-button');if(next)next.disabled=false;gameFeedback(`Answer: ${answer}. You can move to the next round now.`);}
+        function nextGameQuestion(){if(!gameCanNext)return;clearMemoryTimers();memorySequence=[];memoryInputIndex=0;loadGameArena();}
+
 
         function renderAchievements(container) {
             container.innerHTML = `
@@ -1759,7 +1718,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                             <div class="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold">AI</div>
                             <div>
                                 <h2 class="font-bold text-lg">SPACE AI Assistant</h2>
-                                <p class="text-xs text-muted">Simple English, friendly chat & helpful support</p>
+                                <p class="text-xs text-muted">Chat, organise your space and take action</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -1776,17 +1735,18 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                         ${appState.aiConversations.map(msg => `
                             <div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}">
                                 <div class="max-w-xl p-4 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-surfaceLight/80 text-white rounded-bl-none border border-white/5'}">
-                                    ${msg.text.replace(/\n/g, '<br>')}
+                                    ${escapeHTML(msg.text).replace(/\n/g, '<br>')}
                                 </div>
                             </div>
                         `).join('')}
                     </div>
 
-                    <div class="ds-ai-composer flex gap-3 pt-2">
-                        <input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')window.sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                    <div class="ds-ai-composer flex flex-col gap-2 pt-2">
+                        <p class="text-[11px] text-muted">Try: “add task: study on 2026-11-15 at 6 PM”, “complete task: revise accounts”, or “start focus timer for 25 minutes”.</p><div class="flex gap-2"><input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')window.sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                        <button onclick="toggleAIVoiceInput()" class="px-4 py-4 rounded-2xl bg-surfaceLight text-primary" aria-label="Voice input"><i data-lucide="mic" class="w-4 h-4"></i></button>
                         <button onclick="window.sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
                             <i data-lucide="send" class="w-4 h-4"></i> Send
-                        </button>
+                        </button></div>
                     </div>
                 </div>
             `;
@@ -1818,21 +1778,25 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
     showToast("AI chat history cleared.", "success");
         }
 
-        function triggerDeepAudit() {
-            appState.aiConversations.push({ sender: 'user', text: "Run a Deep Life Audit." });
-            renderAI(document.getElementById('main-viewport'));
-            lucide.createIcons();
-
-            setTimeout(() => {
-                const completed = appState.tasks.filter(t => t.completed).length;
-                const total = appState.tasks.length;
-                const auditReport = `Here is your quick progress check:\n• Name: ${appState.user.name}\n• Level: ${appState.user.level} (${appState.user.xp} XP)\n• Tasks Done: ${completed} out of ${total}\n• Advice: Keep doing your daily tasks on time and avoid distractions!`;
-                appState.aiConversations.push({ sender: 'ai', text: auditReport });
-                appState.aiMemory.push({ role: 'assistant', content: auditReport });
-                saveState();
-                renderAI(document.getElementById('main-viewport'));
-                lucide.createIcons();
-            }, 800);
+        function triggerDeepAudit(){
+            const tasks=appState.tasks||[],habits=appState.habits||[],goals=appState.goals||[],today=localDateKey();
+            const completed=tasks.filter(t=>t.completed).length,taskRate=tasks.length?Math.round(completed/tasks.length*100):0;
+            const dueHabits=habits.filter(h=>isHabitScheduledDate(h,today)),doneHabits=dueHabits.filter(h=>(h.completedDates||[]).includes(today)).length;
+            const goalAverage=goals.length?Math.round(goals.reduce((n,g)=>n+(Number(g.progress)||0),0)/goals.length):0;
+            const focusSeconds=Number(appState.focusStats?.totalSeconds)||0,focusMins=Math.round(focusSeconds/60);
+            const strengths=[];const improvements=[];const priorities=[];
+            if(completed>0)strengths.push(`You have completed ${completed} of ${tasks.length} saved tasks (${taskRate}%).`);else improvements.push('There are no completed tasks recorded yet.');
+            if(doneHabits>0)strengths.push(`You marked ${doneHabits} of ${dueHabits.length} scheduled habits complete today.`);else if(dueHabits.length)improvements.push(`No scheduled habits are marked complete today (${dueHabits.length} due).`);
+            if(goalAverage>0)strengths.push(`Your goals have an average recorded progress of ${goalAverage}%.`);else if(goals.length)improvements.push('Your saved goals have no recorded step progress yet.');
+            if(focusMins>0)strengths.push(`You have logged ${focusMins} minutes of completed focus time.`);else improvements.push('No completed focus sessions are recorded yet.');
+            if(!tasks.length)priorities.push('Add one clear task with a date.');else if(taskRate<50)priorities.push('Choose one unfinished task and complete it before adding more.');
+            if(dueHabits.length&&!doneHabits)priorities.push('Mark one scheduled habit after you complete it.');
+            if(goals.length&&goalAverage<50)priorities.push('Open one goal and complete its next small step.');
+            if(!focusMins)priorities.push('Try one short, manageable focus session.');
+            if(!priorities.length)priorities.push('Keep your current routine steady and review your progress at the end of the week.');
+            const backupPriorities=['Review your calendar and choose a realistic time for tomorrow’s main task.','Keep one habit small enough to repeat consistently.','Review your goal steps and update the next action when needed.'];for(const item of backupPriorities){if(priorities.length>=3)break;if(!priorities.includes(item))priorities.push(item);}
+            const report=`DEEP LIFE AUDIT\n\nFACTS FROM YOUR SAVED DAILY SPACE DATA\n• Tasks: ${completed}/${tasks.length} completed (${taskRate}%).\n• Habits: ${doneHabits}/${dueHabits.length} scheduled for today marked complete.\n• Goals: ${goals.length} saved; average step progress ${goalAverage}%.\n• Focus: ${focusMins} minutes recorded across ${(appState.focusStats?.sessions||[]).length} completed sessions.\n• Level: ${appState.user.level}, with ${appState.user.xp} XP toward the next level.\n\nSTRENGTHS\n${strengths.length?strengths.map(x=>'• '+x).join('\n'):'• More activity data is needed to identify a reliable strength.'}\n\nAREAS TO IMPROVE\n${improvements.length?improvements.map(x=>'• '+x).join('\n'):'• No clear gap is visible in these basic indicators. Keep collecting consistent data.'}\n\nTHREE PRIORITIES\n${priorities.slice(0,3).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\nMOTIVATION\nYou do not need to change everything at once. Choose one priority and take a small, practical step.\n\nThis audit uses only data currently saved in Daily Space. It is a progress snapshot, not a judgment.`;
+            appState.aiConversations.push({sender:'user',text:'Run a Deep Life Audit.'},{sender:'ai',text:report});appState.aiMemory.push({role:'assistant',content:report});saveState();renderAI(document.getElementById('main-viewport'));lucide.createIcons();
         }
 
         function renderSubscription(container) {
@@ -1841,7 +1805,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     <div class="text-center space-y-2">
                         <span class="text-xs font-bold text-warning uppercase tracking-widest bg-warning/10 px-3.5 py-1.5 rounded-full border border-warning/20">Freemium Tier System</span>
                         <h2 class="text-3xl font-bold">Choose Your Operational Level</h2>
-                        <p class="text-muted text-sm">Upgrade to PRO to unlock premium modules like SPACE AI, Calendar, Expense Tracker, and Cognitive Games.</p>
+                        <p class="text-muted text-sm">PRO includes Calendar & Special Days, Income & Expense Tracker, Analytics & Trends, Brain Gym & Games, and expanded SPACE AI features.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -1855,7 +1819,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                                     <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Habit Tracker & Streaks</li>
                                     <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Goal Management</li>
                                     <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Focus Timer & Self-Control</li>
-                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> <strong>Analytics & Trends:</strong> Productivity graphs & habit consistency</li>
+                                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Basic progress overview</li>
                                     <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-success"></i> Achievements & Rewards</li>
                                 </ul>
                             </div>
@@ -1867,14 +1831,13 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                             <div class="space-y-4">
                                 <span class="text-xs font-bold text-warning uppercase tracking-wider">Daily Space PRO</span>
                                 <h3 class="text-3xl font-bold">₹39 <span class="text-sm font-normal text-muted">/ month</span></h3>
-                                <div class="bg-warning/10 border border-warning/20 p-3 rounded-2xl mb-3">
-                                    <p class="text-xs font-semibold text-warning">Exclusive premium modules:</p>
-                                </div>
+                                <div class="bg-warning/10 border border-warning/20 p-3 rounded-2xl mb-3"><p class="text-xs font-semibold text-warning">Five PRO modules and expanded limits:</p><p class="text-xs text-muted mt-1">One PRO subscription supports one phone and one computer. Use your membership on both devices simultaneously. Additional phones or computers require separate PRO subscriptions.</p></div>
                                 <ul class="space-y-3 text-sm">
                                     <li class="flex items-center gap-2 font-semibold"><i data-lucide="bot" class="w-4 h-4 text-primary"></i> <strong>SPACE AI Assistant:</strong> Deep thinking, reasoning, and routine generation.</li>
                                     <li class="flex items-center gap-2 font-semibold"><i data-lucide="calendar-days" class="w-4 h-4 text-warning"></i> <strong>Calendar & Special Days:</strong> Holidays & historical milestones.</li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="wallet" class="w-4 h-4 text-warning"></i> <strong>Personal Expense Tracker:</strong> Income & expense tracking.</li>
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>Brain Gym & Cognitive Games:</strong> Memory Matrix, Math, Pattern & Scramble.</li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="wallet" class="w-4 h-4 text-warning"></i> <strong>Income & Expense Tracker:</strong> Budgets, transaction history and reports.</li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="chart-no-axes-combined" class="w-4 h-4 text-primary"></i> <strong>Analytics & Trends:</strong> Detailed trends, comparisons and reports.</li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>Brain Gym & Games:</strong> Memory Matrix, Math, Pattern & Scramble.</li>
                                 </ul>
                             </div>
                             <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
@@ -1902,11 +1865,11 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-semibold text-muted uppercase">Commander Name</label>
-                            <input type="text" id="profile-name" value="${appState.user.name}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                            <input type="text" id="profile-name" value="${escapeHTML(appState.user.name)}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-muted uppercase">Title / Rank</label>
-                            <input type="text" id="profile-title" value="${appState.user.title}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                            <input type="text" id="profile-title" value="${escapeHTML(appState.user.title)}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
                         </div>
                     </div>
 
@@ -1915,7 +1878,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                 <div class="space-y-3 rounded-2xl border border-white/10 bg-surfaceLight/30 p-4">
                     <h3 class="font-bold text-lg">Account</h3>
-                    <p class="text-sm text-muted">Signed in as <span class="font-semibold text-white">${currentFirebaseUser?.email || 'Google account'}</span></p>
+                    <p class="text-sm text-muted">Signed in as <span class="font-semibold text-white">${escapeHTML(currentFirebaseUser?.email || 'Google account')}</span></p>
                     <p class="text-xs text-muted">Your personal data is synced to your private Firebase account. A local backup is also kept on this device.</p>
                     <button onclick="signOutDailySpace()" class="rounded-xl bg-danger/20 px-4 py-2.5 text-sm font-semibold text-danger hover:bg-danger/30">Sign Out</button>
                 </div>
@@ -1934,23 +1897,22 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                 <div class="space-y-4 pt-4 border-t border-white/10">
                     <h3 class="font-bold text-lg">Notification Reminders</h3>
-                    <p class="text-xs text-muted">Receive browser alerts and time-specific reminders for your scheduled daily activities.</p>
+                    <p class="text-xs text-muted">Receive task alerts at their scheduled times while Daily Space is open. Background delivery depends on your browser and installed PWA support.</p>
                     <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/50 border border-white/5">
                         <div>
                             <p class="font-semibold text-sm">Enable Browser Reminders</p>
-                            <p class="text-xs text-muted">Alerts you when task scheduled time arrives.</p>
+                            <p class="text-xs text-muted">Alerts while this page is active; it may not alert after the app is fully closed.</p>
                         </div>
-                        <button onclick="requestNotificationPermission()" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">
-                            ${appState.remindersEnabled ? 'Enabled ✓' : 'Turn On'}
-                        </button>
+                        <div class="flex gap-2"><button onclick="requestNotificationPermission()" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">Enable</button><button onclick="disableNotifications()" class="px-4 py-2 rounded-xl bg-surfaceLight text-xs font-bold">Disable</button></div>
                     </div>
                 </div>
 
+                <div class="space-y-3 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">SPACE AI Voice</h3><label class="flex items-center justify-between gap-3 text-sm"><span>Read AI replies aloud</span><input type="checkbox" ${appState.user.voiceRepliesEnabled?'checked':''} onchange="appState.user.voiceRepliesEnabled=this.checked;saveState()" class="w-5 h-5 accent-primary"></label><label class="flex items-center justify-between gap-3 text-sm"><span>Voice language</span><select onchange="appState.user.voiceLanguage=this.value;saveState()" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option value="en-IN" ${(!appState.user.voiceLanguage||appState.user.voiceLanguage==='en-IN')?'selected':''}>English</option><option value="ml-IN" ${appState.user.voiceLanguage==='ml-IN'?'selected':''}>Malayalam</option></select></label><p class="text-xs text-muted">Voice availability and language quality depend on your device and browser.</p></div>
                 <div class="space-y-4 pt-4 border-t border-white/10">
                     <h3 class="font-bold text-lg">Data Management</h3>
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap gap-3">
                         <button onclick="exportUserData()" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold transition">Export Data (JSON)</button>
-                        <button onclick="resetUserData()" class="px-4 py-2.5 rounded-xl bg-danger/20 hover:bg-danger/30 text-danger text-sm font-semibold transition">Reset App State</button>
+                        <button onclick="document.getElementById('import-backup-file').click()" class="px-4 py-2.5 rounded-xl bg-surfaceLight text-sm font-semibold">Import Backup</button><input id="import-backup-file" type="file" accept="application/json,.json" class="hidden" onchange="importUserData(this)"><button onclick="resetUserData()" class="px-4 py-2.5 rounded-xl bg-danger/20 hover:bg-danger/30 text-danger text-sm font-semibold transition">Reset App State</button>
                     </div>
                 </div>
             </div>
@@ -1958,21 +1920,6 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
     `;
 }
 
-function saveApiKey() {
-    const input = document.getElementById('profile-apikey');
-    if (!input) return;
-    const key = input.value.trim();
-    if (!key) {
-        showToast("Please enter a valid API key", "danger");
-        return;
-    }
-    appState.user.geminiApiKey = key;
-    saveState();
-    showToast("API key saved securely!", "success");
-    renderProfile(document.getElementById('main-viewport'));
-    lucide.createIcons();
-        }
-                                        
         function saveProfileChanges() {
             const name = document.getElementById('profile-name').value.trim();
             const title = document.getElementById('profile-title').value.trim();
@@ -1982,24 +1929,23 @@ function saveApiKey() {
             showToast("Profile updated successfully!", "success");
         }
 
-                function exportUserData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "daily_space_backup.json");
-            dlAnchorElem.click();
-            showToast("Data exported successfully!", "success");
-        }
+                function exportUserData() { const safeState=JSON.parse(JSON.stringify(appState));if(safeState.user)delete safeState.user.geminiApiKey;downloadTextFile('daily_space_backup.json',JSON.stringify({schemaVersion:2,exportedAt:new Date().toISOString(),state:safeState},null,2),'application/json');showToast('Backup exported successfully.','success'); }
+        function importUserData(input){const file=input.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(String(reader.result||''));const imported=parsed.state||parsed;if(!imported||typeof imported!=='object'||!Array.isArray(imported.tasks)||!Array.isArray(imported.habits)||!Array.isArray(imported.goals))throw new Error('This file is not a valid Daily Space backup.');const protectedAchievements=(appState.achievementsList||[]).filter(a=>a.unlocked);if(!confirm('Import this backup and replace the current data on this account? Export your current data first if you need a copy.'))return;const keepUser={...DEFAULT_STATE.user,...(imported.user||{}),isPremium:appState.user.isPremium,premiumExpiry:appState.user.premiumExpiry};delete keepUser.geminiApiKey;appState={...JSON.parse(JSON.stringify(DEFAULT_STATE)),...imported,user:keepUser};appState.achievementsList=(appState.achievementsList||[]).map(a=>{const saved=protectedAchievements.find(x=>Number(x.id)===Number(a.id));return saved?{...a,...saved,unlocked:true}:a;});if(!Array.isArray(appState.expenses))appState.expenses=[];if(!Array.isArray(appState.selfControlItems))appState.selfControlItems=[];saveState();router('home');showToast('Backup imported.','success');}catch(e){showToast(e.message||'Could not import this backup.','danger');}finally{input.value='';}};reader.readAsText(file); }
 
         function resetUserData() {
     if (confirm("Are you sure you want to reset your data?")) {
         const wasPremium = appState.user.isPremium;
         const expiry = appState.user.premiumExpiry;
+        const protectedAchievements=(appState.achievementsList||[]).filter(a=>a.unlocked).map(a=>({...a}));
+        const lifetimeTaskCount=Number(appState.lifetimeTasksCompleted)||0;
+        const lifetimeHabitCount=Number(appState.lifetimeHabitsCompleted)||0;
 
         localStorage.removeItem('daily_space_state');
 
         // Restore default application data
         appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        appState.achievementsList=appState.achievementsList.map(a=>{const saved=protectedAchievements.find(x=>Number(x.id)===Number(a.id));return saved?{...a,...saved,unlocked:true}:a;});
+        appState.lifetimeTasksCompleted=lifetimeTaskCount;appState.lifetimeHabitsCompleted=lifetimeHabitCount;
 
         // Preserve PRO status
         appState.user.isPremium = wasPremium;
@@ -2104,6 +2050,42 @@ ${JSON.stringify(userMessage)}
     }
         
 
+function tryExecuteAIAction(raw){
+    const text=String(raw||'').trim();const lower=text.toLowerCase();
+    const reply=(message)=>({handled:true,message});
+    let m;
+    if((m=text.match(/^(?:add|create) task\s*:\s*(.+?)\s+on\s+(\d{4}-\d{2}-\d{2})(?:\s+at\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm))?$/i))){const title=m[1].trim(),date=m[2];const parsedDate=new Date(date+'T12:00:00');if(Number.isNaN(parsedDate.getTime())||localDateKey(parsedDate)!==date)return reply('Please use a valid calendar date in YYYY-MM-DD format.');let time='Anytime';if(m[3]){let h=Number(m[3]),min=m[4]||'00',ap=(m[5]||'AM').toUpperCase();if(h<1||h>12||Number(min)>59)return reply('I could not create that task: please use a valid 12-hour time.');time=`${h}:${String(min).padStart(2,'0')} ${ap}`;}if(!title)return reply('Please include a task title.');const task={id:Date.now(),title,date,time,category:'Personal',priority:'Medium',completed:false};appState.tasks.push(task);saveState();return reply(`Task created: ${title}, due ${date}${time!=='Anytime'?' at '+time:''}.`);}
+    if((m=text.match(/^(?:complete|finish|mark complete) task\s*:\s*(.+)$/i))){const q=m[1].trim().toLowerCase(),task=appState.tasks.find(t=>t.title.toLowerCase()===q&&!t.completed);if(!task)return reply('I could not find an unfinished task with that exact title. Nothing was changed.');task.completed=true;task.completedAt=new Date().toISOString();if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;addXP(10);}saveState();return reply(`Completed task: ${task.title}.`);}
+    if((m=text.match(/^(?:add|create) habit\s*:\s*(.+)$/i))){const title=m[1].trim();if(!title)return reply('Please include a habit name.');appState.habits.push({id:Date.now(),title,category:'Personal',frequency:'Daily',completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();return reply(`Habit created: ${title}.`);}
+    if((m=text.match(/^(?:add|create) goal\s*:\s*(.+?)(?:\s*\|\s*step\s*:\s*(.+?))?(?:\s*\|\s*date\s*:\s*(\d{4}-\d{2}-\d{2}))?$/i))){const title=m[1].trim(),step=(m[2]||'First step to begin').trim(),date=m[3]||'';const goal={id:Date.now(),title,category:'Personal',targetDate:date,steps:[{text:step,completed:false}],progress:0,status:'Active'};appState.goals.push(goal);saveState();return reply(`Goal created: ${title}. First step: ${step}${date?' Target date: '+date:''}.`);}
+    if((m=text.match(/^record (income|expense)\s*:\s*(.+?)\s+₹?([\d,]+(?:\.\d{1,2})?)\s+on\s+(\d{4}-\d{2}-\d{2})$/i))){const type=m[1].toLowerCase(),title=m[2].trim(),amount=Number(m[3].replace(/,/g,'')),date=m[4];const parsedDate=new Date(date+'T12:00:00');if(Number.isNaN(parsedDate.getTime())||localDateKey(parsedDate)!==date)return reply('Please use a valid transaction date in YYYY-MM-DD format.');if(!amount||amount<=0)return reply('Please provide a valid positive amount.');appState.expenses.push({id:Date.now(),title,amount,type,date,category:'AI entry',paymentMethod:'',notes:'Added with SPACE AI'});saveState();return reply(`${type==='income'?'Income':'Expense'} recorded: ₹${amount.toFixed(2)} for ${title} on ${date}.`);}
+    if((m=lower.match(/^start focus timer for (\d+) minutes?$/))){const mins=Number(m[1]);if(mins<1||mins>1439)return reply('Choose a focus duration between 1 and 1439 minutes.');if(isFocusRunning)return reply('A focus timer is already running. Pause or stop it first.');router('focus');setFocusDuration(mins);toggleFocusTimer();return reply(`Focus timer started for ${mins} minutes.`);}
+    if(lower==='pause focus timer'){if(!isFocusRunning)return reply('The focus timer is not running.');router('focus');toggleFocusTimer();return reply('Focus timer paused.');}
+    if(lower==='resume focus timer'){if(isFocusRunning)return reply('The focus timer is already running.');router('focus');toggleFocusTimer();return reply('Focus timer resumed.');}
+    if(lower==='stop focus timer'||lower==='reset focus timer'){router('focus');stopFocusTimer();return reply('Focus timer stopped and reset.');}
+    if((m=text.match(/^rename task\s*:\s*(.+?)\s*\|\s*new\s*:\s*(.+)$/i))){const task=appState.tasks.find(t=>t.title.toLowerCase()===m[1].trim().toLowerCase());if(!task)return reply('I could not find a task with that exact title. Nothing was changed.');task.title=m[2].trim();saveState();return reply(`Task renamed to: ${task.title}.`);}
+    if((m=text.match(/^reschedule task\s*:\s*(.+?)\s*\|\s*date\s*:\s*(\d{4}-\d{2}-\d{2})(?:\s*\|\s*time\s*:\s*(.+))?$/i))){const task=appState.tasks.find(t=>t.title.toLowerCase()===m[1].trim().toLowerCase()),date=m[2],d=new Date(date+'T12:00:00');if(!task)return reply('I could not find a task with that exact title.');if(Number.isNaN(d.getTime())||localDateKey(d)!==date)return reply('Please provide a valid date in YYYY-MM-DD format.');task.date=date;if(m[3])task.time=m[3].trim();saveState();return reply(`Rescheduled “${task.title}” for ${date}${m[3]?' at '+task.time:''}.`);}
+    if((m=text.match(/^rename habit\s*:\s*(.+?)\s*\|\s*new\s*:\s*(.+)$/i))){const h=appState.habits.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!h)return reply('I could not find a habit with that exact title.');h.title=m[2].trim();saveState();return reply(`Habit renamed to: ${h.title}.`);}
+    if((m=text.match(/^delete habit\s*:\s*(.+)$/i))){const h=appState.habits.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!h)return reply('I could not find a habit with that exact title.');if(!confirm(`Delete habit “${h.title}” and its calendar history?`))return reply('Deletion cancelled.');appState.habits=appState.habits.filter(x=>x.id!==h.id);saveState();return reply(`Deleted habit: ${h.title}.`);}
+    if((m=text.match(/^rename goal\s*:\s*(.+?)\s*\|\s*new\s*:\s*(.+)$/i))){const g=appState.goals.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!g)return reply('I could not find a goal with that exact title.');g.title=m[2].trim();saveState();return reply(`Goal renamed to: ${g.title}.`);}
+    if((m=text.match(/^set goal date\s*:\s*(.+?)\s*\|\s*date\s*:\s*(\d{4}-\d{2}-\d{2})$/i))){const g=appState.goals.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase()),d=new Date(m[2]+'T12:00:00');if(!g)return reply('I could not find a goal with that exact title.');if(Number.isNaN(d.getTime())||localDateKey(d)!==m[2])return reply('Please provide a valid date in YYYY-MM-DD format.');g.targetDate=m[2];saveState();return reply(`Updated target date for “${g.title}” to ${m[2]}.`);}
+    if((m=text.match(/^delete task\s*:\s*(.+)$/i))){const task=appState.tasks.find(t=>t.title.toLowerCase()===m[1].trim().toLowerCase());if(!task)return reply('I could not find a task with that exact title.');if(!confirm(`Delete task “${task.title}”?`))return reply('Deletion cancelled.');appState.tasks=appState.tasks.filter(t=>t.id!==task.id);saveState();return reply(`Deleted task: ${task.title}.`);}
+    if((m=text.match(/^complete habit\s*:\s*(.+)$/i))){const h=appState.habits.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!h)return reply('I could not find a habit with that exact title.');const date=localDateKey();if(!isHabitScheduledDate(h,date))return reply('This habit is paused or not scheduled for today, so I did not mark it complete.');if(!Array.isArray(h.completedDates))h.completedDates=[];if(isHabitCompleteForPeriod(h,date))return reply(`This weekly habit is already marked complete for the current week: ${h.title}.`);if(!h.completedDates.includes(date)){h.completedDates.push(date);if(!Array.isArray(h.xpAwardedDates))h.xpAwardedDates=[];if(!h.xpAwardedDates.includes(date)){h.xpAwardedDates.push(date);appState.lifetimeHabitsCompleted=(Number(appState.lifetimeHabitsCompleted)||0)+1;}}h.completedToday=true;saveState();return reply(`Marked habit complete for today: ${h.title}.`);}
+    if((m=text.match(/^pause habit\s*:\s*(.+)$/i))||(m=text.match(/^resume habit\s*:\s*(.+)$/i))){const pause=/^pause/i.test(text),h=appState.habits.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!h)return reply('I could not find a habit with that exact title.');h.paused=pause;saveState();return reply(`${pause?'Paused':'Resumed'} habit tracking: ${h.title}.`);}
+    if((m=text.match(/^complete goal step\s*:\s*(.+?)\s*\|\s*step\s*:\s*(.+)$/i))){const g=appState.goals.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!g)return reply('I could not find a goal with that exact title.');normalizeGoal(g);const matches=g.steps.map((x,i)=>({x,i})).filter(v=>v.x.text.toLowerCase()===m[2].trim().toLowerCase());if(matches.length!==1)return reply(matches.length?'More than one step has that text. Please make the step name more specific.':'I could not find that step in the goal.');const step=matches[0].x;if(!step.completed){step.completed=true;normalizeGoal(g);if(g.status==='Completed'&&!g.xpAwarded){g.xpAwarded=true;}evaluateAchievements();saveState();}return reply(`Updated goal “${g.title}”: ${step.text} is complete.`);}
+    if((m=text.match(/^delete goal\s*:\s*(.+)$/i))){const g=appState.goals.find(x=>x.title.toLowerCase()===m[1].trim().toLowerCase());if(!g)return reply('I could not find a goal with that exact title.');if(!confirm(`Delete goal “${g.title}” and its steps?`))return reply('Deletion cancelled.');appState.goals=appState.goals.filter(x=>x.id!==g.id);saveState();return reply(`Deleted goal: ${g.title}.`);}
+    if((m=text.match(/^delete transaction\s*:\s*(.+)$/i))){const q=m[1].trim().toLowerCase(),matches=appState.expenses.filter(e=>e.title.toLowerCase()===q);if(matches.length!==1)return reply(matches.length?'More than one transaction has that title. Use the Income & Expense Tracker to choose the correct one.':'I could not find a transaction with that exact title.');if(!confirm(`Delete transaction “${matches[0].title}”?`))return reply('Deletion cancelled.');appState.expenses=appState.expenses.filter(e=>e.id!==matches[0].id);saveState();return reply(`Deleted transaction: ${matches[0].title}.`);}
+    if(lower==='show achievements'||lower==='open achievements'){router('achievements');return reply('Opened your achievements.');}
+    if(lower==='analyse my progress'||lower==='analyze my progress'){const t=appState.tasks||[],h=appState.habits||[],g=appState.goals||[],today=localDateKey(),due=h.filter(x=>isHabitScheduledDate(x,today)),done=due.filter(x=>isHabitCompleteForPeriod(x,today)).length,completed=t.filter(x=>x.completed).length,avg=g.length?Math.round(g.reduce((n,x)=>n+(Number(x.progress)||0),0)/g.length):0;return reply(`Your saved progress snapshot: ${completed}/${t.length} tasks completed overall; ${done}/${due.length} scheduled habits completed today; ${g.length} goals with ${avg}% average progress; ${Math.round((Number(appState.focusStats?.totalSeconds)||0)/60)} minutes of completed focus time. These are the figures currently saved in Daily Space.`);}
+    if((m=lower.match(/^open (home|tasks|habits|goals|self-control|calendar|focus timer|finance|analytics|games|achievements|settings)$/))){const map={'tasks':'routine','self-control':'selfcontrol','focus timer':'focus','settings':'profile'};const route=map[m[1]]||m[1];router(route);return reply(`Opened ${m[1]}.`);}
+    return null;
+}
+
+function getAIAppContext(userMessage=''){const today=localDateKey(),tasks=appState.tasks||[],habits=appState.habits||[],goals=appState.goals||[],due=habits.filter(h=>isHabitScheduledDate(h,today)),done=due.filter(h=>(h.completedDates||[]).includes(today)),income=(appState.expenses||[]).filter(e=>e.type==='income').reduce((n,e)=>n+(Number(e.amount)||0),0),expenses=(appState.expenses||[]).filter(e=>e.type!=='income').reduce((n,e)=>n+(Number(e.amount)||0),0),includeFinance=/(finance|money|income|expense|spend|spent|budget|transaction|balance|saving)/i.test(userMessage);return `CURRENT DAILY SPACE DATA (local date ${today}):\nTasks: ${tasks.filter(t=>t.completed).length}/${tasks.length} completed overall. Today’s unfinished tasks: ${tasks.filter(t=>t.date===today&&!t.completed).slice(0,8).map(t=>t.title).join('; ')||'none recorded'}.\nHabits: ${done.length}/${due.length} scheduled for today marked complete.\nGoals: ${goals.map(g=>`${g.title} (${g.progress||0}%, ${g.status||'Active'})`).slice(0,8).join('; ')||'none recorded'}.\nFocus time: ${Math.round((Number(appState.focusStats?.totalSeconds)||0)/60)} completed minutes.\n${includeFinance?`Recorded finances: income ₹${income.toFixed(2)}, expenses ₹${expenses.toFixed(2)}.`:'Finance figures are omitted unless the user asks about finances.'}\nUse these figures only as the current saved snapshot. If a detail is missing, say it is not recorded; never invent activity or claim an action happened unless the app confirms it.`;}
+
+function toggleAIVoiceInput(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showToast('Voice input is not supported in this browser.','danger');return;}const rec=new SR();rec.lang=appState.user.voiceLanguage||'en-IN';rec.interimResults=false;rec.maxAlternatives=1;showToast('Listening…','info');rec.onresult=e=>{const input=document.getElementById('ai-user-input');if(input){input.value=e.results[0][0].transcript;input.focus();showToast('Voice input captured. Press Send when ready.','success');}};rec.onerror=()=>showToast('Voice input could not start. Check microphone permission.','danger');rec.start();}
+function speakAIReply(text){if(!('speechSynthesis'in window))return;const utterance=new SpeechSynthesisUtterance(String(text||''));utterance.lang=appState.user.voiceLanguage||'en-IN';window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance);}
+
 async function sendAIMessage() {
     const input = document.getElementById('ai-user-input');
     if (!input) return;
@@ -2144,6 +2126,19 @@ async function sendAIMessage() {
     renderAI(document.getElementById('main-viewport'));
     lucide.createIcons();
 
+    const actionResult = tryExecuteAIAction(txt);
+    if (actionResult?.handled) {
+        const pendingIndex=appState.aiConversations.indexOf(thinkingMessage);
+        if(pendingIndex>=0)appState.aiConversations.splice(pendingIndex,1);
+        appState.aiConversations.push({ sender: 'ai', text: actionResult.message });
+        appState.aiMemory.push({ role: 'assistant', content: actionResult.message });
+        if(appState.user.voiceRepliesEnabled)speakAIReply(actionResult.message);
+        window.dailySpaceAI.isBusy=false;
+        saveState();
+        if(currentRoute==='ai'){renderAI(document.getElementById('main-viewport'));lucide.createIcons();}
+        return;
+    }
+
     try {
         // Collect previous conversation memory
         const previousMemory = Array.isArray(appState.aiMemory)
@@ -2179,18 +2174,23 @@ const personalMemoryContext = personalMemories.length > 0
     : 'No saved personal memories yet.';
 
 // Build context for a new Gemini session
+const appContext=getAIAppContext(txt);
 const messageToSend = isNewSession
     ? `You are SPACE AI.
 
 Here are important personal details the user previously shared:
 ${personalMemoryContext}
 
-Use these saved personal details naturally when relevant. The user may have cleared previous chat history, so do not rely on old conversation transcripts. Never invent personal details.
-Never invent personal details.
+Use these saved personal details naturally when relevant. Never invent personal details.
+
+${appContext}
 
 CURRENT MESSAGE:
 ${txt}`
-    : txt;
+    : `${appContext}
+
+CURRENT MESSAGE:
+${txt}`;
 
         // Send message to Gemini
         const result =
@@ -2199,6 +2199,7 @@ ${txt}`
         const aiReply =
             result.response.text() ||
             'I received an empty response. Please try again.';
+        if (appState.user.voiceRepliesEnabled) speakAIReply(aiReply);
 
         appState.aiConversations.push({
     sender: 'ai',
@@ -2240,25 +2241,11 @@ await saveAIPersonalMemory(txt);
 
 window.sendAIMessage = sendAIMessage;
 
-      async function requestNotificationPermission() {
-    if (!("Notification" in window)) {
-        showToast("This browser does not support desktop notifications", "danger");
-        return;
-    }
-    
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-        appState.remindersEnabled = true;
-        saveState();
-        showToast("Notifications enabled successfully!", "success");
-    } else {
-        appState.remindersEnabled = false;
-        saveState();
-        showToast("Permission denied for notifications", "danger");
-    }
-    renderProfile(document.getElementById('main-viewport'));
-    lucide.createIcons();
-      }
+      async function requestNotificationPermission(){if(!('Notification'in window)){showToast('This browser does not support notifications.','danger');return;}const permission=await Notification.requestPermission();appState.remindersEnabled=permission==='granted';saveState();showToast(appState.remindersEnabled?'Notifications enabled. Keep Daily Space open for task reminders.':'Notification permission was not granted.','info');renderProfile(document.getElementById('main-viewport'));lucide.createIcons();}
+      function disableNotifications(){appState.remindersEnabled=false;saveState();showToast('Daily Space reminders disabled.','info');renderProfile(document.getElementById('main-viewport'));lucide.createIcons();}
+      function taskDueDateTime(task){if(!task.date||!task.time)return null;const m=String(task.time).match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);if(!m||Number(m[1])<1||Number(m[1])>12||Number(m[2])>59)return null;let h=Number(m[1])%12;if(m[3].toUpperCase()==='PM')h+=12;return new Date(`${task.date}T${String(h).padStart(2,'0')}:${m[2]}:00`);}
+      function checkTaskReminders(){if(!currentFirebaseUser)return;if(!Array.isArray(appState.notifiedTaskKeys))appState.notifiedTaskKeys=[];if(!appState.remindersEnabled||!('Notification'in window)||Notification.permission!=='granted')return;const now=new Date();for(const task of appState.tasks||[]){if(task.completed)continue;const due=taskDueDateTime(task);if(!due)continue;const key=String(task.id)+'|'+task.date+'|'+task.time;if(due<=now&&now-due<300000&&!appState.notifiedTaskKeys.includes(key)){new Notification('Daily Space · Task due',{body:task.title,tag:key});appState.notifiedTaskKeys.push(key);if(appState.notifiedTaskKeys.length>500)appState.notifiedTaskKeys=appState.notifiedTaskKeys.slice(-500);saveState();}}}
+      setInterval(checkTaskReminders,15000);
         
         window.onload = function() {
             // Temporary PRO test shortcut retained as requested.
@@ -2266,6 +2253,7 @@ window.sendAIMessage = sendAIMessage;
             applyTheme();
             lucide.createIcons();
             updateSidebarXP();
+            if (typeof checkTaskReminders === 'function') checkTaskReminders();
         };
     </script>
     
