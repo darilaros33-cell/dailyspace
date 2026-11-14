@@ -360,39 +360,13 @@
                 premiumExpiry: null,
                 theme: "dark"
             },
-            tasks: [
-                { id: 1, title: "Morning Hydration & Stretch", category: "Health", time: "07:00 AM", completed: false, priority: "High" },
-                { id: 2, title: "Deep Work: Core Architecture", category: "Work", time: "09:00 AM", completed: false, priority: "High" },
-                { id: 3, title: "Physical Exercise / Gym", category: "Fitness", time: "05:00 PM", completed: false, priority: "Medium" },
-                { id: 4, title: "Read 20 Pages of Non-Fiction", category: "Growth", time: "09:00 PM", completed: false, priority: "Low" }
-            ],
-            habits: [
-                { id: 1, title: "Code Daily", category: "Development", streak: 12, targetDays: 30, completedToday: false },
-                { id: 2, title: "Cold Shower", category: "Discipline", streak: 5, targetDays: 30, completedToday: false },
-                { id: 3, title: "Journaling", category: "Mind", streak: 3, targetDays: 30, completedToday: false },
-                { id: 4, title: "No Sugar", category: "Health", streak: 8, targetDays: 30, completedToday: false }
-            ],
-            goals: [
-                { id: 1, title: "Build Full-Stack SaaS Product", category: "Career", progress: 0, targetDate: "2026-06-30", milestones: ["Database setup", "Core UI", "AI integration", "Stripe billing"] },
-                { id: 2, title: "Read 24 Books This Year", category: "Growth", progress: 0, targetDate: "2026-12-31", milestones: ["Read 6 books", "Read 12 books", "Read 18 books", "Read 24 books"] }
-            ],
-            challenges: [
-                { id: 1, title: "Complete all high-priority tasks before noon", xp: 30, completed: false },
-                { id: 2, title: "Zero social media distractions during focus blocks", xp: 40, completed: false },
-                { id: 3, title: "Drink 3 liters of water", xp: 20, completed: false }
-            ],
-            rules: [
-                { id: 1, rule: "Never open entertainment apps before completing core work." },
-                { id: 2, rule: "Execute daily workout regardless of motivation levels." }
-            ],
-            distractions: [
-                { id: 1, date: "Nov 10", distraction: "Checked notifications mid-coding", impact: "Lost 25 mins of flow state", fix: "Phone in another room during deep work." }
-            ],
-            expenses: [
-                { id: 1, title: "Cloud Hosting Server", amount: 0, category: "Work", type: "expense", date: "2026-11-10" },
-                { id: 2, title: "Freelance Project Milestone", amount: 0, category: "Income", type: "income", date: "2026-11-09" },
-                { id: 3, title: "Healthy Groceries", amount: 0, category: "Living", type: "expense", date: "2026-11-08" }
-            ],
+            tasks: [],
+            habits: [],
+            goals: [],
+            challenges: [],
+            rules: [],
+            distractions: [],
+            expenses: [],
             achievementsList: [
                 { id: 1, title: "First Step", desc: "Complete your first task", unlocked: false, icon: "footprints" },
                 { id: 2, title: "Consistency Starter", desc: "Maintain a 3-day streak", unlocked: false, icon: "flame" },
@@ -423,11 +397,34 @@ if (!Array.isArray(appState.selfControlItems)) appState.selfControlItems = [];
 if (!Array.isArray(appState.habits)) appState.habits = [];
 if (!Array.isArray(appState.goals)) appState.goals = [];
 if (!Array.isArray(appState.tasks)) appState.tasks = [];
+// Remove only the original built-in demo entries; preserve anything users created.
+const DEMO_ENTRY_TITLES = new Set([
+    'Morning Hydration & Stretch','Deep Work: Core Architecture','Physical Exercise / Gym','Read 20 Pages of Non-Fiction',
+    'Code Daily','Cold Shower','Journaling','No Sugar',
+    'Build Full-Stack SaaS Product','Read 24 Books This Year',
+    'Complete all high-priority tasks before noon','Zero social media distractions during focus blocks','Drink 3 liters of water',
+    'Never open entertainment apps before completing core work.','Execute daily workout regardless of motivation levels.',
+    'Cloud Hosting Server','Freelance Project Milestone','Healthy Groceries'
+]);
+appState.tasks = appState.tasks.filter(x => !DEMO_ENTRY_TITLES.has(x.title));
+appState.habits = appState.habits.filter(x => !DEMO_ENTRY_TITLES.has(x.title));
+appState.goals = appState.goals.filter(x => !DEMO_ENTRY_TITLES.has(x.title));
+appState.challenges = (Array.isArray(appState.challenges)?appState.challenges:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.title));
+appState.rules = (Array.isArray(appState.rules)?appState.rules:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.rule));
+appState.distractions = (Array.isArray(appState.distractions)?appState.distractions:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.distraction));
+appState.expenses = (Array.isArray(appState.expenses)?appState.expenses:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.title));
 appState.habits.forEach(h => { if (!Array.isArray(h.completedDates)) h.completedDates = h.completedToday ? [localDateKey()] : []; });
 appState.goals.forEach(g => { if (!Array.isArray(g.steps)) g.steps = (Array.isArray(g.milestones) ? g.milestones : []).map(text => ({ text, completed: false })); });
 if (!appState.focusStats || typeof appState.focusStats !== 'object') appState.focusStats = { totalSeconds: 0, sessions: [] };
 if (!Array.isArray(appState.focusStats.sessions)) appState.focusStats.sessions = [];
 if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusStats.totalSeconds = 0;
+
+        function removeBuiltInDemoEntries() {
+            const demo = new Set(['Morning Hydration & Stretch','Deep Work: Core Architecture','Physical Exercise / Gym','Read 20 Pages of Non-Fiction','Code Daily','Cold Shower','Journaling','No Sugar','Build Full-Stack SaaS Product','Read 24 Books This Year','Complete all high-priority tasks before noon','Zero social media distractions during focus blocks','Drink 3 liters of water','Never open entertainment apps before completing core work.','Execute daily workout regardless of motivation levels.','Cloud Hosting Server','Freelance Project Milestone','Healthy Groceries']);
+            for (const key of ['tasks','habits','goals','challenges','expenses']) if (Array.isArray(appState[key])) appState[key] = appState[key].filter(x => !demo.has(x.title));
+            if (Array.isArray(appState.rules)) appState.rules = appState.rules.filter(x => !demo.has(x.rule));
+            if (Array.isArray(appState.distractions)) appState.distractions = appState.distractions.filter(x => !demo.has(x.distraction));
+        }
 
         let currentFirebaseUser = null;
         let cloudSyncReady = false;
@@ -555,6 +552,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
                     await window.dailySpaceFirebase.saveUserState(user.uid, appState);
                 }
+                removeBuiltInDemoEntries();
                 localStorage.setItem('daily_space_state', JSON.stringify(appState));
                 currentFirebaseUser = user;
                 cloudSyncReady = true;
@@ -951,8 +949,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             document.getElementById('modal-desc').innerText = 'Choose a date and set a time using a 12-hour clock.';
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
-                    <div><label class="text-xs font-semibold text-muted uppercase">Activity Title</label><input type="text" id="new-task-title" placeholder="e.g. Study for 1 hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
-                    <div><label class="text-xs font-semibold text-muted uppercase">Date</label><input type="date" id="new-task-date" value="${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
+                    <div><label for="new-task-title" class="block text-sm font-semibold">Activity Title <span class="text-red-500">*</span></label><input type="text" id="new-task-title" required placeholder="e.g. Study for 1 hour" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"></div>
+                    <div><label for="new-task-date" class="block text-sm font-semibold text-white">Add Date <span class="text-red-500">*</span></label><input type="date" id="new-task-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm mt-1"><p class="mt-1 text-xs text-muted">A date is required to save this activity.</p></div>
                     <div><label class="text-xs font-semibold text-muted uppercase">Scheduled Time</label><div class="grid grid-cols-3 gap-2 mt-1"><select id="new-task-hour" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${i+1===hour?'selected':''}>${i+1}</option>`).join('')}</select><select id="new-task-minute" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10">${Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}" ${String(i).padStart(2,'0')===minute?'selected':''}>${String(i).padStart(2,'0')}</option>`).join('')}</select><select id="new-task-ampm" class="px-3 py-3 rounded-xl bg-surfaceLight border border-white/10"><option ${ampm==='AM'?'selected':''}>AM</option><option ${ampm==='PM'?'selected':''}>PM</option></select></div></div>
                     <div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-semibold text-muted uppercase">Category</label><select id="new-task-cat" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option>Work</option><option>Study</option><option>Fitness</option><option>Health</option><option>Growth</option><option>Personal</option></select></div><div><label class="text-xs font-semibold text-muted uppercase">Priority</label><select id="new-task-pri" class="w-full px-3 py-3 rounded-xl bg-surfaceLight border border-white/10 mt-1"><option>High</option><option selected>Medium</option><option>Low</option></select></div></div>
                 </div>`;
@@ -988,6 +986,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         let activeHabitCalendarId = null;
+        let activeSelfControlCalendarId = null;
         let habitCalendarYear = new Date().getFullYear();
         let habitCalendarMonth = new Date().getMonth();
         function localDateKey(date=new Date()) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
@@ -1003,7 +1002,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderHabits(container) {
             if (activeHabitCalendarId !== null) return renderHabitCalendar(container, activeHabitCalendarId);
             const today=localDateKey();
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="text-muted text-sm">Tap a habit to view its activity calendar.</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=h.completedDates.includes(today);return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${h.category||'Personal'}</span><h3 class="font-bold text-lg mt-2">${h.title}</h3></div><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="font-bold"><i data-lucide="flame" class="inline w-4 h-4 text-warning"></i> ${getHabitStreak(h)} day streak</span><span class="text-xs ${done?'text-success':'text-muted'}">${done?'Completed today':'Not completed today'}</span></div><p class="text-xs text-primary/80">Tap to view your activity calendar.</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=h.completedDates.includes(today);return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${h.category||'Personal'}</span><h3 class="font-bold text-lg mt-2">${h.title}</h3></div><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="font-bold"><i data-lucide="flame" class="inline w-4 h-4 text-warning"></i> ${getHabitStreak(h)} day streak</span><span class="text-xs ${done?'text-success':'text-muted'}">${done?'Completed today':'Not completed today'}</span></div><p class="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
         }
         function openHabitCalendar(id){activeHabitCalendarId=id;habitCalendarYear=new Date().getFullYear();habitCalendarMonth=new Date().getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function changeHabitCalendarMonth(delta){habitCalendarMonth+=delta;const d=new Date(habitCalendarYear,habitCalendarMonth,1);habitCalendarYear=d.getFullYear();habitCalendarMonth=d.getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
@@ -1011,12 +1010,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const h=appState.habits.find(x=>x.id===id);if(!h){activeHabitCalendarId=null;return renderHabits(container);}if(!Array.isArray(h.completedDates))h.completedDates=[];
             const first=new Date(habitCalendarYear,habitCalendarMonth,1),offset=first.getDay(),days=new Date(habitCalendarYear,habitCalendarMonth+1,0).getDate(),today=localDateKey();
             const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':future?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/30'}">${day}</button>`)}
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="text-sm text-primary">← Back to Habits</button><div><h2 class="text-2xl font-bold">${h.title}</h2><p class="text-sm text-muted">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} days</p></div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${h.title}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} days</p></div></div>`;
         }
         function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey())return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function openAddHabitModal() {
             const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
-            document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><input type="text" id="new-habit-title" placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select></div>`;
+            document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><div><label for="new-habit-title" class="block text-sm font-semibold">Habit Name <span class="text-red-500">*</span></label><input type="text" id="new-habit-title" required placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></div><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select></div>`;
             document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-habit-title').value.trim();if(!title)return showToast('Please enter a habit title.','danger');appState.habits.push({id:Date.now(),title,category:document.getElementById('new-habit-cat').value,completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();modal.classList.add('hidden');activeHabitCalendarId=null;router('habits');showToast('Habit added successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
         }
         function toggleHabitToday(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];toggleHabitDate(id,localDateKey());}
@@ -1034,13 +1033,13 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderGoals(container){
             if(activeGoalDetailId!==null)return renderGoalDetail(container,activeGoalDetailId);
             appState.goals.forEach(normalizeGoal);
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold"><i data-lucide="target" class="inline w-6 h-6 text-secondary"></i> Goal Management</h2><p class="text-sm text-muted">Tap a goal to view and update its steps.</p></div><button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Goal</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5">${appState.goals.map(g=>`<div onclick="openGoalDetail(${g.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex justify-between gap-3"><span class="text-xs text-secondary">${g.category||'Personal'}</span><button onclick="event.stopPropagation();deleteGoal(${g.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><h3 class="text-lg font-bold">${g.title}</h3><div class="flex justify-between text-xs text-muted"><span>${g.status}</span><span>${g.steps.filter(x=>x.completed).length}/${g.steps.length} steps · ${g.progress}%</span></div><div class="h-2.5 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><p class="text-xs text-primary">Tap to view progress.</p></div>`).join('')||'<p class="text-sm text-muted">No goals yet. Create your first goal.</p>'}</div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold"><i data-lucide="target" class="inline w-6 h-6 text-secondary"></i> Goal Management</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-secondary/30 bg-secondary/10 px-3 py-2 text-sm font-semibold text-secondary"><i data-lucide="list-checks" class="w-4 h-4"></i> Tap a goal to view and update its steps</p></div><button onclick="openAddGoalModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Goal</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-5">${appState.goals.map(g=>`<div onclick="openGoalDetail(${g.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex justify-between gap-3"><span class="text-xs text-secondary">${g.category||'Personal'}</span><button onclick="event.stopPropagation();deleteGoal(${g.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><h3 class="text-lg font-bold">${g.title}</h3><div class="flex justify-between text-xs text-muted"><span>${g.status}</span><span>${g.steps.filter(x=>x.completed).length}/${g.steps.length} steps · ${g.progress}%</span></div><div class="h-2.5 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><p class="mt-2 rounded-lg border border-secondary/30 bg-secondary/10 px-3 py-2 text-sm font-semibold text-secondary">↗ Tap to view progress</p></div>`).join('')||'<p class="text-sm text-muted">No goals yet. Create your first goal.</p>'}</div></div>`;
         }
         function openGoalDetail(id){activeGoalDetailId=id;renderGoals(document.getElementById('main-viewport'));lucide.createIcons();}
-        function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="text-sm text-primary">← Back to Goals</button><div><h2 class="text-2xl font-bold">${g.title}</h2><p class="text-sm text-muted">${g.status} · Target ${g.targetDate||'Not set'}</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${step.text}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
+        function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Goals</button><div><h2 class="text-2xl font-bold">${g.title}</h2><p class="text-sm text-muted">${g.status} · Target ${g.targetDate||'Not set'}</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${step.text}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
         function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;normalizeGoal(g);saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed!','success');}
         function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
-        function openAddGoalModal(){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Goal';document.getElementById('modal-desc').innerText='Every goal starts with at least one clear step.';document.getElementById('modal-content').innerHTML=`<div class="space-y-3"><input id="new-goal-title" placeholder="Goal title" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><option>Career</option><option>Education</option><option>Fitness</option><option>Finance</option><option>Growth</option><option>Personal</option></select><input type="date" id="new-goal-date" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><div id="goal-step-inputs" class="space-y-2"><input class="goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10" placeholder="Step 1 (required)"></div><button type="button" onclick="addGoalStepInput()" class="text-sm text-primary font-semibold">+ Add another step</button></div>`;document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-goal-title').value.trim(),steps=[...document.querySelectorAll('.goal-step-input')].map(x=>x.value.trim()).filter(Boolean);if(!title)return showToast('Please enter a goal title.','danger');if(!steps.length)return showToast('Add at least one goal step.','danger');const g={id:Date.now(),title,category:document.getElementById('new-goal-cat').value,targetDate:document.getElementById('new-goal-date').value||'',steps:steps.map(text=>({text,completed:false})),progress:0,status:'Active'};appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=g.id;router('goals');showToast('Goal created successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
+        function openAddGoalModal(){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Goal';document.getElementById('modal-desc').innerText='Every goal starts with at least one clear step.';document.getElementById('modal-content').innerHTML=`<div class="space-y-3"><div><label for="new-goal-title" class="block text-sm font-semibold">Goal Title <span class="text-red-500">*</span></label><input id="new-goal-title" required placeholder="Goal title" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><option>Career</option><option>Education</option><option>Fitness</option><option>Finance</option><option>Growth</option><option>Personal</option></select><div><label for="new-goal-date" class="block text-sm font-semibold">Add Date <span class="text-red-500">*</span></label><input type="date" id="new-goal-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><p class="mt-1 text-xs text-muted">Choose the target date for this goal.</p></div><div id="goal-step-inputs" class="space-y-2"><label class="block text-sm font-semibold">Step 1 <span class="text-red-500">*</span></label><input required class="goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10" placeholder="Enter your first step"></div><button type="button" onclick="addGoalStepInput()" class="text-sm text-primary font-semibold">+ Add another step</button></div>`;document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-goal-title').value.trim(),steps=[...document.querySelectorAll('.goal-step-input')].map(x=>x.value.trim()).filter(Boolean);const targetDate=document.getElementById('new-goal-date').value;if(!title)return showToast('Please enter a goal title.','danger');if(!targetDate)return showToast('Please add a target date.','danger');if(!steps.length)return showToast('Step 1 is required. Enter your first goal step.','danger');const g={id:Date.now(),title,category:document.getElementById('new-goal-cat').value,targetDate,steps:steps.map(text=>({text,completed:false})),progress:0,status:'Active'};appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=g.id;router('goals');showToast('Goal created successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
         function addGoalStepInput(){const box=document.getElementById('goal-step-inputs');if(!box)return;const input=document.createElement('input');input.className='goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10';input.placeholder=`Step ${box.children.length+1}`;box.appendChild(input);}
 
         function deleteGoal(id) {
@@ -1206,61 +1205,33 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
 
         function renderSelfControl(container) {
+            if (activeSelfControlCalendarId !== null) return renderSelfControlCalendar(container, activeSelfControlCalendarId);
             container.innerHTML = `
                 <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300">
-                    <div>
-                        <h2 class="text-2xl font-bold flex items-center gap-2">
-                            <i data-lucide="shield" class="w-6 h-6 text-primary"></i> Self-Control Center
-                        </h2>
-                        <p class="text-muted text-sm">Forge impenetrable discipline, eliminate distractions, and manage personal rules.</p>
-                    </div>
-
+                    <div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="shield" class="w-6 h-6 text-primary"></i> Self-Control Center</h2><p class="text-muted text-sm">Build your own commitments and track the days you successfully follow them.</p></div>
                     <div class="glass-panel p-6 rounded-3xl space-y-4">
-                        <div class="flex items-center justify-between gap-3"><div><h3 class="font-bold text-lg">My Self-Control Commitments</h3><p class="text-xs text-muted">Personal behaviours, challenges and commitments you want to work on.</p></div><button onclick="openAddSelfControlItemModal()" class="px-3 py-2 rounded-xl bg-primary text-white text-sm font-semibold">+ Add</button></div>
-                        <div class="space-y-2">${(appState.selfControlItems||[]).map(item=>`<div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-surfaceLight/40"><span class="text-sm">${item.text}</span><button onclick="deleteSelfControlItem(${item.id})" class="p-2 text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('')||'<p class="text-sm text-muted">No personal commitments yet. Tap Add to create one.</p>'}</div>
+                        <div class="flex items-center justify-between gap-3"><div><h3 class="font-bold text-lg">My Self-Control Commitments</h3><p class="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">Tap a commitment to view your activity calendar</p></div><button onclick="openAddSelfControlItemModal()" class="px-3 py-2 rounded-xl bg-primary text-white text-sm font-semibold">+ Add</button></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${(appState.selfControlItems||[]).map(item=>`<div role="button" tabindex="0" onclick="openSelfControlCalendar(${item.id})" onkeydown="if(event.key==='Enter')openSelfControlCalendar(${item.id})" class="p-4 rounded-2xl bg-surfaceLight/40 border border-white/10 cursor-pointer hover:border-primary/40 space-y-3"><div class="flex items-start justify-between gap-3"><span class="font-semibold text-sm">${item.text}</span><button onclick="event.stopPropagation();deleteSelfControlItem(${item.id})" class="p-2 text-muted hover:text-danger" aria-label="Delete commitment"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><p class="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`).join('')||'<p class="text-sm text-muted py-4">No personal commitments yet. Add your first commitment to begin tracking.</p>'}</div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <h3 class="font-bold text-lg flex items-center gap-2">
-                                <i data-lucide="award" class="w-5 h-5 text-warning"></i> Daily Discipline Challenges
-                            </h3>
-                            <div class="space-y-3">
-                                ${appState.challenges.map(c => `
-                                    <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5">
-                                        <div class="flex items-center gap-3">
-                                            <input type="checkbox" ${c.completed ? 'checked' : ''} onchange="toggleChallenge(${c.id})" class="w-5 h-5 rounded-lg accent-primary cursor-pointer">
-                                            <span class="text-sm font-medium ${c.completed ? 'line-through text-muted' : ''}">${c.title}</span>
-                                        </div>
-                                        <span class="text-xs font-bold text-warning bg-warning/10 px-2.5 py-1 rounded-full">+${c.xp} XP</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-6 rounded-3xl space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <i data-lucide="lock" class="w-5 h-5 text-secondary"></i> Personal Rules
-                                </h3>
-                                <button onclick="openAddRuleModal()" class="text-xs text-primary font-semibold hover:underline">+ Add Rule</button>
-                            </div>
-                            <div class="space-y-3">
-                                ${appState.rules.map(r => `
-                                    <div class="p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 flex items-center justify-between">
-                                        <p class="text-sm text-muted">"${r.rule}"</p>
-                                        <button onclick="deleteRule(${r.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
+                        <div class="glass-panel p-6 rounded-3xl space-y-4"><h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="award" class="w-5 h-5 text-warning"></i> Daily Discipline Challenges</h3><div class="space-y-3">${(appState.challenges||[]).map(c=>`<div class="flex items-center justify-between p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5"><div class="flex items-center gap-3"><input type="checkbox" ${c.completed?'checked':''} onchange="toggleChallenge(${c.id})" class="w-5 h-5 rounded-lg accent-primary cursor-pointer"><span class="text-sm font-medium ${c.completed?'line-through text-muted':''}">${c.title}</span></div><span class="text-xs font-bold text-warning bg-warning/10 px-2.5 py-1 rounded-full">+${c.xp} XP</span></div>`).join('')||'<p class="text-sm text-muted">No challenges added.</p>'}</div></div>
+                        <div class="glass-panel p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="lock" class="w-5 h-5 text-secondary"></i> Personal Rules</h3><button onclick="openAddRuleModal()" class="text-sm text-primary font-semibold hover:underline">+ Add Rule</button></div><div class="space-y-3">${(appState.rules||[]).map(r=>`<div class="p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 flex items-center justify-between"><p class="text-sm text-muted">"${r.rule}"</p><button onclick="deleteRule(${r.id})" class="text-muted hover:text-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('')||'<p class="text-sm text-muted">No personal rules yet. Add your first rule.</p>'}</div></div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
-
-        function openAddSelfControlItemModal(){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Add Personal Commitment';document.getElementById('modal-desc').innerText='Add a behaviour, challenge or commitment you want to manage.';document.getElementById('modal-content').innerHTML='<textarea id="new-self-control-item" rows="3" placeholder="e.g. Avoid social media during study time" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></textarea>';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-self-control-item').value.trim();if(!text)return showToast('Please describe your commitment.','danger');if(!Array.isArray(appState.selfControlItems))appState.selfControlItems=[];appState.selfControlItems.push({id:Date.now(),text,createdAt:localDateKey()});saveState();modal.classList.add('hidden');renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();showToast('Personal commitment added.','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
-        function deleteSelfControlItem(id){if(!confirm('Delete this personal commitment?'))return;appState.selfControlItems=(appState.selfControlItems||[]).filter(x=>x.id!==id);saveState();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();showToast('Commitment deleted.','success');}
-
+        let selfControlCalendarYear = new Date().getFullYear();
+        let selfControlCalendarMonth = new Date().getMonth();
+        function openSelfControlCalendar(id){activeSelfControlCalendarId=id;selfControlCalendarYear=new Date().getFullYear();selfControlCalendarMonth=new Date().getMonth();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();}
+        function changeSelfControlCalendarMonth(delta){const d=new Date(selfControlCalendarYear,selfControlCalendarMonth+delta,1);selfControlCalendarYear=d.getFullYear();selfControlCalendarMonth=d.getMonth();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();}
+        function renderSelfControlCalendar(container,id){
+            const item=(appState.selfControlItems||[]).find(x=>x.id===id);if(!item){activeSelfControlCalendarId=null;return renderSelfControl(container);}
+            if(!Array.isArray(item.completedDates))item.completedDates=[];
+            const first=new Date(selfControlCalendarYear,selfControlCalendarMonth,1),offset=first.getDay(),days=new Date(selfControlCalendarYear,selfControlCalendarMonth+1,0).getDate(),today=localDateKey();
+            const cells=Array.from({length:offset},()=>'<div></div>');
+            for(let day=1;day<=days;day++){const key=`${selfControlCalendarYear}-${String(selfControlCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=item.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleSelfControlDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':future?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/30'}">${day}</button>`);}
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Self-Control</button><div><h2 class="text-2xl font-bold">${item.text}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark each day you successfully followed this commitment. Future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeSelfControlCalendarMonth(-1)" class="p-3 rounded-xl bg-surfaceLight font-bold" aria-label="Previous month">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeSelfControlCalendarMonth(1)" ${selfControlCalendarYear===new Date().getFullYear()&&selfControlCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-3 rounded-xl bg-surfaceLight font-bold disabled:opacity-30" aria-label="Next month">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-sm font-medium text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Successfully followed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Successful days recorded: ${item.completedDates.length}</p></div></div>`;
+        }
+        function toggleSelfControlDate(id,date){const item=(appState.selfControlItems||[]).find(x=>x.id===id);if(!item||date>localDateKey())return;if(!Array.isArray(item.completedDates))item.completedDates=[];const i=item.completedDates.indexOf(date);if(i>=0)item.completedDates.splice(i,1);else item.completedDates.push(date);item.completedDates=[...new Set(item.completedDates)].sort();saveState();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();}
         function toggleChallenge(id) {
             const ch = appState.challenges.find(c => c.id === id);
             if (ch) {
@@ -1494,13 +1465,13 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
                     <div>
-                        <label class="text-xs font-semibold text-muted uppercase">Title / Description</label>
-                        <input type="text" id="exp-title" placeholder="e.g. Freelance Client Payment" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                        <label for="exp-title" class="block text-sm font-semibold">Title / Description <span class="text-red-500">*</span></label>
+                        <input type="text" id="exp-title" required placeholder="e.g. Freelance Client Payment" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs font-semibold text-muted uppercase">Amount (₹)</label>
-                            <input type="number" id="exp-amount" placeholder="1500" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
+                            <label for="exp-amount" class="block text-sm font-semibold">Amount (₹) <span class="text-red-500">*</span></label>
+                            <input type="number" id="exp-amount" required min="0.01" placeholder="1500" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-muted uppercase">Type</label>
@@ -1509,6 +1480,10 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                                 <option value="income">Income</option>
                             </select>
                         </div>
+                    </div>
+                    <div>
+                        <label for="exp-date" class="block text-sm font-semibold">Add Date <span class="text-red-500">*</span></label>
+                        <input type="date" id="exp-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary mt-1">
                     </div>
                     <div>
                         <label class="text-xs font-semibold text-muted uppercase">Category</label>
@@ -1521,9 +1496,11 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 const amount = parseFloat(document.getElementById('exp-amount').value);
                 const type = document.getElementById('exp-type').value;
                 const category = document.getElementById('exp-cat').value.trim() || "General";
+                const date = document.getElementById('exp-date').value;
+                if (!date) { showToast('Please add a date.','danger'); return; }
                 if (!title || isNaN(amount)) { showToast("Please fill valid details.", "danger"); return; }
                 
-                appState.expenses.push({ id: Date.now(), title, amount, type, category, date: `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-${String(new Date().getDate()).padStart(2,'0')}` });
+                appState.expenses.push({ id: Date.now(), title, amount, type, category, date });
                 saveState();
                 modal.classList.add('hidden');
                 router('finance');
