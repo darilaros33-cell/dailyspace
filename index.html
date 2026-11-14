@@ -12,12 +12,12 @@
             theme: {
                 extend: {
                     colors: {
-                        bgDark: '#080B18',
-                        surface: '#11172A',
-                        surfaceLight: '#1E2640',
-                        primary: '#7657FF',
-                        primaryHover: '#6342E8',
-                        secondary: '#3185FF',
+                        bgDark: '#071827',
+                        surface: '#0D2635',
+                        surfaceLight: '#153849',
+                        primary: '#20C9B0',
+                        primaryHover: '#12A995',
+                        secondary: '#087E8B',
                         muted: '#929BB2',
                         success: '#36C98F',
                         warning: '#FFB84D',
@@ -47,22 +47,22 @@
         html:not(.dark) .bg-bgDark { background-color: #F8FAFC !important; }
 
         /* Dark Theme Default Overrides */
-        html.dark body { background-color: #080B18; color: #FFFFFF; }
+        html.dark body { background-color: #071827; color: #FFFFFF; }
         html.dark .glass-panel { background: rgba(17, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.3); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #7657FF; }
+        ::-webkit-scrollbar-thumb:hover { background: #20C9B0; }
         #main-viewport { padding-bottom: 88px; }
         .ds-bottom-nav { position:fixed; left:0; right:0; bottom:0; z-index:40; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; padding:8px 8px calc(8px + env(safe-area-inset-bottom)); background:rgba(8,11,24,.94); border-top:1px solid rgba(255,255,255,.1); backdrop-filter:blur(18px); }
         .ds-bottom-nav button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-width:0; padding:7px 2px; color:#929BB2; font-size:10px; font-weight:600; border-radius:12px; }
-        .ds-bottom-nav button.active { color:#fff; background:rgba(118,87,255,.2); }
+        .ds-bottom-nav button.active { color:#fff; background:rgba(32,201,176,.18); }
         .ds-bottom-nav svg { width:19px; height:19px; }
-        .ds-bottom-nav .ds-ai-nav { color:#fff; transform:translateY(-9px); background:linear-gradient(135deg,#7657FF,#3185FF); box-shadow:0 6px 20px rgba(118,87,255,.35); border:2px solid rgba(255,255,255,.2); }
+        .ds-bottom-nav .ds-ai-nav { color:#fff; transform:translateY(-9px); background:linear-gradient(135deg,#20C9B0,#087E8B); box-shadow:0 6px 20px rgba(32,201,176,.30); border:2px solid rgba(255,255,255,.2); }
         .ds-bottom-nav .ds-ai-nav svg { width:22px; height:22px; }
         html:not(.dark) .ds-bottom-nav { background:rgba(255,255,255,.96); border-color:#E2E8F0; }
-        html:not(.dark) .ds-bottom-nav button.active { color:#5B3FE6; background:rgba(118,87,255,.12); }
+        html:not(.dark) .ds-bottom-nav button.active { color:#087E8B; background:rgba(32,201,176,.12); }
         html:not(.dark) .ds-mobile-toolbar { background:rgba(255,255,255,.94); border-color:#E2E8F0; }
         html:not(.dark) .ds-mobile-toolbar button { color:#334155; }
         .ds-mobile-toolbar { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(17,23,42,.75); position:sticky; top:0; z-index:30; }
@@ -149,8 +149,8 @@
     </div>
 
     <!-- Firebase Authentication Gate -->
-    <section id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#080B18] p-4">
-        <div class="w-full max-w-md rounded-3xl border border-white/10 bg-[#11172A] p-7 shadow-2xl">
+    <section id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#071827] p-4">
+        <div class="w-full max-w-md rounded-3xl border border-white/10 bg-[#0D2635] p-7 shadow-2xl">
             <div class="mb-6 flex items-center gap-3">
                 <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary">
                     <i data-lucide="compass" class="h-7 w-7 text-white"></i>
@@ -168,9 +168,9 @@
                 </div>
                 <form id="email-auth-form" onsubmit="handleEmailAuth(event)" class="space-y-3">
                     <label class="block text-xs font-semibold uppercase text-muted" for="auth-email">Email address</label>
-                    <input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com" class="w-full rounded-xl border border-white/10 bg-[#1E2640] px-4 py-3 text-sm text-white outline-none focus:border-primary">
+                    <input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com" class="w-full rounded-xl border border-white/10 bg-[#153849] px-4 py-3 text-sm text-white outline-none focus:border-primary">
                     <label class="block text-xs font-semibold uppercase text-muted" for="auth-password">Password</label>
-                    <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters" class="w-full rounded-xl border border-white/10 bg-[#1E2640] px-4 py-3 text-sm text-white outline-none focus:border-primary">
+                    <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters" class="w-full rounded-xl border border-white/10 bg-[#153849] px-4 py-3 text-sm text-white outline-none focus:border-primary">
                     <button id="auth-submit" type="submit" class="w-full rounded-xl bg-primary px-4 py-3 font-bold text-white transition hover:bg-primaryHover">Sign In</button>
                 </form>
                 <button type="button" onclick="signInWithGoogle()" class="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-100">
@@ -939,6 +939,28 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 </div>`;
         }
 
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            field.classList.add('border-red-500','ring-1','ring-red-500/40');
+            let error = document.getElementById(fieldId + '-error');
+            if (!error) {
+                error = document.createElement('p');
+                error.id = fieldId + '-error';
+                error.className = 'mt-1.5 text-xs font-medium text-red-500';
+                field.insertAdjacentElement('afterend', error);
+            }
+            error.textContent = message;
+            field.addEventListener('input', () => clearFieldError(fieldId), { once: true });
+            field.addEventListener('change', () => clearFieldError(fieldId), { once: true });
+            field.focus();
+        }
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) field.classList.remove('border-red-500','ring-1','ring-red-500/40');
+            document.getElementById(fieldId + '-error')?.remove();
+        }
+
         function openAddTaskModal() {
             const modal = document.getElementById('app-modal');
             const now = new Date();
@@ -957,8 +979,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             document.getElementById('modal-confirm').onclick = () => {
                 const title = document.getElementById('new-task-title').value.trim();
                 const date = document.getElementById('new-task-date').value;
-                if (!title) return showToast('Please enter an activity title.','danger');
-                if (!date) return showToast('Please choose a date.','danger');
+                if (!title) return showFieldError('new-task-title','Please enter an activity title to save.');
+                if (!date) return showFieldError('new-task-date','Please select a date to save this activity.');
                 const time = `${document.getElementById('new-task-hour').value}:${document.getElementById('new-task-minute').value} ${document.getElementById('new-task-ampm').value}`;
                 appState.tasks.push({id:Date.now(),title,date,time,category:document.getElementById('new-task-cat').value,priority:document.getElementById('new-task-pri').value,completed:false});
                 saveState(); modal.classList.add('hidden'); router('routine'); showToast('Activity added successfully!','success');
@@ -1009,14 +1031,14 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderHabitCalendar(container,id){
             const h=appState.habits.find(x=>x.id===id);if(!h){activeHabitCalendarId=null;return renderHabits(container);}if(!Array.isArray(h.completedDates))h.completedDates=[];
             const first=new Date(habitCalendarYear,habitCalendarMonth,1),offset=first.getDay(),days=new Date(habitCalendarYear,habitCalendarMonth+1,0).getDate(),today=localDateKey();
-            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||beforeStart)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/30'}">${day}</button>`)}
+            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today;cells.push(`<button ${future?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||beforeStart)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
             container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${h.title}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} days</p></div></div>`;
         }
         function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey())return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function openAddHabitModal() {
             const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
             document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><div><label for="new-habit-title" class="block text-sm font-semibold">Habit Name <span class="text-red-500">*</span></label><input type="text" id="new-habit-title" required placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></div><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select></div>`;
-            document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-habit-title').value.trim();if(!title)return showToast('Please enter a habit title.','danger');appState.habits.push({id:Date.now(),title,category:document.getElementById('new-habit-cat').value,completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();modal.classList.add('hidden');activeHabitCalendarId=null;router('habits');showToast('Habit added successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
+            document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-habit-title').value.trim();if(!title)return showFieldError('new-habit-title','Please enter a habit name to save.');appState.habits.push({id:Date.now(),title,category:document.getElementById('new-habit-cat').value,completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();modal.classList.add('hidden');activeHabitCalendarId=null;router('habits');showToast('Habit added successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
         }
         function toggleHabitToday(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];toggleHabitDate(id,localDateKey());}
 
@@ -1039,8 +1061,34 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Goals</button><div><h2 class="text-2xl font-bold">${g.title}</h2><p class="text-sm text-muted">${g.status} · Target ${g.targetDate||'Not set'}</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${step.text}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
         function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;normalizeGoal(g);saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed!','success');}
         function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
-        function openAddGoalModal(){const modal=document.getElementById('app-modal');document.getElementById('modal-title').innerText='Create New Goal';document.getElementById('modal-desc').innerText='Every goal starts with at least one clear step.';document.getElementById('modal-content').innerHTML=`<div class="space-y-3"><div><label for="new-goal-title" class="block text-sm font-semibold">Goal Title <span class="text-red-500">*</span></label><input id="new-goal-title" required placeholder="Goal title" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><option>Career</option><option>Education</option><option>Fitness</option><option>Finance</option><option>Growth</option><option>Personal</option></select><div><label for="new-goal-date" class="block text-sm font-semibold">Add Date <span class="text-red-500">*</span></label><input type="date" id="new-goal-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><p class="mt-1 text-xs text-muted">Choose the target date for this goal.</p></div><div id="goal-step-inputs" class="space-y-2"><label class="block text-sm font-semibold">Step 1 <span class="text-red-500">*</span></label><input required class="goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10" placeholder="Enter your first step"></div><button type="button" onclick="addGoalStepInput()" class="text-sm text-primary font-semibold">+ Add another step</button></div>`;document.getElementById('modal-confirm').onclick=()=>{const title=document.getElementById('new-goal-title').value.trim(),steps=[...document.querySelectorAll('.goal-step-input')].map(x=>x.value.trim()).filter(Boolean);const targetDate=document.getElementById('new-goal-date').value;if(!title)return showToast('Please enter a goal title.','danger');if(!targetDate)return showToast('Please add a target date.','danger');if(!steps.length)return showToast('Step 1 is required. Enter your first goal step.','danger');const g={id:Date.now(),title,category:document.getElementById('new-goal-cat').value,targetDate,steps:steps.map(text=>({text,completed:false})),progress:0,status:'Active'};appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=g.id;router('goals');showToast('Goal created successfully!','success');};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
-        function addGoalStepInput(){const box=document.getElementById('goal-step-inputs');if(!box)return;const input=document.createElement('input');input.className='goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10';input.placeholder=`Step ${box.children.length+1}`;box.appendChild(input);}
+        function openAddGoalModal(){
+            const modal=document.getElementById('app-modal');
+            document.getElementById('modal-title').innerText='Create New Goal';
+            document.getElementById('modal-desc').innerText='Every goal starts with at least one clear step.';
+            document.getElementById('modal-content').innerHTML=`<div class="space-y-3"><div><label for="new-goal-title" class="block text-sm font-semibold">Goal Title <span class="text-red-500">*</span></label><input id="new-goal-title" required placeholder="Goal title" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"></div><select id="new-goal-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><option>Career</option><option>Education</option><option>Fitness</option><option>Finance</option><option>Growth</option><option>Personal</option></select><div><label for="new-goal-date" class="block text-sm font-semibold">Add Date <span class="text-red-500">*</span></label><input type="date" id="new-goal-date" required class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10"><p class="mt-1 text-xs text-muted">Choose the target date for this goal.</p></div><div id="goal-step-inputs" class="space-y-3"><div class="goal-step-row"><label for="goal-step-1" class="block text-sm font-semibold">Step 1 <span class="text-red-500">*</span></label><input id="goal-step-1" required class="goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10" placeholder="Enter your first step"></div></div><button type="button" onclick="addGoalStepInput()" class="text-sm text-primary font-semibold">+ Add another step</button></div>`;
+            document.getElementById('modal-confirm').onclick=()=>{
+                const title=document.getElementById('new-goal-title').value.trim();
+                const date=document.getElementById('new-goal-date').value;
+                const inputs=[...document.querySelectorAll('.goal-step-input')];
+                const firstStep=inputs[0]?.value.trim()||'';
+                if(!title)return showFieldError('new-goal-title','Please enter a goal title to save.');
+                if(!date)return showFieldError('new-goal-date','Please select a target date to save this goal.');
+                if(!firstStep)return showFieldError('goal-step-1','Step 1 is mandatory. Please enter your first action.');
+                const steps=inputs.map(x=>x.value.trim()).filter(Boolean);
+                const g={id:Date.now(),title,category:document.getElementById('new-goal-cat').value,targetDate:date,steps:steps.map(text=>({text,completed:false})),progress:0,status:'Active'};
+                appState.goals.push(g);saveState();modal.classList.add('hidden');activeGoalDetailId=g.id;router('goals');showToast('Goal created successfully!','success');
+            };
+            document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');
+        }
+        function addGoalStepInput(){
+            const box=document.getElementById('goal-step-inputs');
+            if(!box)return;
+            const number=box.querySelectorAll('.goal-step-input').length+1;
+            const row=document.createElement('div');
+            row.className='goal-step-row space-y-1';
+            row.innerHTML=`<label for="goal-step-${number}" class="block text-sm font-semibold">Step ${number}</label><input id="goal-step-${number}" class="goal-step-input w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10" placeholder="Enter step ${number}">`;
+            box.appendChild(row);
+        }
 
         function deleteGoal(id) {
             appState.goals = appState.goals.filter(g => g.id !== id);
@@ -1227,7 +1275,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             if(!Array.isArray(item.completedDates))item.completedDates=[];
             const first=new Date(selfControlCalendarYear,selfControlCalendarMonth,1),offset=first.getDay(),days=new Date(selfControlCalendarYear,selfControlCalendarMonth+1,0).getDate(),today=localDateKey();
             const cells=Array.from({length:offset},()=>'<div></div>');
-            for(let day=1;day<=days;day++){const key=`${selfControlCalendarYear}-${String(selfControlCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=item.completedDates.includes(key),future=key>today,beforeStart=!!item.startDate&&key<item.startDate;cells.push(`<button ${(future||beforeStart)?'disabled':''} onclick="toggleSelfControlDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||beforeStart)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/30'}">${day}</button>`);}
+            for(let day=1;day<=days;day++){const key=`${selfControlCalendarYear}-${String(selfControlCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=item.completedDates.includes(key),future=key>today,beforeStart=!!item.startDate&&key<item.startDate;cells.push(`<button ${(future||beforeStart)?'disabled':''} onclick="toggleSelfControlDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||beforeStart)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`);}
             container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Self-Control</button><div><h2 class="text-2xl font-bold">${item.text}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark each day you successfully followed this commitment. Future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeSelfControlCalendarMonth(-1)" class="p-3 rounded-xl bg-surfaceLight font-bold" aria-label="Previous month">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeSelfControlCalendarMonth(1)" ${selfControlCalendarYear===new Date().getFullYear()&&selfControlCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-3 rounded-xl bg-surfaceLight font-bold disabled:opacity-30" aria-label="Next month">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-sm font-medium text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Successfully followed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Successful days recorded: ${item.completedDates.length}</p></div></div>`;
         }
         function toggleSelfControlDate(id,date){const item=(appState.selfControlItems||[]).find(x=>x.id===id);if(!item||date>localDateKey()||(item.startDate&&date<item.startDate))return;if(!Array.isArray(item.completedDates))item.completedDates=[];const i=item.completedDates.indexOf(date);if(i>=0)item.completedDates.splice(i,1);else item.completedDates.push(date);item.completedDates=[...new Set(item.completedDates)].sort();saveState();renderSelfControl(document.getElementById('main-viewport'));lucide.createIcons();}
@@ -1250,14 +1298,15 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 <div class="space-y-3">
                     <label for="new-self-control-text" class="block text-sm font-semibold">Commitment <span class="text-danger">*</span></label>
                     <input type="text" id="new-self-control-text" maxlength="120" placeholder="e.g. Avoid scrolling during study time" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
-                    <label for="new-self-control-date" class="block text-sm font-semibold">Start Date <span class="text-danger">*</span></label>
-                    <input type="date" id="new-self-control-date" max="${localDateKey()}" value="${localDateKey()}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                    <label for="new-self-control-date" class="block text-sm font-semibold">Start Date <span class="text-red-500">*</span></label>
+                    <input type="date" id="new-self-control-date" required max="${localDateKey()}" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
                     <p class="text-xs text-muted">Both fields are required. You can mark successful days from the start date onward.</p>
                 </div>`;
             document.getElementById('modal-confirm').onclick = () => {
                 const text = document.getElementById('new-self-control-text').value.trim();
                 const startDate = document.getElementById('new-self-control-date').value;
-                if (!text || !startDate) { showToast('Please enter a commitment and select its start date.', 'error'); return; }
+                if (!text) return showFieldError('new-self-control-text','Please enter a commitment to save.');
+                if (!startDate) return showFieldError('new-self-control-date','Please select a start date to save.');
                 if (startDate > localDateKey()) { showToast('Start date cannot be in the future.', 'error'); return; }
                 if (!Array.isArray(appState.selfControlItems)) appState.selfControlItems = [];
                 appState.selfControlItems.push({ id: Date.now(), text, startDate, completedDates: [] });
@@ -1544,8 +1593,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 const type = document.getElementById('exp-type').value;
                 const category = document.getElementById('exp-cat').value.trim() || "General";
                 const date = document.getElementById('exp-date').value;
-                if (!date) { showToast('Please add a date.','danger'); return; }
-                if (!title || isNaN(amount)) { showToast("Please fill valid details.", "danger"); return; }
+                if (!title) return showFieldError('exp-title','Please enter a transaction title to save.');
+                if (isNaN(amount) || amount <= 0) return showFieldError('exp-amount','Please enter an amount greater than zero.');
+                if (!date) return showFieldError('exp-date','Please select a date to save this transaction.');
                 
                 appState.expenses.push({ id: Date.now(), title, amount, type, category, date });
                 saveState();
@@ -1604,8 +1654,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 const b = document.getElementById('habitChart');
                 if (!a || !b) return;
                 try {
-                    new Chart(a, {type:'bar',data:{labels:['Completed','Remaining'],datasets:[{label:'Tasks',data:[doneTasks,Math.max(0,tasks.length-doneTasks)],backgroundColor:['#36C98F','#7657FF'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
-                    new Chart(b, {type:'doughnut',data:{labels:['Completed today','Not completed'],datasets:[{data:[habitDone,Math.max(0,habits.length-habitDone)],backgroundColor:['#36C98F','#7657FF'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+                    new Chart(a, {type:'bar',data:{labels:['Completed','Remaining'],datasets:[{label:'Tasks',data:[doneTasks,Math.max(0,tasks.length-doneTasks)],backgroundColor:['#36C98F','#20C9B0'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0D2635',titleColor:'#E6FFFA',bodyColor:'#D1FAF3'}},scales:{x:{ticks:{color:'#929BB2'},grid:{color:'rgba(148,163,184,.10)'}},y:{ticks:{color:'#929BB2'},grid:{color:'rgba(148,163,184,.10)'}}}}});
+                    new Chart(b, {type:'doughnut',data:{labels:['Completed today','Not completed'],datasets:[{data:[habitDone,Math.max(0,habits.length-habitDone)],backgroundColor:['#36C98F','#20C9B0'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#A7C7C5'}},tooltip:{backgroundColor:'#0D2635',titleColor:'#E6FFFA',bodyColor:'#D1FAF3'}}}});
                 } catch(err) { console.warn('Analytics chart error',err); }
             });
         }
