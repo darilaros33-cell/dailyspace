@@ -59,6 +59,12 @@
         .ds-bottom-nav button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-width:0; padding:7px 2px; color:#929BB2; font-size:10px; font-weight:600; border-radius:12px; }
         .ds-bottom-nav button.active { color:#fff; background:rgba(118,87,255,.2); }
         .ds-bottom-nav svg { width:19px; height:19px; }
+        .ds-bottom-nav .ds-ai-nav { color:#fff; transform:translateY(-9px); background:linear-gradient(135deg,#7657FF,#3185FF); box-shadow:0 6px 20px rgba(118,87,255,.35); border:2px solid rgba(255,255,255,.2); }
+        .ds-bottom-nav .ds-ai-nav svg { width:22px; height:22px; }
+        html:not(.dark) .ds-bottom-nav { background:rgba(255,255,255,.96); border-color:#E2E8F0; }
+        html:not(.dark) .ds-bottom-nav button.active { color:#5B3FE6; background:rgba(118,87,255,.12); }
+        html:not(.dark) .ds-mobile-toolbar { background:rgba(255,255,255,.94); border-color:#E2E8F0; }
+        html:not(.dark) .ds-mobile-toolbar button { color:#334155; }
         .ds-mobile-toolbar { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(17,23,42,.75); position:sticky; top:0; z-index:30; }
         @media(min-width:768px){ .ds-bottom-nav,.ds-mobile-toolbar{display:none!important} #main-viewport{padding-bottom:0} }
     </style>
@@ -316,7 +322,7 @@
     <div class="ds-mobile-toolbar md:hidden">
         <button onclick="goBackInApp()" aria-label="Go back" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
         <div class="min-w-0 flex-1"><div class="font-bold text-sm">DAILY SPACE</div><div id="ds-current-page" class="text-[11px] text-muted">Your personal space</div></div>
-        <button onclick="router('ai')" aria-label="Open SPACE AI" class="p-2 rounded-xl bg-primary/20 text-primary"><i data-lucide="bot" class="w-5 h-5"></i></button>
+        <button onclick="router('profile')" aria-label="Open profile and settings" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="user-round" class="w-5 h-5"></i></button>
         <button onclick="toggleMobileMenu()" aria-label="Open all sections" class="p-2 rounded-xl bg-surfaceLight text-white"><i data-lucide="menu" class="w-5 h-5"></i></button>
     </div>
     <main class="flex-1 flex flex-col h-screen overflow-y-auto" id="main-viewport">
@@ -325,9 +331,9 @@
     <nav class="ds-bottom-nav md:hidden" aria-label="Main navigation">
         <button data-bottom-nav="home" onclick="router('home')"><i data-lucide="house"></i><span>Home</span></button>
         <button data-bottom-nav="routine" onclick="router('routine')"><i data-lucide="list-checks"></i><span>Tasks</span></button>
+        <button data-bottom-nav="ai" onclick="router('ai')" class="ds-ai-nav" aria-label="Open SPACE AI"><i data-lucide="bot"></i><span>SPACE AI</span></button>
         <button data-bottom-nav="habits" onclick="router('habits')"><i data-lucide="repeat"></i><span>Habits</span></button>
         <button data-bottom-nav="goals" onclick="router('goals')"><i data-lucide="target"></i><span>Goals</span></button>
-        <button data-bottom-nav="profile" onclick="router('profile')"><i data-lucide="user-round"></i><span>Profile</span></button>
     </nav>
 
     <!-- Application JavaScript Code -->
@@ -392,6 +398,7 @@ aiPersonalMemory: [],
             aiConversations: [
                 { sender: "ai", text: "Greetings, Commander. I am SPACE AI, your Personal Life OS assistant. Discipline over motivation. How shall we optimize your execution today?" }
             ],
+            focusStats: { totalSeconds: 0, sessions: [] },
             remindersEnabled: false,
             quietHoursStart: "00:00",
             quietHoursEnd: "00:00"
@@ -401,7 +408,10 @@ aiPersonalMemory: [],
         // Ensure personal AI memory exists for existing users
 if (!Array.isArray(appState.aiPersonalMemory)) {
     appState.aiPersonalMemory = [];
-        }
+}
+if (!appState.focusStats || typeof appState.focusStats !== 'object') appState.focusStats = { totalSeconds: 0, sessions: [] };
+if (!Array.isArray(appState.focusStats.sessions)) appState.focusStats.sessions = [];
+if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusStats.totalSeconds = 0;
 
         let currentFirebaseUser = null;
         let cloudSyncReady = false;
@@ -552,11 +562,15 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
             }
         }
 
-        function toggleTheme() {
-            appState.user.theme = appState.user.theme === 'dark' ? 'light' : 'dark';
+        function setTheme(theme) {
+            appState.user.theme = theme === 'light' ? 'light' : 'dark';
             applyTheme();
             saveState();
             showToast(`Switched to ${appState.user.theme.toUpperCase()} mode.`, 'success');
+        }
+
+        function toggleTheme() {
+            setTheme(appState.user.theme === 'dark' ? 'light' : 'dark');
         }
 
         function showToast(message, type = 'success') {
@@ -1459,89 +1473,127 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
 
         let focusTimerInterval = null;
         let focusSecondsRemaining = 25 * 60;
+        let focusInitialSeconds = 25 * 60;
         let isFocusRunning = false;
+        let focusStartedAt = null;
         let focusModeType = 'work';
 
+        function formatFocusTime(totalSeconds) {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
         function renderFocus(container) {
-            const mins = String(Math.floor(focusSecondsRemaining / 60)).padStart(2, '0');
-            const secs = String(focusSecondsRemaining % 60).padStart(2, '0');
-
+            if (!container) return;
+            const hours = Math.floor(focusSecondsRemaining / 3600);
+            const minutes = Math.floor((focusSecondsRemaining % 3600) / 60);
+            const seconds = focusSecondsRemaining % 60;
+            const totalHours = Math.floor((Number(appState.focusStats?.totalSeconds) || 0) / 3600);
+            const totalMinutes = Math.floor(((Number(appState.focusStats?.totalSeconds) || 0) % 3600) / 60);
             container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-4xl mx-auto w-full flex flex-col items-center justify-center min-h-[75vh] space-y-8 animate-in fade-in duration-300">
+                <div class="p-6 md:p-10 max-w-4xl mx-auto w-full flex flex-col items-center justify-center min-h-[75vh] space-y-7 animate-in fade-in duration-300">
                     <div class="text-center space-y-2">
-                        <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20">${focusModeType === 'work' ? 'Deep Work Focus Mode' : 'Rest & Recharge Break'}</span>
-                        <h2 class="text-3xl font-bold mt-2">Eliminate All Distractions</h2>
-                        <p class="text-muted text-sm">Timestamp-backed robust focus session engine.</p>
+                        <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20">Deep Work Focus Mode</span>
+                        <h2 class="text-3xl font-bold mt-2">Focus on one thing at a time</h2>
+                        <p class="text-muted text-sm">Set your own duration, then start when you're ready.</p>
                     </div>
+                    <div class="glass-panel p-6 md:p-10 rounded-3xl w-full max-w-lg flex flex-col items-center space-y-6 border border-white/10 shadow-2xl">
+                        <div class="text-6xl md:text-7xl font-extrabold tracking-wider font-mono" id="timer-display">${formatFocusTime(focusSecondsRemaining)}</div>
+                        <div class="flex gap-3 w-full">
+                            <button onclick="toggleFocusTimer()" class="flex-1 py-3.5 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm">${isFocusRunning ? 'PAUSE' : (focusSecondsRemaining < focusInitialSeconds ? 'RESUME' : 'START FOCUS')}</button>
+                            <button onclick="stopFocusTimer()" class="px-5 py-3.5 rounded-2xl bg-surfaceLight text-sm font-semibold">STOP</button>
+                        </div>
+                        <div class="w-full border-t border-white/10 pt-5 space-y-3">
+                            <p class="text-xs font-semibold text-muted uppercase">Quick durations</p>
+                            <div class="grid grid-cols-4 gap-2">
+                                ${[15,25,45,60].map(m => `<button onclick="setFocusDuration(${m})" class="py-2 rounded-xl bg-surfaceLight/70 text-xs font-semibold">${m}m</button>`).join('')}
+                            </div>
+                            <p class="text-xs font-semibold text-muted uppercase pt-2">Custom duration</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="text-xs text-muted">Hours<input id="focus-custom-hours" type="number" min="0" max="23" value="${hours}" class="mt-1 w-full rounded-xl px-3 py-3 bg-surfaceLight border border-white/10" ${isFocusRunning ? 'disabled' : ''}></label>
+                                <label class="text-xs text-muted">Minutes<input id="focus-custom-minutes" type="number" min="0" max="59" value="${minutes}" class="mt-1 w-full rounded-xl px-3 py-3 bg-surfaceLight border border-white/10" ${isFocusRunning ? 'disabled' : ''}></label>
+                            </div>
+                            <button onclick="applyCustomFocusDuration()" ${isFocusRunning ? 'disabled' : ''} class="w-full py-3 rounded-xl border border-primary/40 text-primary text-sm font-bold disabled:opacity-40">Set custom duration</button>
+                        </div>
+                        <div class="w-full rounded-2xl bg-surfaceLight/50 p-4 text-center">
+                            <p class="text-xs text-muted">Total completed focus time</p>
+                            <p class="text-xl font-bold mt-1">${totalHours}h ${totalMinutes}m</p>
+                            <p class="text-xs text-muted mt-1">${appState.focusStats.sessions.length} completed sessions</p>
+                        </div>
+                    </div>
+                </div>`;
+            if (window.lucide) lucide.createIcons();
+        }
 
-                    <div class="glass-panel p-10 rounded-3xl w-full max-w-md flex flex-col items-center justify-center space-y-8 border border-white/10 shadow-2xl relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 pointer-events-none"></div>
-                        <div class="text-6xl md:text-7xl font-extrabold tracking-wider font-mono text-white" id="timer-display">
-                            ${mins}:${secs}
-                        </div>
-                        <div class="flex items-center gap-3 w-full">
-                            <button onclick="toggleFocusTimer()" id="timer-toggle-btn" class="flex-1 py-3.5 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center justify-center gap-2">
-                                <i data-lucide="${isFocusRunning ? 'pause' : 'play'}" class="w-4 h-4"></i> ${isFocusRunning ? 'PAUSE' : 'START FOCUS'}
-                            </button>
-                            <button onclick="resetFocusTimer()" class="px-4 py-3.5 rounded-2xl bg-surfaceLight hover:bg-surfaceLight/80 text-white font-semibold text-sm transition">
-                                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                        <div class="flex gap-2 w-full pt-2 border-t border-white/5">
-                            <button onclick="setFocusDuration(15)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">15m</button>
-                            <button onclick="setFocusDuration(25)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">25m</button>
-                            <button onclick="setFocusDuration(45)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">45m</button>
-                            <button onclick="setFocusDuration(60)" class="flex-1 py-2 rounded-xl bg-surfaceLight/50 text-xs font-semibold hover:bg-surfaceLight">60m</button>
-                        </div>
-                    </div>
-                </div>
-            `;
+        function setFocusDuration(mins) {
+            if (isFocusRunning) { showToast('Pause or stop the current session first.', 'danger'); return; }
+            const n = Number(mins);
+            if (!Number.isFinite(n) || n < 1 || n > 1440) return;
+            focusInitialSeconds = Math.round(n * 60);
+            focusSecondsRemaining = focusInitialSeconds;
+            renderFocus(document.getElementById('main-viewport'));
+        }
+
+        function applyCustomFocusDuration() {
+            const h = Number(document.getElementById('focus-custom-hours')?.value || 0);
+            const m = Number(document.getElementById('focus-custom-minutes')?.value || 0);
+            if (!Number.isInteger(h) || !Number.isInteger(m) || h < 0 || h > 23 || m < 0 || m > 59 || (h === 0 && m === 0)) {
+                showToast('Enter a duration between 1 minute and 23 hours 59 minutes.', 'danger'); return;
+            }
+            setFocusDuration(h * 60 + m);
+            showToast('Custom focus duration set.', 'success');
         }
 
         function toggleFocusTimer() {
             if (isFocusRunning) {
                 clearInterval(focusTimerInterval);
                 isFocusRunning = false;
-            } else {
-                isFocusRunning = true;
-                const endTime = Date.now() + focusSecondsRemaining * 1000;
-                focusTimerInterval = setInterval(() => {
-                    focusSecondsRemaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-                    const mins = String(Math.floor(focusSecondsRemaining / 60)).padStart(2, '0');
-                    const secs = String(focusSecondsRemaining % 60).padStart(2, '0');
-                    const display = document.getElementById('timer-display');
-                    if (display) display.innerText = `${mins}:${secs}`;
-
-                    if (focusSecondsRemaining <= 0) {
-                        clearInterval(focusTimerInterval);
-                        isFocusRunning = false;
-                        addXP(15);
-                        showToast("Focus session completed! +15 XP", "success");
-                        focusSecondsRemaining = 25 * 60;
-                        renderFocus(document.getElementById('main-viewport'));
-                        lucide.createIcons();
-                    }
-                }, 1000);
+                focusTimerInterval = null;
+                renderFocus(document.getElementById('main-viewport'));
+                return;
             }
+            if (focusSecondsRemaining <= 0) focusSecondsRemaining = focusInitialSeconds;
+            isFocusRunning = true;
+            focusStartedAt = Date.now();
+            const endTime = Date.now() + focusSecondsRemaining * 1000;
+            clearInterval(focusTimerInterval);
+            focusTimerInterval = setInterval(() => {
+                focusSecondsRemaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+                const display = document.getElementById('timer-display');
+                if (display) display.textContent = formatFocusTime(focusSecondsRemaining);
+                if (focusSecondsRemaining <= 0) completeFocusSession();
+            }, 250);
             renderFocus(document.getElementById('main-viewport'));
-            lucide.createIcons();
         }
 
-        function resetFocusTimer() {
+        function completeFocusSession() {
             clearInterval(focusTimerInterval);
+            focusTimerInterval = null;
             isFocusRunning = false;
-            focusSecondsRemaining = 25 * 60;
+            const completedSeconds = focusInitialSeconds;
+            appState.focusStats.totalSeconds = (Number(appState.focusStats.totalSeconds) || 0) + completedSeconds;
+            appState.focusStats.sessions.push({ id: Date.now(), date: new Date().toISOString(), durationSeconds: completedSeconds });
+            focusSecondsRemaining = 0;
+            addXP(15);
+            saveState();
+            showToast('Focus session completed! +15 XP', 'success');
+            if ('Notification' in window && Notification.permission === 'granted') new Notification('Daily Space', { body: 'Your focus session is complete. Take a short break.' });
+            focusInitialSeconds = 25 * 60;
+            focusSecondsRemaining = focusInitialSeconds;
             renderFocus(document.getElementById('main-viewport'));
-            lucide.createIcons();
         }
 
-        function setFocusDuration(mins) {
+        function stopFocusTimer() {
             clearInterval(focusTimerInterval);
+            focusTimerInterval = null;
             isFocusRunning = false;
-            focusSecondsRemaining = mins * 60;
+            focusInitialSeconds = 25 * 60;
+            focusSecondsRemaining = focusInitialSeconds;
             renderFocus(document.getElementById('main-viewport'));
-            lucide.createIcons();
         }
+
+        function resetFocusTimer() { stopFocusTimer(); }
 
         function renderFinance(container) {
             const totalIncome = appState.expenses.filter(e => e.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
@@ -1666,6 +1718,9 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
             const income = expenses.filter(e => e.type === 'income').reduce((n,e) => n + (Number(e.amount)||0), 0);
             const spent = expenses.filter(e => e.type !== 'income').reduce((n,e) => n + (Number(e.amount)||0), 0);
             const goalAvg = goals.length ? Math.round(goals.reduce((n,g)=>n+(Number(g.progress)||0),0)/goals.length) : 0;
+            const focusTotalSeconds = Number(appState.focusStats?.totalSeconds) || 0;
+            const focusHours = Math.floor(focusTotalSeconds / 3600);
+            const focusMinutes = Math.floor((focusTotalSeconds % 3600) / 60);
             const weekLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
             const weeklyTaskData = weekLabels.map((_,i) => i === ((new Date().getDay()+6)%7) ? doneTasks : 0);
             container.innerHTML = `
@@ -1676,6 +1731,7 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Habits completed today</p><p class="text-2xl font-bold mt-1">${habitDone}<span class="text-sm text-muted"> / ${habits.length}</span></p></div>
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Average goal progress</p><p class="text-2xl font-bold mt-1">${goalAvg}%</p></div>
                         <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Current XP</p><p class="text-2xl font-bold mt-1">${Number(appState.user?.xp)||0}</p></div>
+                        <div class="glass-panel p-4 rounded-2xl"><p class="text-xs text-muted">Completed focus time</p><p class="text-2xl font-bold mt-1">${focusHours}h ${focusMinutes}m</p><p class="text-[11px] text-muted mt-1">${appState.focusStats?.sessions?.length || 0} sessions</p></div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                         <div class="glass-panel p-5 rounded-3xl"><h3 class="font-bold mb-4">Today's task completion</h3><div class="h-64"><canvas id="prodChart"></canvas></div></div>
@@ -1951,6 +2007,18 @@ if (!Array.isArray(appState.aiPersonalMemory)) {
                     <p class="text-sm text-muted">Signed in as <span class="font-semibold text-white">${currentFirebaseUser?.email || 'Google account'}</span></p>
                     <p class="text-xs text-muted">Your personal data is synced to your private Firebase account. A local backup is also kept on this device.</p>
                     <button onclick="signOutDailySpace()" class="rounded-xl bg-danger/20 px-4 py-2.5 text-sm font-semibold text-danger hover:bg-danger/30">Sign Out</button>
+                </div>
+
+                <div class="space-y-3 pt-4 border-t border-white/10">
+                    <h3 class="font-bold text-lg">Appearance</h3>
+                    <p class="text-xs text-muted">Your theme preference is saved with your account.</p>
+                    <div class="flex items-center justify-between gap-4 rounded-2xl bg-surfaceLight/50 border border-white/5 p-4">
+                        <div><p class="font-semibold text-sm">Application theme</p><p class="text-xs text-muted">Choose how Daily Space looks.</p></div>
+                        <select id="theme-select" onchange="setTheme(this.value)" class="rounded-xl px-3 py-2 bg-surfaceLight border border-white/10 text-sm">
+                            <option value="dark" ${appState.user.theme === 'dark' ? 'selected' : ''}>Dark</option>
+                            <option value="light" ${appState.user.theme === 'light' ? 'selected' : ''}>Light</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="space-y-4 pt-4 border-t border-white/10">
