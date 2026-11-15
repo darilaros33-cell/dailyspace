@@ -84,6 +84,25 @@
         @media(min-width:768px){
             body.ai-fullscreen #main-viewport > .ds-ai-screen { padding:24px; }
         }
+        /* Section-first layout: the mobile app bar belongs to Home only. */
+        body:not(.route-home) .ds-mobile-toolbar { display:none!important; }
+        body.route-home .ds-mobile-toolbar { display:flex; }
+        /* SPACE AI uses the available viewport and keeps its composer above the keyboard. */
+        body.ai-fullscreen { height:100dvh; overflow:hidden; }
+        body.ai-fullscreen #main-viewport { height:100dvh; min-height:0; overflow:hidden; padding-bottom:0; }
+        body.ai-fullscreen #main-viewport > .ds-ai-screen { height:100%; min-height:0; padding:12px 12px calc(12px + env(safe-area-inset-bottom)); gap:10px; }
+        body.ai-fullscreen .ds-ai-chat { flex:1 1 0%; min-height:0; overflow-y:auto; }
+        body.ai-fullscreen .ds-ai-composer { flex:0 0 auto; padding:8px 0 calc(8px + env(safe-area-inset-bottom)); background:rgba(7,24,39,.96); }
+        body.ai-keyboard-open .ds-bottom-nav { display:none!important; }
+        body.ai-keyboard-open #main-viewport > .ds-ai-screen { padding-bottom:4px; }
+        .ds-ai-input { min-height:50px; max-height:120px; resize:none; line-height:1.45; }
+        .ds-ai-send { width:54px; min-width:54px; height:50px; display:flex; align-items:center; justify-content:center; }
+        @media(min-width:768px){body:not(.route-home) .ds-mobile-toolbar{display:none!important}}
+        .ds-setting-card{border:1px solid rgba(255,255,255,.09);background:rgba(21,56,73,.22);border-radius:20px;padding:18px;}
+        .ds-setting-card h3{font-size:1rem;font-weight:700;letter-spacing:.01em;}
+        .ds-setting-card select,.ds-setting-card input[type=text]{margin-top:8px;}
+        .ds-guard-status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800;letter-spacing:.06em;}
+        .ds-guard-ok{color:#36C98F;background:rgba(54,201,143,.12)} .ds-guard-warn{color:#FFB84D;background:rgba(255,184,77,.12)} .ds-guard-bad{color:#FF657A;background:rgba(255,101,122,.12)}
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
@@ -717,6 +736,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             }
             currentRoute = route;
             document.body.classList.toggle('ai-fullscreen', route === 'ai');
+            document.body.classList.toggle('route-home', route === 'home');
+            document.body.classList.remove('ai-keyboard-open');
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if (btn.getAttribute('data-nav') === route) {
                     btn.classList.add('bg-primary/20', 'text-white', 'border', 'border-primary/30');
@@ -849,8 +870,39 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function saveSpacePreference(value){appState.user.spacePreference=value;appState.user.spacePreferencePrompted=true;saveState();document.getElementById('app-modal').classList.add('hidden');if(currentRoute==='fashion')renderSpaceFashion(document.getElementById('main-viewport'));showToast('Your Daily Space experience has been personalised.','success');}
         function renderSpaceFashion(container){const women=appState.user.spacePreference==='womens';container.innerHTML=`<div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE FASHION</h2><p class="text-sm text-muted">Style ideas based on comfort, personal taste and the occasion — no appearance rules or comparisons.</p><div class="glass-panel rounded-3xl p-6"><span class="text-xs text-primary font-bold uppercase">${women?'Women’s Fashion':appState.user.spacePreference==='mens'?'Men’s Fashion':'Fashion discovery'}</span><h3 class="text-xl font-bold mt-2">Your style, your choice.</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">${[['Colour combinations','Explore colours that work well together.'],['Occasion ideas','Casual, formal, celebration and everyday outfits.'],['Wardrobe organiser','Plan combinations from clothes you already own.'],['Accessories','Explore practical ways to complete an outfit.']].map(([a,b])=>`<div class="rounded-2xl bg-surfaceLight/50 p-4"><strong class="text-sm">${a}</strong><p class="text-xs text-muted mt-1">${b}</p></div>`).join('')}</div><button onclick="router('profile')" class="mt-5 text-sm text-primary font-bold">Change personalised space →</button></div><p class="text-xs text-muted">AI fashion assistance and wardrobe tools are planned for a later build.</p></div>`;}
         function renderSpaceHealth(container){container.innerHTML=`<div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE HEALTH</h2><p class="text-sm text-muted">Age-appropriate, general health education. This section does not diagnose conditions or replace a qualified health professional.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${[['General Health Education','Everyday health, sleep, movement and common health questions.'],['Mental Wellness','Stress, emotions, coping skills and asking for support.'],['Sexual Health Education','Puberty, consent, boundaries, reproductive health and STI awareness — factual and age-appropriate.'],['Women’s Health','Menstrual health, body changes and when to seek medical advice.'],['Men’s Health','Puberty, body changes, hygiene and health education.'],['Personal Hygiene','Everyday hygiene and practical self-care.'],['Healthy Relationships','Respect, communication, consent and personal boundaries.']].map(([a,b])=>`<article class="glass-panel rounded-2xl p-5"><h3 class="font-bold">${a}</h3><p class="text-xs text-muted mt-2">${b}</p></article>`).join('')}</div><p class="text-xs text-muted">Curated, medically reviewed articles and source references will be added before this section is presented as a complete health library.</p></div>`;}
-        function runSpaceGuardChecks(){const scripts=[...document.scripts].map(x=>x.src).filter(Boolean),inline=[...document.scripts].filter(x=>!x.src&&!x.type.includes('application/ld+json')).map(x=>x.textContent).join('\n');const risky=/(-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|sk_live_[A-Za-z0-9]{12,}|ghp_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})/.test(inline);return {scripts,risky};}
-        function renderSpaceGuard(container){const r=runSpaceGuardChecks();container.innerHTML=`<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE GUARD</h2><p class="text-sm text-muted">A preliminary check of this Daily Space page only. This is not antivirus and does not scan your phone, account or Firebase backend.</p><div class="glass-panel rounded-3xl p-5 space-y-4"><div class="flex justify-between gap-3"><span class="font-semibold">Page script inventory</span><span class="text-success text-xs font-bold">CHECKED</span></div><p class="text-sm text-muted">${r.scripts.length} external script source(s) detected.</p><div class="flex justify-between gap-3"><span class="font-semibold">Private-key pattern scan</span><span class="${r.risky?'text-danger':'text-success'} text-xs font-bold">${r.risky?'REVIEW NEEDED':'NO MATCH FOUND'}</span></div><p class="text-xs text-muted">This lightweight pattern check can miss secrets and can produce false positives.</p><div class="rounded-xl bg-warning/10 border border-warning/20 p-3 text-xs text-warning">Firebase rules, server configuration, dependency vulnerabilities and repository history cannot be verified from this browser-only check.</div><button onclick="renderSpaceGuard(document.getElementById('main-viewport'));lucide.createIcons()" class="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white">Run checks again</button></div><p class="text-xs text-muted">Next stage: repository-based secret scanning, dependency scanning, static analysis and CI checks using free/open-source tools.</p></div>`;}
+        let lastSpaceGuardReport = null;
+        function runSpaceGuardChecks(showResult=false){
+            const scripts=[...document.scripts].map(x=>x.src).filter(Boolean);
+            const inline=[...document.scripts].filter(x=>!x.src && !/application\/ld\+json/i.test(x.type||'')).map(x=>x.textContent||'').join('\n');
+            const secretPatterns=[
+                ['Private key',/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],
+                ['Live payment key',/sk_live_[A-Za-z0-9]{12,}/],
+                ['GitHub token',/gh[pousr]_[A-Za-z0-9]{20,}/],
+                ['Slack token',/xox[baprs]-[A-Za-z0-9-]{20,}/],
+                ['Generic API key assignment',/(?:api[_-]?key|secret[_-]?key)\s*[:=]\s*["'][A-Za-z0-9_\-]{24,}["']/i]
+            ];
+            const matches=secretPatterns.filter(([,pattern])=>pattern.test(inline)).map(([name])=>name);
+            const insecure=scripts.filter(src=>/^http:\/\//i.test(src));
+            const duplicateIds=[...document.querySelectorAll('[id]')].map(el=>el.id).filter((id,i,all)=>all.indexOf(id)!==i);
+            const report={scripts,matches,insecure,duplicateIds,checkedAt:new Date().toISOString(),ok:!matches.length&&!insecure.length&&!duplicateIds.length};
+            lastSpaceGuardReport=report;
+            if(showResult){
+                const output=document.getElementById('guard-results');
+                const button=document.getElementById('guard-run-button');
+                if(button){button.disabled=true;button.textContent='Checking…';}
+                // Yield once so the user sees the action, then publish the fresh scan.
+                setTimeout(()=>{
+                    const target=document.getElementById('guard-results');
+                    if(target)target.innerHTML=`<div class="flex items-center justify-between gap-3"><span class="font-semibold">Inline secret-pattern scan</span><span class="ds-guard-status ${report.matches.length?'ds-guard-warn':'ds-guard-ok'}">${report.matches.length?'REVIEW NEEDED':'NO MATCH FOUND'}</span></div><p class="text-xs text-muted">${report.matches.length?'Potential pattern(s): '+report.matches.map(escapeHTML).join(', '):'No matching high-risk patterns found in inline page scripts.'}</p><div class="flex items-center justify-between gap-3"><span class="font-semibold">External script sources</span><span class="ds-guard-status ${report.insecure.length?'ds-guard-warn':'ds-guard-ok'}">${report.insecure.length?'INSECURE SOURCE':'CHECKED'}</span></div><p class="text-xs text-muted">${report.scripts.length} source(s) found; ${report.insecure.length} use plain HTTP.</p><div class="flex items-center justify-between gap-3"><span class="font-semibold">HTML ID integrity</span><span class="ds-guard-status ${report.duplicateIds.length?'ds-guard-warn':'ds-guard-ok'}">${report.duplicateIds.length?'DUPLICATES FOUND':'CHECKED'}</span></div><p class="text-xs text-muted">${report.duplicateIds.length?report.duplicateIds.length+' duplicate ID(s): '+report.duplicateIds.map(escapeHTML).join(', '):'No duplicate element IDs detected.'}</p><p class="text-[11px] text-muted">Last checked: ${new Date(report.checkedAt).toLocaleString()}</p>`;
+                    const b=document.getElementById('guard-run-button');if(b){b.disabled=false;b.innerHTML='<i data-lucide="refresh-cw" class="w-4 h-4"></i> Run checks again';if(window.lucide)lucide.createIcons();}
+                },120);
+            }
+            return report;
+        }
+        function renderSpaceGuard(container){
+            const r=lastSpaceGuardReport||runSpaceGuardChecks();
+            container.innerHTML=`<div class="p-5 md:p-10 max-w-4xl mx-auto w-full space-y-5"><div><div class="flex items-center gap-3"><span class="w-11 h-11 rounded-2xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="shield-check" class="w-6 h-6"></i></span><div><h2 class="text-2xl font-bold">SPACE GUARD</h2><p class="text-sm text-muted">Daily Space page integrity checks</p></div></div><p class="text-sm text-muted mt-3">Checks this page's inline scripts, external script sources and duplicate HTML IDs. This is not antivirus and cannot scan your phone, Firebase account, server or GitHub repository.</p></div><div class="glass-panel rounded-3xl p-5 md:p-6 space-y-4"><div id="guard-results" class="space-y-4"><div class="flex items-center justify-between gap-3"><span class="font-semibold">Inline secret-pattern scan</span><span class="ds-guard-status ${r.matches?.length?'ds-guard-warn':'ds-guard-ok'}">${r.matches?.length?'REVIEW NEEDED':'NO MATCH FOUND'}</span></div><p class="text-xs text-muted">${r.matches?.length?'Potential pattern(s): '+r.matches.map(escapeHTML).join(', '):'No matching high-risk patterns found in inline page scripts.'}</p><div class="flex items-center justify-between gap-3"><span class="font-semibold">External script sources</span><span class="ds-guard-status ${r.insecure?.length?'ds-guard-warn':'ds-guard-ok'}">${r.insecure?.length?'INSECURE SOURCE':'CHECKED'}</span></div><p class="text-xs text-muted">${r.scripts.length} source(s) found; ${r.insecure?.length||0} use plain HTTP.</p><div class="flex items-center justify-between gap-3"><span class="font-semibold">HTML ID integrity</span><span class="ds-guard-status ${r.duplicateIds?.length?'ds-guard-warn':'ds-guard-ok'}">${r.duplicateIds?.length?'DUPLICATES FOUND':'CHECKED'}</span></div><p class="text-xs text-muted">${r.duplicateIds?.length||0} duplicate element ID(s) detected.</p><p class="text-[11px] text-muted">Last checked: ${new Date(r.checkedAt).toLocaleString()}</p></div><button id="guard-run-button" onclick="runSpaceGuardChecks(true)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Run checks again</button></div><div class="rounded-2xl bg-warning/10 border border-warning/20 p-4"><p class="text-sm font-bold text-warning">What this check cannot verify</p><p class="text-xs text-muted mt-2">Firebase security rules, server configuration, dependency vulnerabilities, GitHub repository history and backend secrets require separate trusted tools and cannot be tested from a browser page.</p></div><p class="text-xs text-muted">A clean result is a limited page-level check, not a security certification.</p></div>`;
+        }
         function renderJournal(container){container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-4"><h2 class="text-2xl font-bold">Journal</h2><p class="text-sm text-muted">A simple private reflection space.</p><textarea id="ds-journal-entry" rows="8" class="w-full rounded-2xl bg-surfaceLight border border-white/10 p-4 text-sm" placeholder="What is on your mind today?"></textarea><button onclick="saveJournalEntry()" class="rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">Save entry</button><div class="space-y-3">${(appState.journalEntries||[]).slice().reverse().map(e=>`<article class="glass-panel rounded-2xl p-4"><p class="text-xs text-muted">${new Date(e.date).toLocaleString()}</p><p class="text-sm mt-2 whitespace-pre-wrap">${escapeHTML(e.text)}</p></article>`).join('')}</div></div>`;}
         function saveJournalEntry(){const el=document.getElementById('ds-journal-entry'),text=el?.value.trim();if(!text)return showToast('Write a short entry first.','info');if(!Array.isArray(appState.journalEntries))appState.journalEntries=[];appState.journalEntries.push({date:new Date().toISOString(),text});saveState();renderJournal(document.getElementById('main-viewport'));showToast('Journal entry saved.','success');}
 
@@ -1030,10 +1082,10 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderHabitCalendar(container,id){
             const h=appState.habits.find(x=>x.id===id);if(!h){activeHabitCalendarId=null;return renderHabits(container);}if(!Array.isArray(h.completedDates))h.completedDates=[];
             const first=new Date(habitCalendarYear,habitCalendarMonth,1),offset=first.getDay(),days=new Date(habitCalendarYear,habitCalendarMonth+1,0).getDate(),today=localDateKey();
-            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today,notScheduled=!isHabitScheduledDate(h,key);cells.push(`<button ${(future||notScheduled)?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||notScheduled)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
+            const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today,notScheduled=key!==today&&!isHabitScheduledDate(h,key);cells.push(`<button ${(future||notScheduled)?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||notScheduled)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
             container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${escapeHTML(h.title)}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} ${(h.frequency||'Daily').toLowerCase()==='weekly'?'weeks':'days'}</p></div></div>`;
         }
-        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey()||!isHabitScheduledDate(h,date))return;const idx=h.completedDates.indexOf(date);if(idx>=0){h.completedDates.splice(idx,1);adjustXPEvent(`habit:${id}:${date}`,0);}else{h.completedDates.push(date);adjustXPEvent(`habit:${id}:${date}`,5);if(!Array.isArray(h.xpAwardedDates))h.xpAwardedDates=[];if(!h.xpAwardedDates.includes(date)){h.xpAwardedDates.push(date);appState.lifetimeHabitsCompleted=(Number(appState.lifetimeHabitsCompleted)||0)+1;}}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);evaluateAchievements();saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
+        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey()||(date!==localDateKey()&&!isHabitScheduledDate(h,date)))return;const idx=h.completedDates.indexOf(date);if(idx>=0){h.completedDates.splice(idx,1);adjustXPEvent(`habit:${id}:${date}`,0);}else{h.completedDates.push(date);adjustXPEvent(`habit:${id}:${date}`,5);if(!Array.isArray(h.xpAwardedDates))h.xpAwardedDates=[];if(!h.xpAwardedDates.includes(date)){h.xpAwardedDates.push(date);appState.lifetimeHabitsCompleted=(Number(appState.lifetimeHabitsCompleted)||0)+1;}}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);evaluateAchievements();saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function openAddHabitModal() {
             const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent='Add Habit';document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
             document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><div><label for="new-habit-title" class="block text-sm font-semibold">Habit Name <span class="text-red-500">*</span></label><input type="text" id="new-habit-title" required placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></div><div class="grid grid-cols-2 gap-3"><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select><select id="new-habit-frequency" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Daily</option><option>Weekdays</option><option>Weekends</option><option>Weekly</option></select></div></div>`;
@@ -1739,47 +1791,25 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function renderAI(container) {
             container.innerHTML = `
-                <div class="ds-ai-screen w-full flex flex-col flex-1 min-h-0 h-full space-y-4 animate-in fade-in duration-300">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold">AI</div>
-                            <div>
-                                <h2 class="font-bold text-lg">SPACE AI Assistant</h2>
-                                <p class="text-xs text-muted">Chat, organise your space and take action</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="clearAIChat()" class="px-3 py-2 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-muted text-xs font-semibold transition">
-                                Clear Chat
-                            </button>
-                            <button onclick="triggerDeepAudit()" class="px-4 py-2 rounded-xl bg-primary/25 hover:bg-primary/35 text-primary text-xs font-bold transition flex items-center gap-2">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i> Deep Life Audit
-                            </button>
-                        </div>
+                <section class="ds-ai-screen w-full flex flex-col flex-1 min-h-0 h-full animate-in fade-in duration-300">
+                    <header class="flex items-center justify-between gap-3 border-b border-white/10 pb-3 shrink-0">
+                        <div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-2xl bg-primary/15 text-primary flex items-center justify-center font-bold">AI</div><div class="min-w-0"><h2 class="font-bold text-lg">SPACE AI</h2><p class="text-xs text-muted">Your personal assistant</p></div></div>
+                        <div class="flex items-center gap-2 shrink-0"><button onclick="clearAIChat()" aria-label="Clear chat" title="Clear chat" class="w-10 h-10 rounded-xl bg-surfaceLight text-muted flex items-center justify-center"><i data-lucide="trash-2" class="w-4 h-4"></i></button><button onclick="triggerDeepAudit()" aria-label="Deep Life Audit" title="Deep Life Audit" class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="sparkles" class="w-4 h-4"></i></button></div>
+                    </header>
+                    <div id="ai-chat-box" class="ds-ai-chat flex-1 min-h-0 overflow-y-auto space-y-4 py-4 px-1" role="log" aria-live="polite">
+                        ${appState.aiConversations.map(msg => `<div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}"><div class="max-w-[88%] md:max-w-2xl px-4 py-3 rounded-2xl text-[15px] leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-md' : 'bg-surfaceLight/80 text-white rounded-bl-md border border-white/5'}">${escapeHTML(msg.text).replace(/\n/g, '<br>')}</div></div>`).join('')}
                     </div>
-
-                    <div id="ai-chat-box" class="ds-ai-chat flex-1 min-h-0 overflow-y-auto space-y-4 p-4 glass-panel rounded-3xl border border-white/10">
-                        ${appState.aiConversations.map(msg => `
-                            <div class="flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}">
-                                <div class="max-w-xl p-4 rounded-2xl text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-surfaceLight/80 text-white rounded-bl-none border border-white/5'}">
-                                    ${escapeHTML(msg.text).replace(/\n/g, '<br>')}
-                                </div>
-                            </div>
-                        `).join('')}
+                    <div class="ds-ai-composer shrink-0">
+                        <div class="flex items-end gap-2 rounded-[26px] border border-white/10 bg-surfaceLight/70 p-2 shadow-lg shadow-black/10"><textarea rows="1" id="ai-user-input" placeholder="Ask SPACE AI…" aria-label="Ask SPACE AI" enterkeyhint="done" onkeydown="if(event.key==='Enter'){event.preventDefault();}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'" class="ds-ai-input flex-1 min-w-0 bg-transparent px-3 py-3 text-[15px] focus:outline-none placeholder:text-muted"></textarea><button onclick="toggleAIVoiceInput()" aria-label="Voice input" title="Voice input" class="w-[48px] h-[50px] shrink-0 rounded-2xl bg-surface text-primary flex items-center justify-center"><i data-lucide="mic" class="w-5 h-5"></i></button><button onclick="window.sendAIMessage()" aria-label="Send message" title="Send message" class="ds-ai-send shrink-0 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20"><i data-lucide="send" class="w-5 h-5"></i></button></div>
                     </div>
-
-                    <div class="ds-ai-composer flex flex-col gap-2 pt-2">
-                        <p class="text-[11px] text-muted">Try: “add task: study on 2026-11-15 at 6 PM”, “complete task: revise accounts”, or “start focus timer for 25 minutes”.</p><div class="flex items-end gap-2"><textarea rows="1" id="ai-user-input" placeholder="Message SPACE AI… (Enter to send, Shift + Enter for a new line)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();window.sendAIMessage();}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px'" class="flex-1 min-h-[52px] max-h-36 resize-none px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary"></textarea>
-                        <button onclick="toggleAIVoiceInput()" class="px-4 py-4 rounded-2xl bg-surfaceLight text-primary" aria-label="Voice input"><i data-lucide="mic" class="w-4 h-4"></i></button>
-                        <button onclick="window.sendAIMessage()" class="px-5 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
-                            <i data-lucide="send" class="w-4 h-4"></i> Send
-                        </button></div>
-                    </div>
-                </div>
-            `;
-            const box = document.getElementById('ai-chat-box');
-            if (box) box.scrollTop = box.scrollHeight;
+                </section>`;
+            const box=document.getElementById('ai-chat-box');if(box)box.scrollTop=box.scrollHeight;
+            const input=document.getElementById('ai-user-input');
+            if(input){input.addEventListener('focus',()=>{document.body.classList.add('ai-keyboard-open');setTimeout(()=>{const b=document.getElementById('ai-chat-box');if(b)b.scrollTop=b.scrollHeight;input.scrollIntoView({block:'nearest'});},250);});input.addEventListener('blur',()=>document.body.classList.remove('ai-keyboard-open'));}
         }
+        function updateAIKeyboardLayout(){if(currentRoute!=='ai')return;const vv=window.visualViewport;const keyboardOpen=!!(vv&&window.innerHeight-vv.height>140);document.body.classList.toggle('ai-keyboard-open',keyboardOpen);if(keyboardOpen){const input=document.getElementById('ai-user-input');if(input)setTimeout(()=>input.scrollIntoView({block:'nearest'}),60);}}
+        if(window.visualViewport){window.visualViewport.addEventListener('resize',updateAIKeyboardLayout);window.visualViewport.addEventListener('scroll',updateAIKeyboardLayout);}
+        window.addEventListener('resize',updateAIKeyboardLayout);
 
         function clearAIChat() {
     // Clear visible chat messages
@@ -1887,7 +1917,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             </div>
 
             <div class="glass-panel p-6 rounded-3xl space-y-6">
-                <div class="space-y-4">
+                <div class="ds-setting-card space-y-4">
                     <h3 class="font-bold text-lg border-b border-white/10 pb-2">Commander Profile</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -1903,14 +1933,14 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     <button onclick="saveProfileChanges()" class="px-6 py-3 rounded-xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition">Save Profile</button>
                 </div>
 
-                <div class="space-y-3 rounded-2xl border border-white/10 bg-surfaceLight/30 p-4">
+                <div class="ds-setting-card space-y-3">
                     <h3 class="font-bold text-lg">Account</h3>
                     <p class="text-sm text-muted">Signed in as <span class="font-semibold text-white">${escapeHTML(currentFirebaseUser?.email || 'Google account')}</span></p>
                     <p class="text-xs text-muted">Your personal data is synced to your private Firebase account. A local backup is also kept on this device.</p>
                     <button onclick="signOutDailySpace()" class="rounded-xl bg-danger/20 px-4 py-2.5 text-sm font-semibold text-danger hover:bg-danger/30">Sign Out</button>
                 </div>
 
-                <div class="space-y-3 pt-4 border-t border-white/10">
+                <div class="ds-setting-card space-y-3">
                     <h3 class="font-bold text-lg">Appearance</h3>
                     <p class="text-xs text-muted">Your theme preference is saved with your account.</p>
                     <div class="flex items-center justify-between gap-4 rounded-2xl bg-surfaceLight/50 border border-white/5 p-4">
@@ -1922,7 +1952,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 border-t border-white/10">
+                <div class="ds-setting-card space-y-4">
                     <h3 class="font-bold text-lg">Notification Reminders</h3>
                     <p class="text-xs text-muted">Receive task alerts at their scheduled times while Daily Space is open. Background delivery depends on your browser and installed PWA support.</p>
                     <div class="flex items-center justify-between p-4 rounded-2xl bg-surfaceLight/50 border border-white/5">
@@ -1930,14 +1960,14 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                             <p class="font-semibold text-sm">Enable Browser Reminders</p>
                             <p class="text-xs text-muted">Alerts while this page is active; it may not alert after the app is fully closed.</p>
                         </div>
-                        <div class="flex gap-2"><button onclick="requestNotificationPermission()" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold">Enable</button><button onclick="disableNotifications()" class="px-4 py-2 rounded-xl bg-surfaceLight text-xs font-bold">Disable</button></div>
+                        <div class="flex gap-2"><button onclick="requestNotificationPermission()" class="px-4 py-2 rounded-xl ${appState.remindersEnabled && ('Notification' in window) && Notification.permission==='granted'?'bg-success/20 text-success border border-success/40':'bg-surfaceLight text-muted'} text-xs font-bold inline-flex items-center gap-1">${appState.remindersEnabled && ('Notification' in window) && Notification.permission==='granted'?'<i data-lucide="check" class="w-3 h-3"></i>':''}Enable</button><button onclick="disableNotifications()" class="px-4 py-2 rounded-xl ${!appState.remindersEnabled?'bg-danger/15 text-danger border border-danger/30':'bg-surfaceLight text-muted'} text-xs font-bold inline-flex items-center gap-1">${!appState.remindersEnabled?'<i data-lucide="check" class="w-3 h-3"></i>':''}Disable</button></div>
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">Personalised Space</h3><p class="text-xs text-muted">This choice personalises optional content. Your core features remain available in either experience.</p><select onchange="appState.user.spacePreference=this.value;saveState();showToast('Personalised space updated.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="" ${!appState.user.spacePreference?'selected':''}>Choose a space</option><option value="womens" ${appState.user.spacePreference==='womens'?'selected':''}>Women's Space</option><option value="mens" ${appState.user.spacePreference==='mens'?'selected':''}>Men's Space</option></select></div>
-                <div class="space-y-4 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">Language</h3><p class="text-xs text-muted">Choose the language SPACE AI should use. Full interface localisation is being built in stages.</p><select onchange="appState.user.language=this.value;saveState();showToast('AI language preference saved.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm">${[['en','English'],['ml','Malayalam'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['kn','Kannada'],['es','Spanish'],['ar','Arabic'],['fr','French'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.language||'en')===v?'selected':''}>${n}</option>`).join('')}</select></div>
-                <div class="space-y-3 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">SPACE AI Voice</h3><label class="flex items-center justify-between gap-3 text-sm"><span>Read AI replies aloud</span><input type="checkbox" ${appState.user.voiceRepliesEnabled?'checked':''} onchange="appState.user.voiceRepliesEnabled=this.checked;saveState()" class="w-5 h-5 accent-primary"></label><label class="flex items-center justify-between gap-3 text-sm"><span>Voice language</span><select onchange="appState.user.voiceLanguage=this.value;saveState()" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm">${[['en-IN','English (India)'],['en-GB','English (UK)'],['en-US','English (US)'],['ml-IN','Malayalam'],['hi-IN','Hindi'],['ta-IN','Tamil'],['te-IN','Telugu'],['kn-IN','Kannada'],['es-ES','Spanish'],['ar-SA','Arabic'],['fr-FR','French'],['pt-BR','Portuguese'],['ja-JP','Japanese'],['ko-KR','Korean'],['zh-CN','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.voiceLanguage||'en-IN')===v?'selected':''}>${n}</option>`).join('')}</select></label><p class="text-xs text-muted">Voice input uses your browser speech-recognition service. Language availability, accent support and accuracy vary by device, browser and region; selecting a language does not guarantee recognition support. Mixed-language recognition may be limited.</p></div>
-                <div class="space-y-4 pt-4 border-t border-white/10">
+                <div class="ds-setting-card space-y-4"><h3 class="font-bold text-lg">Personalised Space</h3><p class="text-xs text-muted">This choice personalises optional content. Your core features remain available in either experience.</p><select onchange="appState.user.spacePreference=this.value;saveState();showToast('Personalised space updated.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="" ${!appState.user.spacePreference?'selected':''}>Choose a space</option><option value="womens" ${appState.user.spacePreference==='womens'?'selected':''}>Women's Space</option><option value="mens" ${appState.user.spacePreference==='mens'?'selected':''}>Men's Space</option></select></div>
+                <div class="ds-setting-card space-y-4"><h3 class="font-bold text-lg">Language</h3><p class="text-xs text-muted">Choose the language SPACE AI should use. Full interface localisation is being built in stages.</p><select onchange="appState.user.language=this.value;saveState();showToast('AI language preference saved.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm">${[['en','English'],['ml','Malayalam'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['kn','Kannada'],['es','Spanish'],['ar','Arabic'],['fr','French'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.language||'en')===v?'selected':''}>${n}</option>`).join('')}</select></div>
+                <div class="ds-setting-card space-y-3"><h3 class="font-bold text-lg">SPACE AI Voice</h3><label class="flex items-center justify-between gap-3 text-sm"><span>Read AI replies aloud</span><input type="checkbox" ${appState.user.voiceRepliesEnabled?'checked':''} onchange="appState.user.voiceRepliesEnabled=this.checked;saveState()" class="w-5 h-5 accent-primary"></label><label class="flex items-center justify-between gap-3 text-sm"><span>Voice language</span><select onchange="appState.user.voiceLanguage=this.value;saveState()" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm">${[['en-IN','English (India)'],['en-GB','English (UK)'],['en-US','English (US)'],['ml-IN','Malayalam'],['hi-IN','Hindi'],['ta-IN','Tamil'],['te-IN','Telugu'],['kn-IN','Kannada'],['es-ES','Spanish'],['ar-SA','Arabic'],['fr-FR','French'],['pt-BR','Portuguese'],['ja-JP','Japanese'],['ko-KR','Korean'],['zh-CN','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.voiceLanguage||'en-IN')===v?'selected':''}>${n}</option>`).join('')}</select></label><p class="text-xs text-muted">Voice input uses your browser speech-recognition service. Language availability, accent support and accuracy vary by device, browser and region; selecting a language does not guarantee recognition support. Mixed-language recognition may be limited.</p></div>
+                <div class="ds-setting-card space-y-4">
                     <h3 class="font-bold text-lg">Data Management</h3>
                     <div class="flex flex-wrap gap-3">
                         <button onclick="exportUserData()" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold transition">Export Data (JSON)</button>
