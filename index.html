@@ -68,6 +68,13 @@
         .ds-mobile-toolbar { display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(17,23,42,.75); position:sticky; top:0; z-index:30; }
         @media(min-width:768px){ .ds-bottom-nav,.ds-mobile-toolbar{display:none!important} #main-viewport{padding-bottom:0} }
 
+        .ds-system-dot{width:8px;height:8px;border-radius:999px;background:#36C98F;box-shadow:0 0 0 0 rgba(54,201,143,.55);animation:dsPulse 1.8s infinite}
+        @keyframes dsPulse{0%{box-shadow:0 0 0 0 rgba(54,201,143,.5)}70%{box-shadow:0 0 0 9px rgba(54,201,143,0)}100%{box-shadow:0 0 0 0 rgba(54,201,143,0)}}
+        .ds-feature-card{transition:transform .2s ease,border-color .2s ease,background .2s ease}
+        .ds-feature-card:hover{transform:translateY(-3px);border-color:rgba(32,201,176,.45)}
+        .ds-clock-digits{font-variant-numeric:tabular-nums;letter-spacing:.04em}
+        .ds-paused-status{color:#FF657A!important;background:rgba(255,101,122,.12)!important;border-color:rgba(255,101,122,.3)!important}
+        .ds-active-status{color:#36C98F!important;background:rgba(54,201,143,.12)!important;border-color:rgba(54,201,143,.3)!important}
         /* SPACE AI: keep the app frame still; only the message history scrolls. */
         body.ai-fullscreen { height:100dvh; min-height:0; overflow:hidden; }
         body.ai-fullscreen #main-viewport { min-height:0; height:auto; overflow:hidden; padding-bottom:0; }
@@ -181,7 +188,7 @@
                     <button id="auth-reset" type="button" onclick="resetAuthPassword()" class="text-muted hover:text-white">Forgot password?</button>
                 </div>
                 <p id="auth-message" role="status" class="min-h-5 text-sm text-danger"></p>
-                <p class="text-center text-[11px] leading-relaxed text-muted">Your account data is private to your sign-in. Use your own email address; it is not shared with the app creator.</p>
+                <p class="text-center text-[11px] leading-relaxed text-muted">Your account data is stored under your Firebase account. Use your own email address; it is not shared with the app creator.</p>
             </div>
         </div>
     </section>
@@ -326,7 +333,14 @@
                 currency: "₹",
                 isPremium: false,
                 premiumExpiry: null,
-                theme: "dark"
+                theme: "dark",
+                language: "en",
+                voiceLanguage: "en-IN",
+                totalXP: 0,
+                spacePreference: null,
+                spacePreferencePrompted: false,
+                primaryTimeZone: null,
+                clockFormat: "12h"
             },
             tasks: [],
             routineActivities: [],
@@ -367,6 +381,7 @@ if(appState.user)delete appState.user.geminiApiKey;
 if (!Array.isArray(appState.selfControlItems)) appState.selfControlItems = [];
 if (!Array.isArray(appState.habits)) appState.habits = [];
 if (!Array.isArray(appState.goals)) appState.goals = [];
+if (!Array.isArray(appState.journalEntries)) appState.journalEntries = [];
 if (!Array.isArray(appState.tasks)) appState.tasks = [];
 if (!Array.isArray(appState.routineActivities)) appState.routineActivities = [];
 // Goal tracking is progress-based; remove legacy deadline fields from existing goals.
@@ -387,7 +402,7 @@ appState.challenges = (Array.isArray(appState.challenges)?appState.challenges:[]
 appState.rules = (Array.isArray(appState.rules)?appState.rules:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.rule));
 appState.distractions = (Array.isArray(appState.distractions)?appState.distractions:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.distraction));
 appState.expenses = (Array.isArray(appState.expenses)?appState.expenses:[]).filter(x => !DEMO_ENTRY_TITLES.has(x.title));
-appState.habits.forEach(h => { if (!Array.isArray(h.completedDates)) h.completedDates = h.completedToday ? [localDateKey()] : []; });
+appState.habits.forEach(h => { if (!Array.isArray(h.completedDates)) h.completedDates = h.completedToday ? [localDateKey()] : []; if(!Array.isArray(h.pausedRanges))h.pausedRanges=[]; if(h.paused&&!h.pausedAt)h.pausedAt=localDateKey(); });
 appState.goals.forEach(g => { if (!Array.isArray(g.steps)) g.steps = (Array.isArray(g.milestones) ? g.milestones : []).map(text => ({ text, completed: false })); });
 if (!appState.focusStats || typeof appState.focusStats !== 'object') appState.focusStats = { totalSeconds: 0, sessions: [] };
 if (!Array.isArray(appState.focusStats.sessions)) appState.focusStats.sessions = [];
@@ -395,6 +410,9 @@ if (!appState.financeBudgets || typeof appState.financeBudgets !== 'object') app
 if (!Array.isArray(appState.notifiedTaskKeys)) appState.notifiedTaskKeys = [];
 if (!Array.isArray(appState.achievementsList)) appState.achievementsList = JSON.parse(JSON.stringify(DEFAULT_STATE.achievementsList));
 if (!Number.isFinite(Number(appState.lifetimeTasksCompleted))) appState.lifetimeTasksCompleted = 0;
+if (!appState.xpEvents || typeof appState.xpEvents !== 'object') appState.xpEvents = {};
+if (!Number.isFinite(Number(appState.user.totalXP)) || (Number(appState.user.totalXP)===0 && ((Number(appState.user.level)||1)>1 || (Number(appState.user.xp)||0)>0))) appState.user.totalXP = 50*(Math.max(1,Number(appState.user.level)||1)-1)*(Math.max(1,Number(appState.user.level)||1)) + Math.max(0,Number(appState.user.xp)||0);
+if (!appState.user.language) appState.user.language = 'en';
 if (!Number.isFinite(Number(appState.lifetimeHabitsCompleted))) appState.lifetimeHabitsCompleted = 0;
 if(!appState.gameStats||typeof appState.gameStats!=='object')appState.gameStats={gamesPlayed:0,totalCorrect:0,totalPoints:0,highScores:{}};if(!appState.gameStats.highScores)appState.gameStats.highScores={};
 if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusStats.totalSeconds = 0;
@@ -533,6 +551,13 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
                     await window.dailySpaceFirebase.saveUserState(user.uid, appState);
                 }
+                if(!appState.user||typeof appState.user!=='object')appState.user={...DEFAULT_STATE.user};
+                appState.user={...DEFAULT_STATE.user,...appState.user};
+                if(!Number.isFinite(Number(appState.user.totalXP))||(Number(appState.user.totalXP)===0&&((Number(appState.user.level)||1)>1||(Number(appState.user.xp)||0)>0)))appState.user.totalXP=50*(Math.max(1,Number(appState.user.level)||1)-1)*(Math.max(1,Number(appState.user.level)||1))+Math.max(0,Number(appState.user.xp)||0);
+                if(!appState.xpEvents||typeof appState.xpEvents!=='object')appState.xpEvents={};
+                if(!Array.isArray(appState.journalEntries))appState.journalEntries=[];
+                if(!Array.isArray(appState.habits))appState.habits=[];appState.habits.forEach(h=>{if(!Array.isArray(h.pausedRanges))h.pausedRanges=[];if(h.paused&&!h.pausedAt)h.pausedAt=localDateKey();});
+                if(!Array.isArray(appState.user.worldTimeZones))appState.user.worldTimeZones=[];
                 removeBuiltInDemoEntries();
                 localStorage.setItem('daily_space_state', JSON.stringify(appState));
                 currentFirebaseUser = user;
@@ -583,33 +608,38 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             }, 3000);
         }
 
-        function addXP(amount) {
-            const gain = Math.max(0, Math.floor(Number(amount) || 0));
-            if (!gain) return;
-            appState.user.xp = (Number(appState.user.xp) || 0) + gain;
-            while (appState.user.xp >= (Number(appState.user.level) || 1) * 100) {
-                appState.user.xp -= (Number(appState.user.level) || 1) * 100;
-                appState.user.level = (Number(appState.user.level) || 1) + 1;
-                showToast(`Level Up! You are now Level ${appState.user.level}!`, 'success');
-            }
-            evaluateAchievements();
-            saveState();
+        function getLifetimeXP(){
+            const level=Math.max(1,Number(appState.user.level)||1), xp=Math.max(0,Number(appState.user.xp)||0);
+            return Number.isFinite(Number(appState.user.totalXP))?Math.max(0,Number(appState.user.totalXP)):(50*(level-1)*level+xp);
         }
-        function unlockAchievement(id) {
-            const item=(appState.achievementsList||[]).find(a=>Number(a.id)===Number(id));
-            if(!item||item.unlocked)return false;
-            item.unlocked=true;item.unlockedAt=new Date().toISOString();
-            showToast(`Achievement unlocked: ${item.title}`,'success');
-            return true;
+        function setLifetimeXP(total){
+            let remaining=Math.max(0,Math.floor(Number(total)||0)),level=1;
+            while(remaining>=level*100){remaining-=level*100;level++;if(level>10000)break;}
+            appState.user.totalXP=Math.max(0,Math.floor(Number(total)||0));
+            appState.user.level=level;appState.user.xp=remaining;
         }
-        function evaluateAchievements() {
+        function addXP(amount){
+            const gain=Math.max(0,Math.floor(Number(amount)||0));if(!gain)return;
+            const oldLevel=Number(appState.user.level)||1;setLifetimeXP(getLifetimeXP()+gain);
+            if(appState.user.level>oldLevel)showToast(`Level Up! You are now Level ${appState.user.level}!`,'success');
+            evaluateAchievements();saveState();
+        }
+        function adjustXPEvent(eventKey,amount){
+            if(!eventKey)return; if(!appState.xpEvents||typeof appState.xpEvents!=='object')appState.xpEvents={};
+            const value=Math.floor(Number(amount)||0),previous=Number(appState.xpEvents[eventKey])||0;
+            if(previous===value)return;
+            const oldLevel=Number(appState.user.level)||1;setLifetimeXP(getLifetimeXP()-previous+value);
+            if((Number(appState.user.level)||1)>oldLevel)showToast(`Level Up! You are now Level ${appState.user.level}!`,'success');
+            if(value===0)delete appState.xpEvents[eventKey];else appState.xpEvents[eventKey]=value;
+            evaluateAchievements();saveState();
+        }
+        function unlockAchievement(id){const item=(appState.achievementsList||[]).find(a=>Number(a.id)===Number(id));if(!item||item.unlocked)return false;item.unlocked=true;item.unlockedAt=new Date().toISOString();showToast(`Achievement unlocked: ${item.title}`,'success');return true;}
+        function evaluateAchievements(){
             if(!Array.isArray(appState.achievementsList))appState.achievementsList=JSON.parse(JSON.stringify(DEFAULT_STATE.achievementsList));
             const completedTasks=(appState.tasks||[]).filter(t=>t.completed).length;
-            if(completedTasks>=1)unlockAchievement(1);
-            if((Number(appState.lifetimeTasksCompleted)||0)>=10)unlockAchievement(5);
-            if((appState.focusStats?.totalSeconds||0)>=7200)unlockAchievement(3);
-            if((appState.goals||[]).some(g=>g.status==='Completed'||(Number(g.progress)||0)>=100))unlockAchievement(4);
-            if((appState.habits||[]).some(h=>getHabitStreak(h)>=3))unlockAchievement(2);
+            const routineCompleted=(appState.routineActivities||[]).filter(x=>x.completed).length;
+            const conditions={1:completedTasks>=1,2:(appState.habits||[]).some(h=>!h.paused&&getHabitStreak(h)>=3),3:(Number(appState.focusStats?.totalSeconds)||0)>=7200,4:(appState.goals||[]).some(g=>g.status==='Completed'||(Number(g.progress)||0)>=100),5:completedTasks+routineCompleted>=10};
+            appState.achievementsList.forEach(item=>{const shouldUnlock=!!conditions[Number(item.id)];if(shouldUnlock&&!item.unlocked){item.unlocked=true;item.unlockedAt=new Date().toISOString();showToast(`Achievement unlocked: ${item.title}`,'success');}else if(!shouldUnlock&&item.unlocked){item.unlocked=false;delete item.unlockedAt;showToast(`Achievement progress changed: ${item.title} is locked again.`,'info');}});
         }
 
         function updateSidebarXP() {
@@ -653,7 +683,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             if (!selectedUpiApp) { showToast('Please select a UPI app first.', 'danger'); return; }
             const vpa = (document.getElementById('upi-vpa-input')?.value || '').trim();
             if (!vpa || !vpa.includes('@')) { showToast('Please enter a valid UPI ID.', 'danger'); return; }
-            // This only hands off to the chosen UPI app. Real premium activation requires a verified payment backend.
+            // This only hands off to the chosen UPI app. It does not verify or complete a payment; PRO activation requires a trusted payment backend and server-side verification.
             const params = new URLSearchParams({pa:vpa,pn:'Daily Space',am:'39.00',cu:'INR',tn:'Daily Space PRO monthly'});
             const schemes = {gpay:'tez://upi/pay?',phonepe:'phonepe://pay?',paytm:'paytmmp://pay?'};
             const url = (schemes[selectedUpiApp] || 'upi://pay?') + params.toString();
@@ -667,11 +697,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         let routeHistory = ['home'];
         let suppressRoutePush = false;
         let lastRouteRenderError = null;
-        const routeTitles = {home:'Home',routine:'Daily Planner',habits:'Habits',goals:'Goals',calendar:'Calendar & Special Days',selfcontrol:'Self-Control Center',focus:'Focus Timer',finance:'Income & Expense Tracker',analytics:'Analytics & Trends',games:'Brain Gym & Games',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings & Profile'};
+        const routeTitles = {home:'Home',spacehub:'SPACE HUB',health:'SPACE HEALTH',fashion:'SPACE FASHION',guard:'SPACE GUARD',clock:'SPACE CLOCK',journal:'Journal',routine:'Daily Planner',habits:'Habits',goals:'Goals',calendar:'Calendar & Special Days',selfcontrol:'Self-Control Center',focus:'Focus Timer',finance:'Income & Expense Tracker',analytics:'Analytics & Trends',games:'Brain Gym & Games',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings & Profile'};
         try { history.replaceState({dailySpace:true, route:'home'}, '', location.href); history.pushState({dailySpaceGuard:true, route:'home'}, '', location.href); } catch(e) {}
 
         function router(route, addHistory = true) {
             if (!route) route = 'home';
+            if (currentRoute==='home'||currentRoute==='clock'){if(spaceClockTimer){clearInterval(spaceClockTimer);spaceClockTimer=null;}}
             if (currentRoute === 'games' && route !== 'games') { clearMemoryTimers();clearInterval(gameTimerInterval);gameTimerInterval=null;gameActive = false; currentGameId = null;gameStartedAt=null; }
             // Clear nested screens when leaving their parent section so they never reopen unexpectedly.
             if (route !== currentRoute) {
@@ -706,6 +737,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             viewport.innerHTML = '';
             switch(route) {
                 case 'home': renderDashboard(viewport); break;
+                case 'spacehub': renderSpaceHub(viewport); break;
+                case 'health': renderSpaceHealth(viewport); break;
+                case 'fashion': renderSpaceFashion(viewport); break;
+                case 'guard': renderSpaceGuard(viewport); break;
+                case 'clock': renderSpaceClock(viewport); break;
+                case 'journal': renderJournal(viewport); break;
                 case 'routine': renderRoutine(viewport); break;
                 case 'habits': renderHabits(viewport); break;
                 case 'goals': renderGoals(viewport); break;
@@ -781,155 +818,47 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             `;
         }
 
-        function renderDashboard(container) {
-            const todayTasks=appState.tasks.filter(t=>t.date===localDateKey());
-            const completedCount = todayTasks.filter(t => t.completed).length;
-            const totalTasks = todayTasks.length;
-            const progressPct = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
-            const habitTodayKey = localDateKey();
-            const dueHabitsToday = appState.habits.filter(h => isHabitScheduledDate(h,habitTodayKey));
-            const habitDoneToday = dueHabitsToday.filter(h => Array.isArray(h.completedDates) ? isHabitCompleteForPeriod(h,habitTodayKey) : !!h.completedToday).length;
-            const habitTotal = dueHabitsToday.length;
-            const habitPct = habitTotal ? Math.round(habitDoneToday / habitTotal * 100) : 0;
-
-            container.innerHTML = `
-                <div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8 animate-in fade-in duration-300">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <span class="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full border border-primary/20">System Online</span>
-                            <h2 class="text-3xl font-bold mt-2">Good Day, ${escapeHTML(appState.user.name)}</h2>
-                            <p class="text-muted text-sm mt-1">${new Date().toLocaleDateString(undefined, {weekday:'long', day:'numeric', month:'long', year:'numeric'})} — Discipline Over Motivation.</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button onclick="router('routine')" class="px-4 py-2.5 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold flex items-center gap-2 transition border border-white/5">
-                                <i data-lucide="plus" class="w-4 h-4 text-primary"></i> Add Task
-                            </button>
-                            <button onclick="router('focus')" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold flex items-center gap-2 transition shadow-lg shadow-primary/25">
-                                <i data-lucide="timer" class="w-4 h-4"></i> Focus Mode
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" aria-label="Quick spaces">
-                        ${[['routine','Tasks','list-checks'],['habits','Habits','repeat'],['goals','Goals','target'],['focus','Focus','timer'],['ai','SPACE AI','bot']].map(([route,label,icon]) => `<button onclick="router('${route}')" class="shrink-0 flex flex-col items-center gap-2 min-w-[72px]"><span class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/30 to-secondary/20 border border-white/10 flex items-center justify-center text-primary"><i data-lucide="${icon}" class="w-6 h-6"></i></span><span class="text-[11px] font-semibold text-muted">${label}</span></button>`).join('')}
-                    </div>
-                    <div class="glass-panel p-4 md:p-5 rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/15 to-secondary/10 flex items-center justify-between gap-3">
-                        <div><p class="text-xs font-bold uppercase tracking-wider text-primary">Your daily space</p><p class="font-semibold mt-1">Small actions. Consistent progress.</p><p class="text-xs text-muted mt-1">Pick one meaningful task and make a start.</p></div>
-                        <button onclick="router('ai')" class="shrink-0 rounded-2xl bg-primary px-4 py-3 text-xs font-bold text-white">Ask SPACE AI</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Daily Progress</span>
-                                <i data-lucide="check-circle" class="w-5 h-5 text-success"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">${progressPct}%</span>
-                                <span class="text-xs text-muted">${completedCount} of ${totalTasks} Done</span>
-                            </div>
-                            <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden">
-                                <div class="bg-success h-full rounded-full transition-all duration-500" style="width: ${progressPct}%"></div>
-                            </div>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Today's Habit Progress</span>
-                                <i data-lucide="repeat" class="w-5 h-5 text-warning"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">${habitDoneToday}/${habitTotal}</span>
-                                <span class="text-xs text-success font-semibold">${habitPct}%</span>
-                            </div>
-                            <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden"><div class="bg-success h-full rounded-full" style="width:${habitPct}%"></div></div>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Discipline Level</span>
-                                <i data-lucide="shield" class="w-5 h-5 text-secondary"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-3xl font-bold">Lvl ${appState.user.level}</span>
-                                <span class="text-xs text-muted">${appState.user.xp} XP</span>
-                            </div>
-                            <p class="text-xs text-muted">${escapeHTML(appState.user.title)}</p>
-                        </div>
-
-                        <div class="glass-panel p-5 rounded-3xl space-y-2">
-                            <div class="flex items-center justify-between text-muted">
-                                <span class="text-xs font-semibold uppercase">Account Status</span>
-                                <i data-lucide="crown" class="w-5 h-5 text-warning"></i>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-2xl font-bold">${appState.user.isPremium ? 'PRO' : 'Free'}</span>
-                                <span class="text-xs text-warning">${appState.user.isPremium ? 'Active' : 'Basic'}</span>
-                            </div>
-                            <button onclick="router('subscription')" class="text-xs text-primary font-semibold hover:underline">Manage Plan &rarr;</button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="glass-panel p-6 rounded-3xl lg:col-span-2 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <i data-lucide="calendar-check" class="w-5 h-5 text-primary"></i> Today's Schedule & Tasks
-                                </h3>
-                                <button onclick="router('routine')" class="text-xs text-muted hover:text-white transition">View All &rarr;</button>
-                            </div>
-                            <div class="space-y-2.5">
-                                ${todayTasks.map(t => `
-                                    <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surfaceLight/40 border border-white/5 hover:bg-surfaceLight/70 transition">
-                                        <div class="flex items-center gap-3">
-                                            <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTaskDashboard(${t.id})" class="w-5 h-5 rounded-lg accent-primary cursor-pointer">
-                                            <div>
-                                                <p class="text-sm font-medium ${t.completed ? 'line-through text-muted' : ''}">${escapeHTML(t.title)}</p>
-                                                <span class="text-[10px] text-muted">${escapeHTML(t.time||'Anytime')} • ${escapeHTML(t.category||'General')}</span>
-                                            </div>
-                                        </div>
-                                        <span class="text-[10px] px-2.5 py-1 rounded-full font-bold ${t.priority === 'High' ? 'bg-danger/20 text-danger' : t.priority === 'Medium' ? 'bg-warning/20 text-warning' : 'bg-success/20 text-success'}">${t.priority}</span>
-                                    </div>
-                                `).join('') || '<p class="text-sm text-muted py-5 text-center">No tasks scheduled for today. Add one when you are ready.</p>'}
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="glass-panel p-6 rounded-3xl space-y-4">
-                                <h3 class="font-bold text-lg flex items-center gap-2">
-                                    <i data-lucide="target" class="w-5 h-5 text-secondary"></i> Active Goals
-                                </h3>
-                                <div class="space-y-4">
-                                    ${appState.goals.map(g => `
-                                        <div class="space-y-1.5">
-                                            <div class="flex justify-between text-xs font-semibold">
-                                                <span>${escapeHTML(g.title)}</span>
-                                                <span class="text-muted">${g.progress}%</span>
-                                            </div>
-                                            <div class="w-full bg-surfaceLight h-2 rounded-full overflow-hidden">
-                                                <div class="bg-gradient-to-r from-primary to-secondary h-full rounded-full" style="width: ${g.progress}%"></div>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            <div class="glass-panel p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 space-y-3">
-                                <div class="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider">
-                                    <i data-lucide="sparkles" class="w-4 h-4"></i> Discipline Doctrine
-                                </div>
-                                <p class="text-sm italic text-muted">"You do not rise to the level of your goals. You fall to the level of your systems."</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        const SPACE_FEATURES=[
+            ['routine','Daily Planner','Plan your day','calendar-check','live'],['habits','Habits','Build steady routines','repeat','live'],['goals','Goals','Track meaningful progress','target','live'],['ai','SPACE AI','Your personal AI assistant','bot','live'],['health','SPACE HEALTH','Reliable health education','heart-pulse','foundation'],['fashion','SPACE FASHION','Explore style ideas','shirt','foundation'],['guard','SPACE GUARD','Daily Space security checks','shield-check','foundation'],['games','Brain Gym','Train memory and thinking','gamepad-2','live'],['analytics','Analytics','Understand your progress','chart-no-axes-combined','live'],['selfcontrol','Self-Control','Manage distractions','shield','live'],['focus','Focus Mode','Protect time for deep work','timer','live'],['journal','Journal','Reflect and record thoughts','book-open','planned'],['achievements','Achievements','Celebrate milestones','award','live'],['clock','SPACE CLOCK','Local and world clocks','clock-3','live'],['profile','Settings','Personalise your experience','settings','live']
+        ];
+        let spaceClockTimer=null;
+        function startSpaceClock(){if(spaceClockTimer)clearInterval(spaceClockTimer);updateSpaceClock();spaceClockTimer=setInterval(updateSpaceClock,1000);}
+        function updateSpaceClock(){const timeEl=document.getElementById('space-clock-time'),dateEl=document.getElementById('space-clock-date'),zoneEl=document.getElementById('space-clock-zone');if(!timeEl)return;const zone=appState.user.primaryTimeZone||Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';try{const now=new Date();timeEl.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:appState.user.clockFormat!=='24h',timeZone:zone}).format(now);if(dateEl)dateEl.textContent=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:zone}).format(now);if(zoneEl)zoneEl.textContent=zone.replaceAll('_',' ');document.querySelectorAll('[data-world-clock]').forEach(el=>{const z=el.getAttribute('data-world-clock');try{el.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:appState.user.clockFormat!=='24h',timeZone:z}).format(now);}catch(e){el.textContent='Unavailable';}});}catch(e){timeEl.textContent=new Date().toLocaleTimeString();}}
+        function renderDashboard(container){
+            evaluateAchievements();
+            const today=localDateKey(),todayTasks=appState.tasks.filter(t=>t.date===today),doneTasks=todayTasks.filter(t=>t.completed).length;
+            const dueHabits=appState.habits.filter(h=>isHabitScheduledDate(h,today)),doneHabits=dueHabits.filter(h=>isHabitCompleteForPeriod(h,today)).length;
+            const taskPct=todayTasks.length?Math.round(doneTasks/todayTasks.length*100):0,habitPct=dueHabits.length?Math.round(doneHabits/dueHabits.length*100):0;
+            const activeGoals=appState.goals.filter(g=>g.status!=='Completed').slice(0,3);
+            container.innerHTML=`<div class="p-5 md:p-9 max-w-7xl mx-auto w-full space-y-7 animate-in fade-in duration-300">
+                <section class="flex flex-col lg:flex-row lg:items-center justify-between gap-4"><div><div class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1.5 text-xs font-bold text-success"><span class="ds-system-dot"></span> SYSTEM ONLINE <span class="text-muted font-normal">· App interface ready</span></div><h2 class="text-3xl md:text-4xl font-bold mt-3">Good day, ${escapeHTML(appState.user.name||'Commander')}</h2><p class="text-muted text-sm mt-2">${new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · Discipline over motivation.</p></div><div class="flex gap-2"><button onclick="router('routine')" class="px-4 py-3 rounded-xl bg-surfaceLight text-sm font-semibold"><i data-lucide="plus" class="inline w-4 h-4 mr-1 text-primary"></i>Add task</button><button onclick="router('focus')" class="px-4 py-3 rounded-xl bg-primary text-white text-sm font-semibold"><i data-lucide="timer" class="inline w-4 h-4 mr-1"></i>Start focus</button></div></section>
+                <section class="grid grid-cols-1 lg:grid-cols-3 gap-4"><div class="glass-panel rounded-3xl p-5 lg:col-span-2 bg-gradient-to-br from-primary/15 to-secondary/10 border border-primary/20"><div class="flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-widest text-primary">SPACE CLOCK · YOUR LOCAL TIME</p><p id="space-clock-time" class="ds-clock-digits text-4xl md:text-5xl font-bold mt-2">--:--:--</p><p id="space-clock-date" class="text-sm text-muted mt-1">Loading local date…</p><p id="space-clock-zone" class="text-xs text-muted mt-2">Detecting timezone…</p></div><button onclick="router('clock')" class="rounded-xl bg-surfaceLight/70 px-4 py-3 text-xs font-bold">World clocks <i data-lucide="arrow-up-right" class="inline w-3 h-3"></i></button></div></div><div class="glass-panel rounded-3xl p-5 flex flex-col justify-between"><div><p class="text-xs uppercase tracking-widest text-muted font-bold">Your daily space</p><p class="text-lg font-semibold mt-2">Everything you need. One space.</p><p class="text-sm text-muted mt-1">One meaningful action is a good place to begin.</p></div><button onclick="router('ai')" class="mt-4 w-full rounded-xl bg-primary py-3 text-sm font-bold text-white"><i data-lucide="sparkles" class="inline w-4 h-4 mr-1"></i>Ask SPACE AI</button></div></section>
+                <section><div class="flex items-end justify-between mb-3"><div><h3 class="text-xl font-bold">SPACE HUB</h3><p class="text-xs text-muted mt-1">Everything you need. One space.</p></div><button onclick="router('spacehub')" class="text-xs text-primary font-bold">Open full hub →</button></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">${SPACE_FEATURES.slice(0,10).map(([route,title,desc,icon,status])=>`<button onclick="router('${route}')" class="ds-feature-card text-left glass-panel border border-white/10 rounded-2xl p-4"><span class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></span><p class="font-bold text-sm mt-3">${title}</p><p class="text-[11px] text-muted mt-1">${desc}</p></button>`).join('')}</div></section>
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's tasks</span><span>${taskPct}%</span></div><p class="text-3xl font-bold mt-2">${doneTasks}<span class="text-base text-muted"> / ${todayTasks.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${taskPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's habits</span><span>${habitPct}%</span></div><p class="text-3xl font-bold mt-2">${doneHabits}<span class="text-base text-muted"> / ${dueHabits.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${habitPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><p class="text-xs text-muted font-bold uppercase">Discipline level</p><p class="text-3xl font-bold mt-2">Level ${Number(appState.user.level)||1}</p><p class="text-sm text-muted mt-1">${Number(appState.user.xp)||0} XP · ${escapeHTML(appState.user.title||'Discipline Builder')}</p></div></section>
+                <section class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="glass-panel rounded-3xl p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold">Today's Schedule</h3><button onclick="router('routine')" class="text-xs text-primary">View planner →</button></div><div class="space-y-2">${todayTasks.slice(0,5).map(t=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${t.completed?'checked':''} onchange="toggleTaskDashboard(${t.id})" class="w-4 h-4 accent-primary"><span class="text-sm ${t.completed?'line-through text-muted':''}">${escapeHTML(t.title)}</span></label>`).join('')||'<p class="text-sm text-muted py-3">No tasks scheduled for today.</p>'}</div></div><div class="glass-panel rounded-3xl p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold">Active Goals</h3><button onclick="router('goals')" class="text-xs text-primary">View goals →</button></div><div class="space-y-4">${activeGoals.map(g=>`<div><div class="flex justify-between gap-2 text-sm"><span class="font-semibold">${escapeHTML(g.title)}</span><span class="text-muted">${Number(g.progress)||0}%</span></div><div class="h-2 bg-surfaceLight rounded-full mt-2 overflow-hidden"><div class="h-full bg-primary" style="width:${Number(g.progress)||0}%"></div></div></div>`).join('')||'<p class="text-sm text-muted py-3">No active goals. Create one when ready.</p>'}</div></div></section>
+                <section class="glass-panel rounded-2xl p-5 text-center"><p class="text-sm italic text-muted">“Small actions. Consistent progress. A system you can return to.”</p></section></div>`;
+            startSpaceClock();
+            if(!appState.user.spacePreference)setTimeout(showSpaceOnboarding,250);
         }
+        function renderSpaceHub(container){container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div><h2 class="text-3xl font-bold">SPACE HUB</h2><p class="text-sm text-muted mt-2">Everything you need. One space.</p></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">${SPACE_FEATURES.map(([route,title,desc,icon,status])=>`<button onclick="router('${route}')" class="ds-feature-card glass-panel border border-white/10 rounded-3xl p-5 text-left"><span class="w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-6 h-6"></i></span><h3 class="font-bold mt-4">${title}</h3><p class="text-xs text-muted mt-1">${desc}</p><span class="inline-block mt-3 text-[10px] font-bold uppercase tracking-wider ${status==='live'?'text-success':'text-warning'}">${status==='live'?'Available':'Foundation / planned'}</span></button>`).join('')}</div></div>`;}
+        function renderSpaceClock(container){const zone=appState.user.primaryTimeZone||Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';if(!Array.isArray(appState.user.worldTimeZones))appState.user.worldTimeZones=[];container.innerHTML=`<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE CLOCK</h2><p class="text-sm text-muted">Your device timezone is detected automatically. You can also choose a primary timezone.</p><div class="glass-panel rounded-3xl p-6"><p class="text-xs text-primary font-bold uppercase">Primary clock</p><p id="space-clock-time" class="ds-clock-digits text-5xl font-bold mt-3">--:--:--</p><p id="space-clock-date" class="text-sm text-muted mt-2"></p><p id="space-clock-zone" class="text-xs text-muted mt-2"></p><div class="mt-5 flex flex-col sm:flex-row gap-2"><select id="space-timezone-select" class="flex-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="${escapeHTML(zone)}">Use detected timezone (${escapeHTML(zone)})</option>${['Asia/Kolkata','Europe/London','America/New_York','America/Los_Angeles','Asia/Dubai','Asia/Tokyo','Asia/Singapore','Australia/Sydney'].filter(z=>z!==zone).map(z=>`<option value="${z}" ${zone===z?'selected':''}>${z.replaceAll('_',' ')}</option>`).join('')}</select><button onclick="savePrimaryTimezone()" class="rounded-xl bg-primary text-white px-4 py-3 text-sm font-bold">Save timezone</button></div><label class="flex items-center gap-2 text-sm mt-3"><input type="checkbox" ${appState.user.clockFormat==='24h'?'checked':''} onchange="appState.user.clockFormat=this.checked?'24h':'12h';saveState();updateSpaceClock()" class="accent-primary"> Use 24-hour time</label></div><div class="mt-6 border-t border-white/10 pt-5"><h3 class="font-bold">World clocks</h3><div class="flex gap-2 mt-3"><select id="world-clock-add" class="flex-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm">${['Europe/London','America/New_York','America/Los_Angeles','Asia/Dubai','Asia/Tokyo','Asia/Singapore','Australia/Sydney','Pacific/Auckland'].map(z=>`<option value="${z}">${z.replaceAll('_',' ')}</option>`).join('')}</select><button onclick="addWorldClock()" class="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white">Add</button></div><div id="world-clock-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">${appState.user.worldTimeZones.map(z=>`<div class="rounded-xl bg-surfaceLight/50 p-4"><p class="text-xs text-muted">${z.replaceAll('_',' ')}</p><p data-world-clock="${z}" class="text-2xl font-bold ds-clock-digits">--:--:--</p><button onclick="removeWorldClock('${z}')" class="text-xs text-danger mt-2">Remove</button></div>`).join('')||'<p class="text-xs text-muted">Add another city to compare local times.</p>'}</div></div></div>`;startSpaceClock();}
+        function addWorldClock(){const value=document.getElementById('world-clock-add')?.value;if(!value)return;if(!Array.isArray(appState.user.worldTimeZones))appState.user.worldTimeZones=[];if(!appState.user.worldTimeZones.includes(value)&&value!==(appState.user.primaryTimeZone||Intl.DateTimeFormat().resolvedOptions().timeZone)){appState.user.worldTimeZones.push(value);saveState();renderSpaceClock(document.getElementById('main-viewport'));lucide.createIcons();}}
+        function removeWorldClock(zone){appState.user.worldTimeZones=(appState.user.worldTimeZones||[]).filter(z=>z!==zone);saveState();renderSpaceClock(document.getElementById('main-viewport'));lucide.createIcons();}
+        function savePrimaryTimezone(){const value=document.getElementById('space-timezone-select')?.value;if(!value)return;appState.user.primaryTimeZone=value;saveState();renderSpaceClock(document.getElementById('main-viewport'));lucide.createIcons();showToast('Primary timezone saved.','success');}
+        function showSpaceOnboarding(){if(appState.user.spacePreference||appState.user.spacePreferencePrompted||!document.getElementById('app-modal'))return;const modal=document.getElementById('app-modal');document.getElementById('modal-title').textContent='Personalise your Daily Space';document.getElementById('modal-desc').textContent='Choose the experience you would like Daily Space to tailor. You can change this later in Settings.';document.getElementById('modal-content').innerHTML=`<div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><button onclick="saveSpacePreference('womens')" class="rounded-2xl border border-primary/30 bg-primary/10 p-5 text-left"><span class="text-2xl">🌸</span><strong class="block mt-2">Women's Space</strong><span class="text-xs text-muted">Personalised content and options</span></button><button onclick="saveSpacePreference('mens')" class="rounded-2xl border border-secondary/30 bg-secondary/10 p-5 text-left"><span class="text-2xl">🛡️</span><strong class="block mt-2">Men's Space</strong><span class="text-xs text-muted">Personalised content and options</span></button></div><p class="text-xs text-muted mt-3">Your core Daily Space features remain the same. This choice only personalises optional content.</p>`;document.getElementById('modal-cancel').textContent='Not now';document.getElementById('modal-cancel').onclick=()=>{appState.user.spacePreferencePrompted=true;saveState();modal.classList.add('hidden');};const confirm=document.getElementById('modal-confirm');confirm.classList.remove('hidden');confirm.textContent='Choose later';confirm.onclick=()=>{appState.user.spacePreferencePrompted=true;saveState();modal.classList.add('hidden');};modal.classList.remove('hidden');}
+        function saveSpacePreference(value){appState.user.spacePreference=value;appState.user.spacePreferencePrompted=true;saveState();document.getElementById('app-modal').classList.add('hidden');if(currentRoute==='fashion')renderSpaceFashion(document.getElementById('main-viewport'));showToast('Your Daily Space experience has been personalised.','success');}
+        function renderSpaceFashion(container){const women=appState.user.spacePreference==='womens';container.innerHTML=`<div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE FASHION</h2><p class="text-sm text-muted">Style ideas based on comfort, personal taste and the occasion — no appearance rules or comparisons.</p><div class="glass-panel rounded-3xl p-6"><span class="text-xs text-primary font-bold uppercase">${women?'Women’s Fashion':appState.user.spacePreference==='mens'?'Men’s Fashion':'Fashion discovery'}</span><h3 class="text-xl font-bold mt-2">Your style, your choice.</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">${[['Colour combinations','Explore colours that work well together.'],['Occasion ideas','Casual, formal, celebration and everyday outfits.'],['Wardrobe organiser','Plan combinations from clothes you already own.'],['Accessories','Explore practical ways to complete an outfit.']].map(([a,b])=>`<div class="rounded-2xl bg-surfaceLight/50 p-4"><strong class="text-sm">${a}</strong><p class="text-xs text-muted mt-1">${b}</p></div>`).join('')}</div><button onclick="router('profile')" class="mt-5 text-sm text-primary font-bold">Change personalised space →</button></div><p class="text-xs text-muted">AI fashion assistance and wardrobe tools are planned for a later build.</p></div>`;}
+        function renderSpaceHealth(container){container.innerHTML=`<div class="p-6 md:p-10 max-w-5xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE HEALTH</h2><p class="text-sm text-muted">Age-appropriate, general health education. This section does not diagnose conditions or replace a qualified health professional.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${[['General Health Education','Everyday health, sleep, movement and common health questions.'],['Mental Wellness','Stress, emotions, coping skills and asking for support.'],['Sexual Health Education','Puberty, consent, boundaries, reproductive health and STI awareness — factual and age-appropriate.'],['Women’s Health','Menstrual health, body changes and when to seek medical advice.'],['Men’s Health','Puberty, body changes, hygiene and health education.'],['Personal Hygiene','Everyday hygiene and practical self-care.'],['Healthy Relationships','Respect, communication, consent and personal boundaries.']].map(([a,b])=>`<article class="glass-panel rounded-2xl p-5"><h3 class="font-bold">${a}</h3><p class="text-xs text-muted mt-2">${b}</p></article>`).join('')}</div><p class="text-xs text-muted">Curated, medically reviewed articles and source references will be added before this section is presented as a complete health library.</p></div>`;}
+        function runSpaceGuardChecks(){const scripts=[...document.scripts].map(x=>x.src).filter(Boolean),inline=[...document.scripts].filter(x=>!x.src&&!x.type.includes('application/ld+json')).map(x=>x.textContent).join('\n');const risky=/(-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|sk_live_[A-Za-z0-9]{12,}|ghp_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})/.test(inline);return {scripts,risky};}
+        function renderSpaceGuard(container){const r=runSpaceGuardChecks();container.innerHTML=`<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE GUARD</h2><p class="text-sm text-muted">A preliminary check of this Daily Space page only. This is not antivirus and does not scan your phone, account or Firebase backend.</p><div class="glass-panel rounded-3xl p-5 space-y-4"><div class="flex justify-between gap-3"><span class="font-semibold">Page script inventory</span><span class="text-success text-xs font-bold">CHECKED</span></div><p class="text-sm text-muted">${r.scripts.length} external script source(s) detected.</p><div class="flex justify-between gap-3"><span class="font-semibold">Private-key pattern scan</span><span class="${r.risky?'text-danger':'text-success'} text-xs font-bold">${r.risky?'REVIEW NEEDED':'NO MATCH FOUND'}</span></div><p class="text-xs text-muted">This lightweight pattern check can miss secrets and can produce false positives.</p><div class="rounded-xl bg-warning/10 border border-warning/20 p-3 text-xs text-warning">Firebase rules, server configuration, dependency vulnerabilities and repository history cannot be verified from this browser-only check.</div><button onclick="renderSpaceGuard(document.getElementById('main-viewport'));lucide.createIcons()" class="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white">Run checks again</button></div><p class="text-xs text-muted">Next stage: repository-based secret scanning, dependency scanning, static analysis and CI checks using free/open-source tools.</p></div>`;}
+        function renderJournal(container){container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-4"><h2 class="text-2xl font-bold">Journal</h2><p class="text-sm text-muted">A simple private reflection space.</p><textarea id="ds-journal-entry" rows="8" class="w-full rounded-2xl bg-surfaceLight border border-white/10 p-4 text-sm" placeholder="What is on your mind today?"></textarea><button onclick="saveJournalEntry()" class="rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">Save entry</button><div class="space-y-3">${(appState.journalEntries||[]).slice().reverse().map(e=>`<article class="glass-panel rounded-2xl p-4"><p class="text-xs text-muted">${new Date(e.date).toLocaleString()}</p><p class="text-sm mt-2 whitespace-pre-wrap">${escapeHTML(e.text)}</p></article>`).join('')}</div></div>`;}
+        function saveJournalEntry(){const el=document.getElementById('ds-journal-entry'),text=el?.value.trim();if(!text)return showToast('Write a short entry first.','info');if(!Array.isArray(appState.journalEntries))appState.journalEntries=[];appState.journalEntries.push({date:new Date().toISOString(),text});saveState();renderJournal(document.getElementById('main-viewport'));showToast('Journal entry saved.','success');}
 
         function toggleTaskDashboard(id) {
             const task = appState.tasks.find(t => t.id === id);
             if (task) {
                 task.completed = !task.completed;
-                if(task.completed){task.completedAt=new Date().toISOString();if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;addXP(10);}}else task.completedAt=null;
+                if(task.completed){task.completedAt=new Date().toISOString();adjustXPEvent(`task:${task.id}`,10);if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;}}else{task.completedAt=null;adjustXPEvent(`task:${task.id}`,0);}evaluateAchievements();
                 saveState();
                 renderDashboard(document.getElementById('main-viewport'));
                 lucide.createIcons();
@@ -1041,7 +970,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const task = appState.tasks.find(t => t.id === id);
             if (task) {
                 task.completed = !task.completed;
-                if(task.completed){task.completedAt=new Date().toISOString();if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;addXP(10);}}else task.completedAt=null;
+                if(task.completed){task.completedAt=new Date().toISOString();adjustXPEvent(`task:${task.id}`,10);if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;}}else{task.completedAt=null;adjustXPEvent(`task:${task.id}`,0);}evaluateAchievements();
                 saveState();
                 renderRoutine(document.getElementById('main-viewport'));
                 lucide.createIcons();
@@ -1050,8 +979,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function deleteRoutineTask(id) {
             if(!confirm('Delete this task?'))return;
+            const removedTask=appState.tasks.find(t=>t.id===id);if(removedTask?.completed)adjustXPEvent(`task:${id}`,0);
             appState.tasks = appState.tasks.filter(t => t.id !== id);
-            saveState();
+            evaluateAchievements();saveState();
             renderRoutine(document.getElementById('main-viewport'));
             lucide.createIcons();
             showToast("Task removed.", "success");
@@ -1062,20 +992,23 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         let habitCalendarYear = new Date().getFullYear();
         let habitCalendarMonth = new Date().getMonth();
         function localDateKey(date=new Date()) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
-        function isHabitScheduledDate(h,key){if(h.paused)return false;const d=new Date(key+'T12:00:00');const day=d.getDay();const f=(h.frequency||'Daily').toLowerCase();if(f==='weekdays')return day>=1&&day<=5;if(f==='weekends')return day===0||day===6;return true;}
+        function isHabitPausedDate(h,key){const ranges=Array.isArray(h.pausedRanges)?h.pausedRanges:[];return ranges.some(r=>key>=r.start&&key<=r.end)||(!!h.paused&&!!h.pausedAt&&key>=h.pausedAt);}
+        function isHabitScheduledDate(h,key){if(isHabitPausedDate(h,key))return false;const d=new Date(key+'T12:00:00');const day=d.getDay();const f=(h.frequency||'Daily').toLowerCase();if(f==='weekdays')return day>=1&&day<=5;if(f==='weekends')return day===0||day===6;return true;}
         function isHabitCompletedInWeek(h,key=localDateKey()){const d=new Date(key+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));const start=localDateKey(d);const endDate=new Date(d);endDate.setDate(endDate.getDate()+6);const end=localDateKey(endDate);return (h.completedDates||[]).some(date=>date>=start&&date<=end);}
         function isHabitCompleteForPeriod(h,key=localDateKey()){return (h.frequency||'Daily').toLowerCase()==='weekly'?isHabitCompletedInWeek(h,key):(h.completedDates||[]).includes(key);}
         function getHabitStreak(h){
-            if(h.paused)return 0;
             const dates=new Set(Array.isArray(h.completedDates)?h.completedDates:[]);
             if(!dates.size)return 0;
             const frequency=(h.frequency||'Daily').toLowerCase();
             if(frequency==='weekly'){
                 const weekKey=date=>{const d=new Date(date);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return localDateKey(d);};
                 const completedWeeks=new Set([...dates].map(key=>weekKey(new Date(key+'T12:00:00'))));
+                const weekHasPause=key=>{const start=new Date(key+'T12:00:00');for(let i=0;i<7;i++){const d=new Date(start);d.setDate(d.getDate()+i);if(isHabitPausedDate(h,localDateKey(d)))return true;}return false;};
+                const previousWeek=key=>{const d=new Date(key+'T12:00:00');d.setDate(d.getDate()-7);return weekKey(d);};
                 let cursor=new Date();cursor.setHours(12,0,0,0);let currentWeek=weekKey(cursor);
-                if(!completedWeeks.has(currentWeek)){cursor.setDate(cursor.getDate()-7);currentWeek=weekKey(cursor);}
-                let count=0;while(completedWeeks.has(currentWeek)&&count<5000){count++;const d=new Date(currentWeek+'T12:00:00');d.setDate(d.getDate()-7);currentWeek=weekKey(d);}return count;
+                while(weekHasPause(currentWeek)&&!completedWeeks.has(currentWeek))currentWeek=previousWeek(currentWeek);
+                if(!completedWeeks.has(currentWeek)){currentWeek=previousWeek(currentWeek);while(weekHasPause(currentWeek)&&!completedWeeks.has(currentWeek))currentWeek=previousWeek(currentWeek);}
+                let count=0;while(count<5000){if(!completedWeeks.has(currentWeek)){if(weekHasPause(currentWeek)){currentWeek=previousWeek(currentWeek);continue;}break;}count++;currentWeek=previousWeek(currentWeek);while(weekHasPause(currentWeek)&&!completedWeeks.has(currentWeek))currentWeek=previousWeek(currentWeek);}return count;
             }
             let cursor=new Date();cursor.setHours(12,0,0,0);
             if(!isHabitScheduledDate(h,localDateKey(cursor))||!dates.has(localDateKey(cursor))){
@@ -1090,7 +1023,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         function renderHabits(container) {
             if (activeHabitCalendarId !== null) return renderHabitCalendar(container, activeHabitCalendarId);
             const today=localDateKey();
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=isHabitCompleteForPeriod(h,today);const status=done?((h.frequency||'Daily').toLowerCase()==='weekly'?'Completed this week':'Completed today'):h.paused?'Tracking paused':(h.frequency||'Daily')==='Weekly'?'Due this week':isHabitScheduledDate(h,today)?'Not completed today':'Not scheduled today';return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${escapeHTML(h.category||'Personal')}</span><h3 class="font-bold text-lg mt-2">${escapeHTML(h.title)}</h3></div></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="text-xs font-semibold text-muted">${h.paused?'Paused':(h.frequency||'Daily')}</span><span class="text-xs ${done?'text-success':'text-muted'}">${status}</span></div><div class="flex gap-2"><button onclick="event.stopPropagation();toggleHabitPause(${h.id})" class="flex-1 py-2 rounded-xl bg-surfaceLight text-xs font-semibold">${h.paused?'Resume':'Pause'}</button><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="px-3 py-2 rounded-xl bg-danger/10 text-danger text-xs font-semibold">Delete</button></div><p class="mt-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=isHabitCompleteForPeriod(h,today);const status=done?((h.frequency||'Daily').toLowerCase()==='weekly'?'Completed this week':'Completed today'):h.paused?'Tracking paused':(h.frequency||'Daily')==='Weekly'?'Due this week':isHabitScheduledDate(h,today)?'Not completed today':'Not scheduled today';return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${escapeHTML(h.category||'Personal')}</span><h3 class="font-bold text-lg mt-2">${escapeHTML(h.title)}</h3></div></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="text-xs font-semibold text-muted">${h.paused?'Paused':(h.frequency||'Daily')}</span><span class="text-xs font-bold ${h.paused?'text-danger':done?'text-success':'text-muted'}">${status}</span></div><div class="flex gap-2"><button onclick="event.stopPropagation();toggleHabitPause(${h.id})" class="flex-1 py-2 rounded-xl text-xs font-bold ${h.paused?'bg-success/15 text-success':'bg-danger/15 text-danger'}">${h.paused?'Resume habit':'Pause habit'}</button><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="px-3 py-2 rounded-xl bg-danger/10 text-danger text-xs font-semibold">Delete</button></div><p class="mt-2 rounded-lg border px-3 py-2 text-sm font-semibold ${h.paused?'ds-paused-status':'ds-active-status'}">${h.paused?'Paused · Your history is preserved. Paused days do not count as missed days or break your streak.':'Active · Tracking is enabled for scheduled days.'}</p><p class="text-[11px] text-muted">ⓘ Pause temporarily stops tracking without deleting this habit. Resume whenever you are ready. Your previous completion history stays saved.</p><p class="text-xs text-primary font-semibold">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
         }
         function openHabitCalendar(id){activeHabitCalendarId=id;habitCalendarYear=new Date().getFullYear();habitCalendarMonth=new Date().getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function changeHabitCalendarMonth(delta){habitCalendarMonth+=delta;const d=new Date(habitCalendarYear,habitCalendarMonth,1);habitCalendarYear=d.getFullYear();habitCalendarMonth=d.getMonth();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
@@ -1100,7 +1033,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const cells=Array.from({length:offset},()=>'<div></div>');for(let day=1;day<=days;day++){const key=`${habitCalendarYear}-${String(habitCalendarMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,done=h.completedDates.includes(key),future=key>today,notScheduled=!isHabitScheduledDate(h,key);cells.push(`<button ${(future||notScheduled)?'disabled':''} onclick="toggleHabitDate(${id},'${key}')" class="aspect-square rounded-xl text-sm font-semibold ${done?'bg-success text-bgDark':(future||notScheduled)?'bg-surfaceLight/20 text-muted/30 cursor-not-allowed':'bg-surfaceLight/60 hover:bg-primary/25'}">${day}</button>`)}
             container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Habits</button><div><h2 class="text-2xl font-bold">${escapeHTML(h.title)}</h2><p class="mt-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm font-medium text-primary">Mark the days you completed this habit. Past dates remain saved; future dates are disabled.</p></div><div class="glass-panel p-5 md:p-6 rounded-3xl space-y-4"><div class="flex items-center justify-between"><button onclick="changeHabitCalendarMonth(-1)" class="p-2 rounded-xl bg-surfaceLight">←</button><h3 class="font-bold">${first.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h3><button onclick="changeHabitCalendarMonth(1)" ${habitCalendarYear===new Date().getFullYear()&&habitCalendarMonth>=new Date().getMonth()?'disabled':''} class="p-2 rounded-xl bg-surfaceLight disabled:opacity-30">→</button></div><div class="grid grid-cols-7 gap-2 text-center text-xs text-muted">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-2">${cells.join('')}</div><div class="flex flex-wrap gap-4 text-xs text-muted"><span><i class="inline-block w-3 h-3 rounded bg-success"></i> Completed</span><span><i class="inline-block w-3 h-3 rounded bg-surfaceLight"></i> Not marked</span></div><p class="text-sm font-semibold">Current streak: ${getHabitStreak(h)} ${(h.frequency||'Daily').toLowerCase()==='weekly'?'weeks':'days'}</p></div></div>`;
         }
-        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey()||!isHabitScheduledDate(h,date))return;const idx=h.completedDates.indexOf(date);if(idx>=0)h.completedDates.splice(idx,1);else{h.completedDates.push(date);if(!Array.isArray(h.xpAwardedDates))h.xpAwardedDates=[];if(!h.xpAwardedDates.includes(date)){h.xpAwardedDates.push(date);appState.lifetimeHabitsCompleted=(Number(appState.lifetimeHabitsCompleted)||0)+1;}}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);evaluateAchievements();saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
+        function toggleHabitDate(id,date){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];if(date>localDateKey()||!isHabitScheduledDate(h,date))return;const idx=h.completedDates.indexOf(date);if(idx>=0){h.completedDates.splice(idx,1);adjustXPEvent(`habit:${id}:${date}`,0);}else{h.completedDates.push(date);adjustXPEvent(`habit:${id}:${date}`,5);if(!Array.isArray(h.xpAwardedDates))h.xpAwardedDates=[];if(!h.xpAwardedDates.includes(date)){h.xpAwardedDates.push(date);appState.lifetimeHabitsCompleted=(Number(appState.lifetimeHabitsCompleted)||0)+1;}}h.completedDates=[...new Set(h.completedDates)].sort();h.completedToday=h.completedDates.includes(localDateKey());h.streak=getHabitStreak(h);evaluateAchievements();saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();}
         function openAddHabitModal() {
             const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent='Add Habit';document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-title').innerText='Create New Habit';document.getElementById('modal-desc').innerText='Create a habit and track each completed day.';
             document.getElementById('modal-content').innerHTML=`<div class="space-y-4"><div><label for="new-habit-title" class="block text-sm font-semibold">Habit Name <span class="text-red-500">*</span></label><input type="text" id="new-habit-title" required placeholder="e.g. Read 20 pages" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"></div><div class="grid grid-cols-2 gap-3"><select id="new-habit-cat" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Development</option><option>Health</option><option>Discipline</option><option>Mind</option><option>Fitness</option><option>Learning</option></select><select id="new-habit-frequency" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option>Daily</option><option>Weekdays</option><option>Weekends</option><option>Weekly</option></select></div></div>`;
@@ -1108,7 +1041,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
         function toggleHabitToday(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.completedDates))h.completedDates=[];toggleHabitDate(id,localDateKey());}
 
-        function toggleHabitPause(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;h.paused=!h.paused;saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();showToast(h.paused?'Habit tracking paused.':'Habit tracking resumed.','info');}
+        function toggleHabitPause(id){const h=appState.habits.find(x=>x.id===id);if(!h)return;if(!Array.isArray(h.pausedRanges))h.pausedRanges=[];if(!h.paused){h.paused=true;h.pausedAt=localDateKey();}else{const start=h.pausedAt||localDateKey(),end=localDateKey();if(start<=end)h.pausedRanges.push({start,end});h.paused=false;delete h.pausedAt;}h.streak=getHabitStreak(h);saveState();renderHabits(document.getElementById('main-viewport'));lucide.createIcons();showToast(h.paused?'Habit tracking paused. Your streak and history are preserved.':'Habit tracking resumed. Paused days were excluded from your streak.','info');}
 
         function deleteHabit(id) {
             if(!confirm('Delete this habit and its calendar history?'))return;
@@ -1128,8 +1061,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
         }
         function openGoalDetail(id){activeGoalDetailId=id;renderGoals(document.getElementById('main-viewport'));lucide.createIcons();}
         function renderGoalDetail(container,id){const g=appState.goals.find(x=>x.id===id);if(!g){activeGoalDetailId=null;return renderGoals(container);}normalizeGoal(g);container.innerHTML=`<div class="p-6 md:p-10 max-w-3xl mx-auto w-full space-y-5"><button onclick="activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));lucide.createIcons()" class="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-bold text-primary shadow-sm hover:bg-primary/25"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Goals</button><div><h2 class="text-2xl font-bold">${escapeHTML(g.title)}</h2><p class="text-sm text-muted">${escapeHTML(g.status)} · Work through your steps at your own pace.</p></div><div class="glass-panel p-5 rounded-3xl space-y-4"><div class="flex justify-between text-sm"><strong>Progress</strong><strong>${g.steps.filter(x=>x.completed).length}/${g.steps.length} · ${g.progress}%</strong></div><div class="h-3 bg-surfaceLight rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-secondary" style="width:${g.progress}%"></div></div><div class="space-y-3">${g.steps.map((step,i)=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${step.completed?'checked':''} onchange="toggleGoalStep(${id},${i})" class="w-5 h-5 accent-primary"><span class="text-sm ${step.completed?'line-through text-muted':''}">${escapeHTML(step.text)}</span></label>`).join('')}</div><button onclick="openAddGoalStepModal(${id})" class="w-full py-3 rounded-xl bg-primary/15 text-primary font-semibold">+ Add another step</button>${g.status==='Completed'?'<p class="text-sm text-success font-semibold">All steps completed. Goal achieved!</p>':''}</div></div>`;}
-        function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;normalizeGoal(g);if(g.status==='Completed'&&!g.xpAwarded){g.xpAwarded=true;}evaluateAchievements();saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed!','success');}
-        function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent='Add Step';document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
+        function toggleGoalStep(id,index){const g=appState.goals.find(x=>x.id===id);if(!g||!g.steps[index])return;g.steps[index].completed=!g.steps[index].completed;adjustXPEvent(`goal-step:${id}:${index}`,g.steps[index].completed?5:0);normalizeGoal(g);adjustXPEvent(`goal-complete:${id}`,g.status==='Completed'?25:0);evaluateAchievements();saveState();renderGoals(document.getElementById('main-viewport'));lucide.createIcons();if(g.status==='Completed')showToast('Goal completed! +25 XP','success');}
+        function openAddGoalStepModal(id){const modal=document.getElementById('app-modal');document.getElementById('modal-confirm').textContent='Add Step';document.getElementById('modal-cancel').textContent='Cancel';document.getElementById('modal-title').innerText='Add Goal Step';document.getElementById('modal-desc').innerText='Add another action to this goal.';document.getElementById('modal-content').innerHTML='<input id="new-goal-step" type="text" placeholder="Describe the next step" class="w-full px-4 py-3 rounded-xl bg-surfaceLight border border-white/10">';document.getElementById('modal-confirm').onclick=()=>{const text=document.getElementById('new-goal-step').value.trim();if(!text)return showToast('Enter a step first.','danger');const g=appState.goals.find(x=>x.id===id);if(g){normalizeGoal(g);g.steps.push({text,completed:false});normalizeGoal(g);adjustXPEvent(`goal-complete:${id}`,g.status==='Completed'?25:0);saveState();}modal.classList.add('hidden');renderGoals(document.getElementById('main-viewport'));lucide.createIcons();};document.getElementById('modal-cancel').onclick=()=>modal.classList.add('hidden');modal.classList.remove('hidden');}
         function openAddGoalModal(){
             const modal=document.getElementById('app-modal');
             document.getElementById('modal-title').innerText='Create New Goal';
@@ -1159,8 +1092,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function deleteGoal(id) {
             const goal=appState.goals.find(g=>g.id===id);if(!goal||!confirm(`Delete goal \"${goal.title}\" and its steps?`))return;
+            (goal.steps||[]).forEach((step,index)=>adjustXPEvent(`goal-step:${id}:${index}`,0));adjustXPEvent(`goal-complete:${id}`,0);
             appState.goals = appState.goals.filter(g => g.id !== id);
-            saveState();
+            evaluateAchievements();saveState();
             renderGoals(document.getElementById('main-viewport'));
             lucide.createIcons();
             showToast("Goal deleted.", "success");
@@ -1835,9 +1769,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     </div>
 
                     <div class="ds-ai-composer flex flex-col gap-2 pt-2">
-                        <p class="text-[11px] text-muted">Try: “add task: study on 2026-11-15 at 6 PM”, “complete task: revise accounts”, or “start focus timer for 25 minutes”.</p><div class="flex gap-2"><input type="text" id="ai-user-input" placeholder="Type your message here in simple English..." onkeydown="if(event.key==='Enter')window.sendAIMessage()" class="flex-1 px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary">
+                        <p class="text-[11px] text-muted">Try: “add task: study on 2026-11-15 at 6 PM”, “complete task: revise accounts”, or “start focus timer for 25 minutes”.</p><div class="flex items-end gap-2"><textarea rows="1" id="ai-user-input" placeholder="Message SPACE AI… (Enter to send, Shift + Enter for a new line)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();window.sendAIMessage();}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,140)+'px'" class="flex-1 min-h-[52px] max-h-36 resize-none px-5 py-4 rounded-2xl bg-surfaceLight border border-white/10 text-sm focus:outline-none focus:border-primary"></textarea>
                         <button onclick="toggleAIVoiceInput()" class="px-4 py-4 rounded-2xl bg-surfaceLight text-primary" aria-label="Voice input"><i data-lucide="mic" class="w-4 h-4"></i></button>
-                        <button onclick="window.sendAIMessage()" class="px-6 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
+                        <button onclick="window.sendAIMessage()" class="px-5 py-4 rounded-2xl bg-primary hover:bg-primaryHover text-white font-bold text-sm transition shadow-lg shadow-primary/30 flex items-center gap-2">
                             <i data-lucide="send" class="w-4 h-4"></i> Send
                         </button></div>
                     </div>
@@ -2000,7 +1934,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                     </div>
                 </div>
 
-                <div class="space-y-3 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">SPACE AI Voice</h3><label class="flex items-center justify-between gap-3 text-sm"><span>Read AI replies aloud</span><input type="checkbox" ${appState.user.voiceRepliesEnabled?'checked':''} onchange="appState.user.voiceRepliesEnabled=this.checked;saveState()" class="w-5 h-5 accent-primary"></label><label class="flex items-center justify-between gap-3 text-sm"><span>Voice language</span><select onchange="appState.user.voiceLanguage=this.value;saveState()" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm"><option value="en-IN" ${(!appState.user.voiceLanguage||appState.user.voiceLanguage==='en-IN')?'selected':''}>English</option><option value="ml-IN" ${appState.user.voiceLanguage==='ml-IN'?'selected':''}>Malayalam</option></select></label><p class="text-xs text-muted">Voice availability and language quality depend on your device and browser.</p></div>
+                <div class="space-y-4 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">Personalised Space</h3><p class="text-xs text-muted">This choice personalises optional content. Your core features remain available in either experience.</p><select onchange="appState.user.spacePreference=this.value;saveState();showToast('Personalised space updated.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="" ${!appState.user.spacePreference?'selected':''}>Choose a space</option><option value="womens" ${appState.user.spacePreference==='womens'?'selected':''}>Women's Space</option><option value="mens" ${appState.user.spacePreference==='mens'?'selected':''}>Men's Space</option></select></div>
+                <div class="space-y-4 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">Language</h3><p class="text-xs text-muted">Choose the language SPACE AI should use. Full interface localisation is being built in stages.</p><select onchange="appState.user.language=this.value;saveState();showToast('AI language preference saved.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm">${[['en','English'],['ml','Malayalam'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['kn','Kannada'],['es','Spanish'],['ar','Arabic'],['fr','French'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.language||'en')===v?'selected':''}>${n}</option>`).join('')}</select></div>
+                <div class="space-y-3 pt-4 border-t border-white/10"><h3 class="font-bold text-lg">SPACE AI Voice</h3><label class="flex items-center justify-between gap-3 text-sm"><span>Read AI replies aloud</span><input type="checkbox" ${appState.user.voiceRepliesEnabled?'checked':''} onchange="appState.user.voiceRepliesEnabled=this.checked;saveState()" class="w-5 h-5 accent-primary"></label><label class="flex items-center justify-between gap-3 text-sm"><span>Voice language</span><select onchange="appState.user.voiceLanguage=this.value;saveState()" class="px-3 py-2 rounded-xl bg-surfaceLight border border-white/10 text-sm">${[['en-IN','English (India)'],['en-GB','English (UK)'],['en-US','English (US)'],['ml-IN','Malayalam'],['hi-IN','Hindi'],['ta-IN','Tamil'],['te-IN','Telugu'],['kn-IN','Kannada'],['es-ES','Spanish'],['ar-SA','Arabic'],['fr-FR','French'],['pt-BR','Portuguese'],['ja-JP','Japanese'],['ko-KR','Korean'],['zh-CN','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.voiceLanguage||'en-IN')===v?'selected':''}>${n}</option>`).join('')}</select></label><p class="text-xs text-muted">Voice input uses your browser speech-recognition service. Language availability, accent support and accuracy vary by device, browser and region; selecting a language does not guarantee recognition support. Mixed-language recognition may be limited.</p></div>
                 <div class="space-y-4 pt-4 border-t border-white/10">
                     <h3 class="font-bold text-lg">Data Management</h3>
                     <div class="flex flex-wrap gap-3">
@@ -2148,7 +2084,7 @@ function tryExecuteAIAction(raw){
     const reply=(message)=>({handled:true,message});
     let m;
     if((m=text.match(/^(?:add|create) task\s*:\s*(.+?)\s+on\s+(\d{4}-\d{2}-\d{2})(?:\s+at\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm))?$/i))){const title=m[1].trim(),date=m[2];const parsedDate=new Date(date+'T12:00:00');if(Number.isNaN(parsedDate.getTime())||localDateKey(parsedDate)!==date)return reply('Please use a valid calendar date in YYYY-MM-DD format.');let time='Anytime';if(m[3]){let h=Number(m[3]),min=m[4]||'00',ap=(m[5]||'AM').toUpperCase();if(h<1||h>12||Number(min)>59)return reply('I could not create that task: please use a valid 12-hour time.');time=`${h}:${String(min).padStart(2,'0')} ${ap}`;}if(!title)return reply('Please include a task title.');const task={id:Date.now(),title,date,time,category:'Personal',priority:'Medium',completed:false};appState.tasks.push(task);saveState();return reply(`Task created: ${title}, due ${date}${time!=='Anytime'?' at '+time:''}.`);}
-    if((m=text.match(/^(?:complete|finish|mark complete) task\s*:\s*(.+)$/i))){const q=m[1].trim().toLowerCase(),task=appState.tasks.find(t=>t.title.toLowerCase()===q&&!t.completed);if(!task)return reply('I could not find an unfinished task with that exact title. Nothing was changed.');task.completed=true;task.completedAt=new Date().toISOString();if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;addXP(10);}saveState();return reply(`Completed task: ${task.title}.`);}
+    if((m=text.match(/^(?:complete|finish|mark complete) task\s*:\s*(.+)$/i))){const q=m[1].trim().toLowerCase(),task=appState.tasks.find(t=>t.title.toLowerCase()===q&&!t.completed);if(!task)return reply('I could not find an unfinished task with that exact title. Nothing was changed.');task.completed=true;task.completedAt=new Date().toISOString();adjustXPEvent(`task:${task.id}`,10);if(!task.xpAwarded){task.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;}evaluateAchievements();saveState();return reply(`Completed task: ${task.title}. +10 XP.`);}
     if((m=text.match(/^(?:add|create) habit\s*:\s*(.+)$/i))){const title=m[1].trim();if(!title)return reply('Please include a habit name.');appState.habits.push({id:Date.now(),title,category:'Personal',frequency:'Daily',completedDates:[],completedToday:false,streak:0,targetDays:30});saveState();return reply(`Habit created: ${title}.`);}
     if((m=text.match(/^(?:add|create) goal\s*:\s*(.+?)(?:\s*\|\s*step\s*:\s*(.+?))?(?:\s*\|\s*date\s*:\s*(\d{4}-\d{2}-\d{2}))?$/i))){const title=m[1].trim(),step=(m[2]||'First step to begin').trim(),date=m[3]||'';const goal={id:Date.now(),title,category:'Personal',targetDate:date,steps:[{text:step,completed:false}],progress:0,status:'Active'};appState.goals.push(goal);saveState();return reply(`Goal created: ${title}. First step: ${step}${date?' Target date: '+date:''}.`);}
     if((m=text.match(/^record (income|expense)\s*:\s*(.+?)\s+₹?([\d,]+(?:\.\d{1,2})?)\s+on\s+(\d{4}-\d{2}-\d{2})$/i))){const type=m[1].toLowerCase(),title=m[2].trim(),amount=Number(m[3].replace(/,/g,'')),date=m[4];const parsedDate=new Date(date+'T12:00:00');if(Number.isNaN(parsedDate.getTime())||localDateKey(parsedDate)!==date)return reply('Please use a valid transaction date in YYYY-MM-DD format.');if(!amount||amount<=0)return reply('Please provide a valid positive amount.');appState.expenses.push({id:Date.now(),title,amount,type,date,category:'AI entry',paymentMethod:'',notes:'Added with SPACE AI'});saveState();return reply(`${type==='income'?'Income':'Expense'} recorded: ₹${amount.toFixed(2)} for ${title} on ${date}.`);}
@@ -2170,13 +2106,14 @@ function tryExecuteAIAction(raw){
     if((m=text.match(/^delete transaction\s*:\s*(.+)$/i))){const q=m[1].trim().toLowerCase(),matches=appState.expenses.filter(e=>e.title.toLowerCase()===q);if(matches.length!==1)return reply(matches.length?'More than one transaction has that title. Use the Income & Expense Tracker to choose the correct one.':'I could not find a transaction with that exact title.');if(!confirm(`Delete transaction “${matches[0].title}”?`))return reply('Deletion cancelled.');appState.expenses=appState.expenses.filter(e=>e.id!==matches[0].id);saveState();return reply(`Deleted transaction: ${matches[0].title}.`);}
     if(lower==='show achievements'||lower==='open achievements'){router('achievements');return reply('Opened your achievements.');}
     if(lower==='analyse my progress'||lower==='analyze my progress'){const t=appState.tasks||[],h=appState.habits||[],g=appState.goals||[],today=localDateKey(),due=h.filter(x=>isHabitScheduledDate(x,today)),done=due.filter(x=>isHabitCompleteForPeriod(x,today)).length,completed=t.filter(x=>x.completed).length,avg=g.length?Math.round(g.reduce((n,x)=>n+(Number(x.progress)||0),0)/g.length):0;return reply(`Your saved progress snapshot: ${completed}/${t.length} tasks completed overall; ${done}/${due.length} scheduled habits completed today; ${g.length} goals with ${avg}% average progress; ${Math.round((Number(appState.focusStats?.totalSeconds)||0)/60)} minutes of completed focus time. These are the figures currently saved in Daily Space.`);}
-    if((m=lower.match(/^open (home|tasks|habits|goals|self-control|calendar|focus timer|finance|analytics|games|achievements|settings)$/))){const map={'tasks':'routine','self-control':'selfcontrol','focus timer':'focus','settings':'profile'};const route=map[m[1]]||m[1];router(route);return reply(`Opened ${m[1]}.`);}
+    if((m=lower.match(/^open (home|space hub|space health|space fashion|space guard|space clock|journal|tasks|habits|goals|self-control|calendar|focus timer|finance|analytics|games|achievements|settings)$/))){const map={'space hub':'spacehub','space health':'health','space fashion':'fashion','space guard':'guard','space clock':'clock','tasks':'routine','self-control':'selfcontrol','focus timer':'focus','settings':'profile'};const route=map[m[1]]||m[1];router(route);return reply(`Opened ${m[1]}.`);}
     return null;
 }
 
-function getAIAppContext(userMessage=''){const today=localDateKey(),tasks=appState.tasks||[],habits=appState.habits||[],goals=appState.goals||[],due=habits.filter(h=>isHabitScheduledDate(h,today)),done=due.filter(h=>(h.completedDates||[]).includes(today)),income=(appState.expenses||[]).filter(e=>e.type==='income').reduce((n,e)=>n+(Number(e.amount)||0),0),expenses=(appState.expenses||[]).filter(e=>e.type!=='income').reduce((n,e)=>n+(Number(e.amount)||0),0),includeFinance=/(finance|money|income|expense|spend|spent|budget|transaction|balance|saving)/i.test(userMessage);return `CURRENT DAILY SPACE DATA (local date ${today}):\nTasks: ${tasks.filter(t=>t.completed).length}/${tasks.length} completed overall. Today’s unfinished tasks: ${tasks.filter(t=>t.date===today&&!t.completed).slice(0,8).map(t=>t.title).join('; ')||'none recorded'}.\nHabits: ${done.length}/${due.length} scheduled for today marked complete.\nGoals: ${goals.map(g=>`${g.title} (${g.progress||0}%, ${g.status||'Active'})`).slice(0,8).join('; ')||'none recorded'}.\nFocus time: ${Math.round((Number(appState.focusStats?.totalSeconds)||0)/60)} completed minutes.\n${includeFinance?`Recorded finances: income ₹${income.toFixed(2)}, expenses ₹${expenses.toFixed(2)}.`:'Finance figures are omitted unless the user asks about finances.'}\nUse these figures only as the current saved snapshot. If a detail is missing, say it is not recorded; never invent activity or claim an action happened unless the app confirms it.`;}
+function getAIAppContext(userMessage=''){const today=localDateKey(),tasks=appState.tasks||[],habits=appState.habits||[],goals=appState.goals||[],due=habits.filter(h=>isHabitScheduledDate(h,today)),done=due.filter(h=>(h.completedDates||[]).includes(today)),income=(appState.expenses||[]).filter(e=>e.type==='income').reduce((n,e)=>n+(Number(e.amount)||0),0),expenses=(appState.expenses||[]).filter(e=>e.type!=='income').reduce((n,e)=>n+(Number(e.amount)||0),0),includeFinance=/(finance|money|income|expense|spend|spent|budget|transaction|balance|saving)/i.test(userMessage);return `CURRENT DAILY SPACE DATA (local date ${today}):\nPersonalised space: ${appState.user.spacePreference||'not selected'}. Preferred language: ${appState.user.language||'en'}.\nTasks: ${tasks.filter(t=>t.completed).length}/${tasks.length} completed overall. Today’s unfinished tasks: ${tasks.filter(t=>t.date===today&&!t.completed).slice(0,8).map(t=>t.title).join('; ')||'none recorded'}.\nHabits: ${done.length}/${due.length} scheduled for today marked complete.\nGoals: ${goals.map(g=>`${g.title} (${g.progress||0}%, ${g.status||'Active'})`).slice(0,8).join('; ')||'none recorded'}.\nFocus time: ${Math.round((Number(appState.focusStats?.totalSeconds)||0)/60)} completed minutes.\n${includeFinance?`Recorded finances: income ₹${income.toFixed(2)}, expenses ₹${expenses.toFixed(2)}.`:'Finance figures are omitted unless the user asks about finances.'}\nUse these figures only as the current saved snapshot. If a detail is missing, say it is not recorded; never invent activity or claim an action happened unless the app confirms it.`;}
 
-function toggleAIVoiceInput(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showToast('Voice input is not supported in this browser.','danger');return;}const rec=new SR();rec.lang=appState.user.voiceLanguage||'en-IN';rec.interimResults=false;rec.maxAlternatives=1;showToast('Listening…','info');rec.onresult=e=>{const input=document.getElementById('ai-user-input');if(input){input.value=e.results[0][0].transcript;input.focus();showToast('Voice input captured. Press Send when ready.','success');}};rec.onerror=()=>showToast('Voice input could not start. Check microphone permission.','danger');rec.start();}
+let activeVoiceRecognition=null;
+function toggleAIVoiceInput(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showToast('Voice input is not supported in this browser. Try a supported browser or type your message.','danger');return;}if(activeVoiceRecognition){activeVoiceRecognition.stop();activeVoiceRecognition=null;showToast('Voice capture stopped. You can edit the transcript before sending.','info');return;}const rec=new SR();activeVoiceRecognition=rec;rec.lang=appState.user.voiceLanguage||'en-IN';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=3;let finalText='';const input=document.getElementById('ai-user-input');showToast(`Listening in ${rec.lang}. Speak clearly; you can edit the text afterwards.`,'info');rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const best=e.results[i][0];if(e.results[i].isFinal){finalText+=best.transcript+' ';}else{interim+=best.transcript;}}if(input){input.value=(finalText+interim).trim();input.focus();input.style.height='auto';input.style.height=Math.min(input.scrollHeight,140)+'px';}};rec.onerror=e=>{activeVoiceRecognition=null;showToast(e.error==='not-allowed'?'Microphone permission was denied. Enable it in your browser settings.':`Voice recognition error: ${e.error||'unknown error'}.`,'danger');};rec.onend=()=>{activeVoiceRecognition=null;if(input&&input.value.trim())showToast('Transcript ready. Review or edit it, then press Send.','success');};try{rec.start();}catch(e){activeVoiceRecognition=null;showToast('Could not start voice capture. Please try again.','danger');}}
 function speakAIReply(text){if(!('speechSynthesis'in window))return;const utterance=new SpeechSynthesisUtterance(String(text||''));utterance.lang=appState.user.voiceLanguage||'en-IN';window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance);}
 
 async function sendAIMessage() {
@@ -2268,11 +2205,16 @@ const personalMemoryContext = personalMemories.length > 0
 
 // Build context for a new Gemini session
 const appContext=getAIAppContext(txt);
+const languageNames={en:'English',ml:'Malayalam',hi:'Hindi',ta:'Tamil',te:'Telugu',kn:'Kannada',es:'Spanish',ar:'Arabic',fr:'French',pt:'Portuguese',ja:'Japanese',ko:'Korean',zh:'Simplified Chinese'};
+const preferredLanguage=languageNames[appState.user.language||'en']||'English';
+const languageInstruction=`Preferred response language: ${preferredLanguage}. Reply in this language unless the user clearly requests another language.`;
 const messageToSend = isNewSession
     ? `You are SPACE AI.
 
 Here are important personal details the user previously shared:
 ${personalMemoryContext}
+
+${languageInstruction}
 
 Use these saved personal details naturally when relevant. Never invent personal details.
 
@@ -2280,7 +2222,9 @@ ${appContext}
 
 CURRENT MESSAGE:
 ${txt}`
-    : `${appContext}
+    : `${languageInstruction}
+
+${appContext}
 
 CURRENT MESSAGE:
 ${txt}`;
@@ -2341,8 +2285,7 @@ window.sendAIMessage = sendAIMessage;
       setInterval(checkTaskReminders,15000);
         
         window.onload = function() {
-            // Temporary PRO test shortcut retained as requested.
-            appState.user.isPremium = true;
+            // Never grant PRO access from client-side test code. Premium status must come from verified account data.
             applyTheme();
             lucide.createIcons();
             updateSidebarXP();
@@ -2486,7 +2429,7 @@ YOUR ROLE:
 - Give practical advice about productivity and discipline.
 - Help users build positive habits and achieve their goals.
 - Encourage users without judging or pressuring them.
-- Explain things in simple, clear English.
+- Use the user's selected language preference when replying. The selected preference is supplied with each request; if the user writes in another language, follow their language naturally.
 - Give step-by-step instructions when users need help.
 - Keep answers friendly, useful, and easy to understand.
 
