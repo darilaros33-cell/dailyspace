@@ -635,12 +635,17 @@ body.ds-special-ai-active{overflow:hidden}body.ds-special-ai-active #main-viewpo
 
             <button onclick="router('calendar')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="calendar-days" class="w-5 h-5"></i> Calendar & Special Days <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
 
+            <button onclick="router('selfcontrol')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center</button>
 
+            <button onclick="router('focus')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="timer" class="w-5 h-5"></i> Focus Timer</button>
 
             <button onclick="router('finance')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="wallet" class="w-5 h-5"></i> Income & Expense Tracker <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
 
+            <button onclick="router('analytics')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="chart-no-axes-combined" class="w-5 h-5"></i> Analytics & Trends <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
 
+            <button onclick="router('games')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="gamepad-2" class="w-5 h-5"></i> Brain Gym & Games <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
 
+            <button onclick="router('achievements')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="award" class="w-5 h-5"></i> Achievements</button>
 
             <button onclick="router('subscription')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="crown" class="w-5 h-5"></i> Premium Plans</button>
 
@@ -1585,44 +1590,34 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
 
         function showExitConfirmation() {
+
             const modal = document.getElementById('app-modal');
-            if (!modal) return;
-            const title = document.getElementById('modal-title');
-            const desc = document.getElementById('modal-desc');
-            const content = document.getElementById('modal-content');
+
+            document.getElementById('modal-title').textContent = 'Do you want to quit?';
+
+            document.getElementById('modal-desc').textContent = 'Are you sure you want to leave Daily Space?';
+
+            document.getElementById('modal-content').innerHTML = '';
+
             const cancel = document.getElementById('modal-cancel');
+
             const confirmBtn = document.getElementById('modal-confirm');
-            title.textContent = 'Leaving Daily Space?';
-            desc.textContent = 'Are you sure you want to quit the app?';
-            content.innerHTML = '<div class="flex justify-center mb-1"><div class="w-14 h-14 rounded-2xl bg-primary/15 text-primary grid place-items-center"><i data-lucide="log-out" class="w-7 h-7"></i></div></div>';
-            cancel.textContent = 'No, Stay';
-            confirmBtn.textContent = 'Yes, Quit';
-            cancel.className = 'flex-1 px-4 py-3 rounded-xl bg-surfaceLight hover:bg-surfaceLight/80 text-sm font-semibold transition';
-            confirmBtn.className = 'flex-1 px-4 py-3 rounded-xl bg-primary hover:bg-primaryHover text-white text-sm font-semibold transition';
+
+            cancel.textContent = 'No';
+
+            confirmBtn.textContent = 'Yes';
+
             cancel.onclick = () => { modal.classList.add('hidden'); };
-            confirmBtn.onclick = () => {
-                modal.classList.add('hidden');
-                // Browsers only permit window.close() for windows opened by script.
-                // Attempt it for supported installed-app contexts, then explain the platform limitation.
-                try { window.close(); } catch (e) { /* Browser may block programmatic closing. */ }
-                setTimeout(() => {
-                    if (document.visibilityState === 'visible') {
-                        showToast('Daily Space is ready to close. Use your device Home or app-switcher controls to exit.', 'info');
-                    }
-                }, 250);
-            };
+
+            confirmBtn.onclick = () => { modal.classList.add('hidden'); try { window.close(); } catch(e) {} showToast('You can close Daily Space using your device controls.', 'info'); };
+
             modal.classList.remove('hidden');
-            if (window.lucide) lucide.createIcons();
+
         }
 
 
+
         window.addEventListener('popstate', () => {
-            const exitModal=document.getElementById('app-modal');
-            if(exitModal&&!exitModal.classList.contains('hidden')&&document.getElementById('modal-title')?.textContent==='Leaving Daily Space?'){
-                exitModal.classList.add('hidden');
-                try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}
-                return;
-            }
 
             if(currentRoute==='games'&&currentGameId){exitBrainGame();try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
 
@@ -1720,9 +1715,9 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-4"><div class="glass-panel rounded-3xl p-5 lg:col-span-2 bg-gradient-to-br from-primary/15 to-secondary/10 border border-primary/20"><div class="flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-widest text-primary">SPACE CLOCK · YOUR LOCAL TIME</p><p id="space-clock-time" class="ds-clock-digits text-4xl md:text-5xl font-bold mt-2">--:--:--</p><p id="space-clock-date" class="text-sm text-muted mt-1">Loading local date…</p><p id="space-clock-zone" class="text-xs text-muted mt-2">Detecting timezone…</p></div><button onclick="router('clock')" class="rounded-xl bg-surfaceLight/70 px-4 py-3 text-xs font-bold">World clocks <i data-lucide="arrow-up-right" class="inline w-3 h-3"></i></button></div></div><div class="glass-panel rounded-3xl p-5 flex flex-col justify-between"><div><p class="text-xs uppercase tracking-widest text-muted font-bold">Your daily space</p><p class="text-lg font-semibold mt-2">Everything you need. One space.</p><p class="text-sm text-muted mt-1">One meaningful action is a good place to begin.</p></div><button onclick="router('ai')" class="mt-4 w-full rounded-xl bg-primary py-3 text-sm font-bold text-white"><i data-lucide="sparkles" class="inline w-4 h-4 mr-1"></i>Ask SPACE AI</button></div></section>
 
-                <section><div class="mb-3"><h3 class="text-xl font-bold">Daily Progress</h3><p class="text-xs text-muted mt-1">A quick view of how your day is moving.</p></div><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's tasks</span><span>${taskPct}%</span></div><p class="text-3xl font-bold mt-2">${doneTasks}<span class="text-base text-muted"> / ${todayTasks.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${taskPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's habits</span><span>${habitPct}%</span></div><p class="text-3xl font-bold mt-2">${doneHabits}<span class="text-base text-muted"> / ${dueHabits.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${habitPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><p class="text-xs text-muted font-bold uppercase">Discipline level</p><p class="text-3xl font-bold mt-2">Level ${Number(appState.user.level)||1}</p><p class="text-sm text-muted mt-1">${Number(appState.user.xp)||0} XP · ${escapeHTML(appState.user.title||'Discipline Builder')}</p></div></div></section>
+                <section><div class="flex items-end justify-between mb-3"><div><h3 class="text-xl font-bold">SPACE HUB</h3><p class="text-xs text-muted mt-1">Everything you need. One space.</p></div><button onclick="router('spacehub')" class="text-xs text-primary font-bold">Open full hub →</button></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">${SPACE_FEATURES.slice(0,10).map(([route,title,desc,icon,status])=>`<button onclick="router('${route}')" class="ds-feature-card text-left glass-panel border border-white/10 rounded-2xl p-4"><span class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></span><p class="font-bold text-sm mt-3">${title}</p><p class="text-[11px] text-muted mt-1">${desc}</p></button>`).join('')}</div></section>
 
-                <section><div class="flex items-end justify-between mb-3"><div><h3 class="text-xl font-bold">SPACE HUB</h3><p class="text-xs text-muted mt-1">Your essential spaces, all in one place.</p></div><button onclick="router('spacehub')" class="text-xs text-primary font-bold">Open Full Hub <i data-lucide="arrow-up-right" class="inline w-3 h-3"></i></button></div><div class="grid grid-cols-2 md:grid-cols-3 gap-3">${DS_HOME_FEATURES.map(([route,title,desc,icon])=>`<button onclick="router('${route}')" class="ds-feature-card text-left glass-panel border border-white/10 rounded-2xl p-4"><span class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></span><p class="font-bold text-sm mt-3">${title}</p><p class="text-[11px] text-muted mt-1">${desc}</p></button>`).join('')}</div></section>
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's tasks</span><span>${taskPct}%</span></div><p class="text-3xl font-bold mt-2">${doneTasks}<span class="text-base text-muted"> / ${todayTasks.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${taskPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's habits</span><span>${habitPct}%</span></div><p class="text-3xl font-bold mt-2">${doneHabits}<span class="text-base text-muted"> / ${dueHabits.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${habitPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><p class="text-xs text-muted font-bold uppercase">Discipline level</p><p class="text-3xl font-bold mt-2">Level ${Number(appState.user.level)||1}</p><p class="text-sm text-muted mt-1">${Number(appState.user.xp)||0} XP · ${escapeHTML(appState.user.title||'Discipline Builder')}</p></div></section>
 
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="glass-panel rounded-3xl p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold">Today's Schedule</h3><button onclick="router('routine')" class="text-xs text-primary">View planner →</button></div><div class="space-y-2">${todayTasks.slice(0,5).map(t=>`<label class="flex items-center gap-3 p-3 rounded-xl bg-surfaceLight/40"><input type="checkbox" ${t.completed?'checked':''} onchange="toggleTaskDashboard(${t.id})" class="w-4 h-4 accent-primary"><span class="text-sm ${t.completed?'line-through text-muted':''}">${escapeHTML(t.title)}</span></label>`).join('')||'<p class="text-sm text-muted py-3">No tasks scheduled for today.</p>'}</div></div><div class="glass-panel rounded-3xl p-5"><div class="flex justify-between items-center mb-3"><h3 class="font-bold">Active Goals</h3><button onclick="router('goals')" class="text-xs text-primary">View goals →</button></div><div class="space-y-4">${activeGoals.map(g=>`<div><div class="flex justify-between gap-2 text-sm"><span class="font-semibold">${escapeHTML(g.title)}</span><span class="text-muted">${Number(g.progress)||0}%</span></div><div class="h-2 bg-surfaceLight rounded-full mt-2 overflow-hidden"><div class="h-full bg-primary" style="width:${Number(g.progress)||0}%"></div></div></div>`).join('')||'<p class="text-sm text-muted py-3">No active goals. Create one when ready.</p>'}</div></div></section>
 
