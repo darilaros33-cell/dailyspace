@@ -3,6 +3,8 @@
 <html lang="en" class="dark">
 
 <head><link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#080b18">
 
     <meta charset="UTF-8">
 
@@ -250,9 +252,59 @@ body.ds-special-ai-active{overflow:hidden}body.ds-special-ai-active #main-viewpo
 .ds-wellness-card{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);border-radius:20px;padding:16px}.ds-wellness-card input,.ds-wellness-card select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px;color:inherit}.ds-wellness-card label{display:block;font-size:11px;color:#9ca3af;font-weight:700;margin:8px 0 5px}.ds-progress{height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.ds-progress>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#38bdf8,#818cf8)}
 @media(min-width:768px){.ds-special-ai-screen{padding:24px;max-width:1100px;margin:auto}}
 </style>
+
+<style id="ds-startup-splash-styles">
+  #ds-startup-splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:#05040d;opacity:1;visibility:visible;transition:opacity .35s ease,visibility .35s ease;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+  #ds-startup-splash.ds-splash-hidden{opacity:0;visibility:hidden;pointer-events:none;}
+  #ds-startup-splash video{width:100%;height:100%;object-fit:contain;background:#05040d;}
+  #ds-startup-wait{position:absolute;left:16px;right:16px;bottom:max(28px,env(safe-area-inset-bottom));text-align:center;color:#c8b9ff;font:500 13px/1.5 system-ui,sans-serif;letter-spacing:.02em;text-shadow:0 1px 12px #000;display:none;}
+  #ds-startup-splash.ds-waiting #ds-startup-wait{display:block;}
+  @media(prefers-reduced-motion:reduce){#ds-startup-splash{transition:none;}}
+</style>
+
 </head>
 
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
+
+<div id="ds-startup-splash" role="status" aria-label="Daily Space is starting">
+  <video id="ds-startup-video" autoplay muted playsinline preload="auto" poster="icon.png">
+    <source src="splash-screen.mp4" type="video/mp4">
+  </video>
+  <div id="ds-startup-wait" aria-live="polite">Preparing your personal space...</div>
+</div>
+<script id="ds-startup-splash-controller">
+(function(){
+  const splash=document.getElementById('ds-startup-splash');
+  const video=document.getElementById('ds-startup-video');
+  const waitLabel=document.getElementById('ds-startup-wait');
+  if(!splash||!video)return;
+  let videoFinished=false,authReady=false,startedAt=Date.now(),hidden=false;
+  function hideIfReady(){
+    if(hidden||!videoFinished||!authReady)return;
+    hidden=true;splash.classList.add('ds-splash-hidden');
+    setTimeout(()=>splash.remove(),450);
+  }
+  function finishVideo(){
+    const remaining=Math.max(0,5000-(Date.now()-startedAt));
+    setTimeout(()=>{videoFinished=true;hideIfReady();if(!authReady){splash.classList.add('ds-waiting');}},remaining);
+  }
+  video.addEventListener('ended',finishVideo,{once:true});
+  video.addEventListener('error',()=>{if(!videoFinished)finishVideo();},{once:true});
+  const playAttempt=video.play();
+  if(playAttempt&&typeof playAttempt.catch==='function')playAttempt.catch(()=>finishVideo());
+  // A safety fallback prevents a broken media request from trapping the app.
+  setTimeout(()=>{if(!videoFinished){video.pause();finishVideo();}},9000);
+  window.dsUpdateStartupStatus=function(isLoading,message){
+    if(message)waitLabel.textContent=message;
+    if(!isLoading){authReady=true;hideIfReady();}
+    else if(videoFinished)splash.classList.add('ds-waiting');
+  };
+  window.dsFinishStartup=function(){authReady=true;hideIfReady();};
+  // If the app scripts fail completely, expose the existing page after a bounded wait.
+  setTimeout(()=>{authReady=true;hideIfReady();},30000);
+})();
+</script>
+
 
 
 
@@ -936,6 +988,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
             if (!screen) return;
 
+            if (window.dsUpdateStartupStatus) window.dsUpdateStartupStatus(loading, message || (loading ? 'Checking your account...' : ''));
+
             screen.classList.remove('hidden');
 
             if (loadingEl) {
@@ -1181,6 +1235,8 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
                 cloudSyncReady = true;
 
                 document.getElementById('auth-screen')?.classList.add('hidden');
+
+                if (window.dsFinishStartup) window.dsFinishStartup();
 
                 applyTheme();
 
@@ -5149,4 +5205,3 @@ Never pretend to have accessed app data unless it has actually been provided to 
 </body>
 
 </html>
-
