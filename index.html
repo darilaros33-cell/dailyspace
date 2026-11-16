@@ -102,6 +102,32 @@
 
 
 
+        /* Daily Space four-theme system. Theme colors are applied globally through semantic utility classes. */
+        html[data-theme="aurora-black"] { --ds-bg:#08070D; --ds-surface:#111018; --ds-surface-light:#1D1A29; --ds-primary:#A78BFA; --ds-primary-hover:#8B5CF6; --ds-secondary:#6D28D9; --ds-muted:#A5A0B5; --ds-nav:rgba(8,7,13,.96); --ds-border:rgba(255,255,255,.09); }
+        html[data-theme="pure-light"] { --ds-bg:#F7F8FC; --ds-surface:#FFFFFF; --ds-surface-light:#EEF0F6; --ds-primary:#6D5CE8; --ds-primary-hover:#5946D2; --ds-secondary:#4F46B8; --ds-muted:#667085; --ds-nav:rgba(255,255,255,.97); --ds-border:rgba(15,23,42,.10); }
+        html[data-theme="aurora-purple"] { --ds-bg:#10091D; --ds-surface:#1A102B; --ds-surface-light:#29183F; --ds-primary:#C084FC; --ds-primary-hover:#A855F7; --ds-secondary:#9333EA; --ds-muted:#B6A5CA; --ds-nav:rgba(16,9,29,.96); --ds-border:rgba(216,180,254,.13); }
+        html[data-theme="emerald"] { --ds-bg:#06130F; --ds-surface:#0D211A; --ds-surface-light:#17362A; --ds-primary:#34D399; --ds-primary-hover:#10B981; --ds-secondary:#047857; --ds-muted:#9AB8AA; --ds-nav:rgba(6,19,15,.96); --ds-border:rgba(167,243,208,.12); }
+        html[data-theme] body { background-color:var(--ds-bg) !important; color:var(--ds-text, #F8FAFC); }
+        html[data-theme] .bg-bgDark { background-color:var(--ds-bg) !important; }
+        html[data-theme] .bg-surface { background-color:var(--ds-surface) !important; }
+        html[data-theme] .bg-surfaceLight, html[data-theme] .bg-surfaceLight\/40, html[data-theme] .bg-surfaceLight\/50, html[data-theme] .bg-surfaceLight\/60 { background-color:var(--ds-surface-light) !important; }
+        html[data-theme] .text-primary { color:var(--ds-primary) !important; }
+        html[data-theme] .bg-primary { background-color:var(--ds-primary) !important; }
+        html[data-theme] .hover\:bg-primaryHover:hover { background-color:var(--ds-primary-hover) !important; }
+        html[data-theme] .text-secondary { color:var(--ds-secondary) !important; }
+        html[data-theme] .bg-secondary { background-color:var(--ds-secondary) !important; }
+        html[data-theme] .text-muted { color:var(--ds-muted) !important; }
+        html[data-theme] .border-primary, html[data-theme] .border-primary\/30 { border-color:var(--ds-primary) !important; }
+        html[data-theme] .glass-panel { background:color-mix(in srgb, var(--ds-surface) 86%, transparent) !important; border-color:var(--ds-border) !important; }
+        html[data-theme] .ds-bottom-nav { background:var(--ds-nav) !important; border-color:var(--ds-border) !important; }
+        html[data-theme] .ds-bottom-nav button.active { color:var(--ds-primary) !important; background:color-mix(in srgb, var(--ds-primary) 17%, transparent) !important; }
+        html[data-theme="pure-light"] { --ds-text:#101828; }
+        html[data-theme="pure-light"] .text-white { color:#101828 !important; }
+        html[data-theme="pure-light"] .text-white\/70, html[data-theme="pure-light"] .text-white\/60 { color:#475467 !important; }
+        html[data-theme="pure-light"] .border-white\/5, html[data-theme="pure-light"] .border-white\/10 { border-color:var(--ds-border) !important; }
+        html[data-theme="pure-light"] .ds-bottom-nav .ds-ai-nav { color:#FFFFFF !important; }
+        html[data-theme="aurora-black"] .ds-bottom-nav .ds-ai-nav, html[data-theme="aurora-purple"] .ds-bottom-nav .ds-ai-nav, html[data-theme="emerald"] .ds-bottom-nav .ds-ai-nav { color:#FFFFFF !important; }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
 
         ::-webkit-scrollbar-track { background: transparent; }
@@ -691,7 +717,7 @@ body.ds-special-ai-active{overflow:hidden}body.ds-special-ai-active #main-viewpo
 
                 premiumExpiry: null,
 
-                theme: "dark",
+                theme: "aurora-black",
 
                 language: "en",
 
@@ -770,6 +796,11 @@ aiPersonalMemory: [],
 
 
         let appState = JSON.parse(localStorage.getItem('daily_space_state')) || DEFAULT_STATE;
+        // Theme migration: preserve existing preferences while introducing the four-theme system.
+        if (!appState.user) appState.user = {...DEFAULT_STATE.user};
+        if (!appState.user.theme || appState.user.theme === 'dark') appState.user.theme = 'aurora-black';
+        else if (appState.user.theme === 'light') appState.user.theme = 'pure-light';
+        else if (!['aurora-black','pure-light','aurora-purple','emerald'].includes(appState.user.theme)) appState.user.theme = 'aurora-black';
 
         // Ensure personal AI memory exists for existing users
 
@@ -1172,44 +1203,33 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
 
         function applyTheme() {
-
             const html = document.documentElement;
-
-            if (appState.user.theme === 'light') {
-
-                html.classList.remove('dark');
-
-            } else {
-
-                html.classList.add('dark');
-
-            }
-
+            const theme = ['aurora-black','pure-light','aurora-purple','emerald'].includes(appState.user?.theme)
+                ? appState.user.theme : 'aurora-black';
+            if (appState.user) appState.user.theme = theme;
+            html.dataset.theme = theme;
+            html.classList.toggle('dark', theme !== 'pure-light');
         }
-
-
 
         function setTheme(theme) {
-
-            appState.user.theme = theme === 'light' ? 'light' : 'dark';
-
+            const allowedThemes = ['aurora-black','pure-light','aurora-purple','emerald'];
+            if (!allowedThemes.includes(theme)) return;
+            appState.user.theme = theme;
             applyTheme();
-
             saveState();
-
-            showToast(`Switched to ${appState.user.theme.toUpperCase()} mode.`, 'success');
-
+            const labels = {
+                'aurora-black': 'Aurora Black',
+                'pure-light': 'Pure Light',
+                'aurora-purple': 'Aurora Purple',
+                'emerald': 'Emerald'
+            };
+            showToast(`${labels[theme]} theme applied.`, 'success');
+            if (document.getElementById('theme-select')) document.getElementById('theme-select').value = theme;
         }
-
-
 
         function toggleTheme() {
-
-            setTheme(appState.user.theme === 'dark' ? 'light' : 'dark');
-
+            setTheme(appState.user.theme === 'pure-light' ? 'aurora-black' : 'pure-light');
         }
-
-
 
         function showToast(message, type = 'success') {
 
@@ -3871,18 +3891,17 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                     <h3 class="font-bold text-lg">Appearance</h3>
 
-                    <p class="text-xs text-muted">Your theme preference is saved with your account.</p>
+                    <p class="text-xs text-muted">Choose a theme. Your selection is saved with your account and restored on your next visit.</p>
 
                     <div class="flex items-center justify-between gap-4 rounded-2xl bg-surfaceLight/50 border border-white/5 p-4">
 
-                        <div><p class="font-semibold text-sm">Application theme</p><p class="text-xs text-muted">Choose how Daily Space looks.</p></div>
+                        <div><p class="font-semibold text-sm">Application theme</p><p class="text-xs text-muted">Choose one of four complete app themes.</p></div>
 
                         <select id="theme-select" onchange="setTheme(this.value)" class="rounded-xl px-3 py-2 bg-surfaceLight border border-white/10 text-sm">
-
-                            <option value="dark" ${appState.user.theme === 'dark' ? 'selected' : ''}>Dark</option>
-
-                            <option value="light" ${appState.user.theme === 'light' ? 'selected' : ''}>Light</option>
-
+                            <option value="aurora-black" ${appState.user.theme === 'aurora-black' ? 'selected' : ''}>Aurora Black · Default</option>
+                            <option value="pure-light" ${appState.user.theme === 'pure-light' ? 'selected' : ''}>Pure Light</option>
+                            <option value="aurora-purple" ${appState.user.theme === 'aurora-purple' ? 'selected' : ''}>Aurora Purple</option>
+                            <option value="emerald" ${appState.user.theme === 'emerald' ? 'selected' : ''}>Emerald</option>
                         </select>
 
                     </div>
