@@ -1699,6 +1699,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function renderDashboard(container){
             evaluateAchievements();
+
             const today=localDateKey();
             const todayTasks=appState.tasks.filter(t=>t.date===today);
             const doneTasks=todayTasks.filter(t=>t.completed).length;
@@ -1708,72 +1709,164 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             const habitPct=dueHabits.length?Math.round(doneHabits/dueHabits.length*100):0;
             const activeGoals=appState.goals.filter(g=>g.status!=='Completed').slice(0,3);
             const firstName=escapeHTML((appState.user.name||'Commander').trim().split(/\s+/)[0]||'Commander');
-            const dateLabel=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-            const quickActions=[
-                ['focus','Focus Timer','Protect your attention','timer','from-primary/20 to-primary/5'],
-                ['selfcontrol','Self-Control','Stay true to your commitments','shield-check','from-secondary/20 to-secondary/5'],
-                ['games','SPACE Games','Train your thinking','gamepad-2','from-warning/15 to-warning/5'],
-                ['ai','SPACE AI','Think it through with your assistant','sparkles','from-success/15 to-success/5']
+            const now=new Date();
+            const hour=now.getHours();
+            const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+            const dateLabel=now.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+            const homeSpaces=[
+                ['ai','SPACE AI','Your personal AI assistant','bot','from-primary/20 to-primary/5'],
+                ['guard','SPACE GUARD','Tools for a safer digital life','shield-check','from-secondary/20 to-secondary/5'],
+                ['health','SPACE HEALTH','Explore health and wellbeing','heart-pulse','from-success/15 to-success/5'],
+                ['fashion','SPACE FASHION','Discover ideas for your own style','shirt','from-warning/15 to-warning/5'],
+                ['games','SPACE GAMES','Games, puzzles and brain training','gamepad-2','from-primary/15 to-secondary/10'],
+                ['selfcontrol','SELF-CONTROL CENTER','Build stronger everyday habits','shield','from-secondary/15 to-primary/10']
             ];
-            const hubFeatures=SPACE_FEATURES.filter(([route])=>['routine','habits','goals','health','fashion','guard','clock','journal','profile'].includes(route));
+            const allFeatures=[
+                {group:'Plan & Organise',items:[
+                    ['routine','Daily Planner','Plan tasks and organise your day','calendar-check'],
+                    ['habits','Habit Tracker','Build and track daily routines','repeat'],
+                    ['goals','Goals','Set goals and follow your progress','target'],
+                    ['calendar','Calendar & Special Days','View dates and important days','calendar-days'],
+                    ['journal','Journal','Write private notes and reflections','book-open']
+                ]},
+                {group:'Your Spaces',items:[
+                    ['ai','SPACE AI','Your personal AI assistant','bot'],
+                    ['guard','SPACE GUARD','Digital safety tools and guidance','shield-check'],
+                    ['health','SPACE HEALTH','Health and wellbeing information','heart-pulse'],
+                    ['fashion','SPACE FASHION','Explore style ideas and wardrobe topics','shirt'],
+                    ['games','SPACE GAMES','Games, puzzles and brain training','gamepad-2'],
+                    ['selfcontrol','Self-Control Center','Tools for self-discipline','shield'],
+                    ['clock','SPACE CLOCK','Local time and world clocks','clock-3']
+                ]},
+                {group:'Focus & Progress',items:[
+                    ['focus','Focus Timer','Set aside time for focused work','timer'],
+                    ['analytics','Analytics & Trends','Review your activity and progress','chart-no-axes-combined'],
+                    ['achievements','Achievements','See milestones you have earned','trophy'],
+                    ['finance','Income & Expense Tracker','Track income and expenses','wallet']
+                ]},
+                {group:'Account',items:[
+                    ['subscription','Premium Plans','Explore available plan options','crown'],
+                    ['profile','Settings & Profile','Manage your account and preferences','settings']
+                ]}
+            ];
+
             container.innerHTML=`
             <div class="ds-home p-4 md:p-7 xl:p-9 max-w-7xl mx-auto w-full space-y-6 md:space-y-8 animate-in fade-in duration-300">
-                <section class="relative overflow-hidden rounded-[2rem] border border-primary/25 bg-gradient-to-br from-primary/20 via-surface to-secondary/10 p-6 md:p-9">
-                    <div class="absolute -right-16 -top-24 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
-                    <div class="absolute right-20 -bottom-32 w-64 h-64 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
-                    <div class="relative flex flex-col xl:flex-row xl:items-end xl:justify-between gap-7">
-                        <div class="max-w-2xl">
-                            <div class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1.5 text-[10px] font-extrabold tracking-[.18em] text-success"><span class="ds-system-dot"></span> YOUR SPACE IS READY</div>
-                            <p class="mt-5 text-xs uppercase tracking-[.24em] text-muted font-bold">${dateLabel}</p>
-                            <h1 class="mt-2 text-4xl md:text-6xl font-black tracking-tight leading-[1.05]">Make today<br><span class="text-primary">count, ${firstName}.</span></h1>
-                            <p class="mt-4 text-sm md:text-base text-muted max-w-lg">A clearer view of your day. One focused action at a time.</p>
+                <!-- Welcome -->
+                <section class="relative overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/15 via-surface to-secondary/10 p-5 md:p-7">
+                    <div class="absolute -right-16 -top-24 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+                    <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[.22em] text-primary font-extrabold">DAILY SPACE · DISCIPLINE OVER MOTIVATION</p>
+                            <h1 class="text-3xl md:text-4xl font-black tracking-tight mt-2">${greeting}, ${firstName}.</h1>
+                            <p class="text-sm text-muted mt-2">${dateLabel}</p>
+                            <p class="text-sm text-muted mt-3">Make room for what matters today.</p>
                         </div>
-                        <div class="relative flex flex-wrap gap-3">
-                            <button onclick="router('routine')" class="inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-primary/20 hover:brightness-110 transition"><i data-lucide="plus-circle" class="w-5 h-5"></i> Plan my day</button>
-                            <button onclick="router('focus')" class="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-surface/70 px-5 py-3.5 text-sm font-bold hover:bg-surfaceLight transition"><i data-lucide="play-circle" class="w-5 h-5 text-primary"></i> Start focus</button>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="router('routine')" class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-lg shadow-primary/15 hover:brightness-110 transition"><i data-lucide="plus" class="w-4 h-4"></i>Add task</button>
+                            <button onclick="router('focus')" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-surface/70 px-4 py-3 text-sm font-bold hover:bg-surfaceLight transition"><i data-lucide="play" class="w-4 h-4 text-primary"></i>Start focus</button>
                         </div>
                     </div>
                 </section>
 
-                <section class="grid grid-cols-1 xl:grid-cols-12 gap-4">
-                    <div class="xl:col-span-7 relative overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/15 via-surface to-secondary/10 p-5 md:p-7">
-                        <div class="flex items-start justify-between gap-3"><div><p class="text-[10px] font-black uppercase tracking-[.22em] text-primary">SPACE CLOCK</p><p class="text-xs text-muted mt-1">Your selected local timezone</p></div><span class="rounded-xl bg-primary/10 p-2.5 text-primary"><i data-lucide="clock-3" class="w-5 h-5"></i></span></div>
-                        <div id="space-clock-time" class="ds-clock-digits text-5xl md:text-7xl font-black tracking-tight mt-6 tabular-nums">--:--:--</div>
-                        <div class="flex flex-wrap items-center justify-between gap-3 mt-3"><div><p id="space-clock-date" class="text-sm font-semibold">Loading local date…</p><p id="space-clock-zone" class="text-xs text-muted mt-1">Detecting timezone…</p></div><button onclick="router('clock')" class="inline-flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-xs font-bold text-primary hover:bg-primary/15">World clocks <i data-lucide="arrow-up-right" class="w-4 h-4"></i></button></div>
-                    </div>
-                    <div class="xl:col-span-5 rounded-[1.75rem] border border-white/10 bg-surfaceLight/35 p-5 md:p-7 flex flex-col justify-between">
-                        <div><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-[.22em] text-muted">TODAY AT A GLANCE</p><span class="text-xs text-muted">Live progress</span></div>
-                            <div class="grid grid-cols-2 gap-3 mt-5">
-                                <div class="rounded-2xl bg-surface/70 p-4"><p class="text-xs text-muted">Tasks completed</p><p class="text-3xl font-black mt-1">${doneTasks}<span class="text-sm text-muted font-semibold">/${todayTasks.length}</span></p><div class="h-1.5 rounded-full bg-surfaceLight overflow-hidden mt-3"><div class="h-full rounded-full bg-success transition-all" style="width:${taskPct}%"></div></div></div>
-                                <div class="rounded-2xl bg-surface/70 p-4"><p class="text-xs text-muted">Habits completed</p><p class="text-3xl font-black mt-1">${doneHabits}<span class="text-sm text-muted font-semibold">/${dueHabits.length}</span></p><div class="h-1.5 rounded-full bg-surfaceLight overflow-hidden mt-3"><div class="h-full rounded-full bg-primary transition-all" style="width:${habitPct}%"></div></div></div>
-                            </div>
+                <!-- Compact clock and daily overview -->
+                <section class="grid grid-cols-1 xl:grid-cols-12 gap-3">
+                    <div class="xl:col-span-4 flex items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/5 p-4 md:p-5">
+                        <div class="min-w-0">
+                            <p class="text-[10px] uppercase tracking-[.2em] font-extrabold text-primary">SPACE CLOCK</p>
+                            <p id="space-clock-time" class="ds-clock-digits text-2xl md:text-3xl font-black tracking-tight tabular-nums mt-1">--:--:--</p>
+                            <p id="space-clock-date" class="text-xs text-muted mt-1">Loading date…</p>
+                            <p id="space-clock-zone" class="text-[10px] text-muted mt-1 truncate">Detecting timezone…</p>
                         </div>
-                        <div class="mt-5 flex items-center justify-between rounded-2xl border border-primary/15 bg-primary/5 p-4"><div><p class="text-[10px] uppercase tracking-widest text-muted font-bold">Discipline level</p><p class="text-xl font-black mt-1">Level ${Number(appState.user.level)||1}</p><p class="text-xs text-muted">${Number(appState.user.xp)||0} XP earned</p></div><div class="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center text-primary"><i data-lucide="trending-up" class="w-6 h-6"></i></div></div>
+                        <button onclick="router('clock')" aria-label="Open world clocks" class="shrink-0 w-11 h-11 rounded-xl border border-primary/20 bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/15 transition"><i data-lucide="globe-2" class="w-5 h-5"></i></button>
+                    </div>
+                    <div class="xl:col-span-8 rounded-2xl border border-white/10 bg-surfaceLight/25 p-4 md:p-5">
+                        <div class="flex items-center justify-between gap-3 mb-3"><div><p class="text-[10px] uppercase tracking-[.2em] text-muted font-extrabold">TODAY AT A GLANCE</p><h2 class="text-lg font-black mt-1">Your daily overview</h2></div><span class="text-[10px] text-muted">Live progress</span></div>
+                        <div class="grid grid-cols-3 gap-2 md:gap-3">
+                            <div class="rounded-xl bg-surface/65 p-3"><p class="text-[10px] md:text-xs text-muted">Tasks</p><p class="text-xl md:text-2xl font-black mt-1">${doneTasks}<span class="text-xs md:text-sm text-muted font-semibold">/${todayTasks.length}</span></p><div class="h-1.5 rounded-full bg-surfaceLight overflow-hidden mt-2"><div class="h-full rounded-full bg-success" style="width:${taskPct}%"></div></div></div>
+                            <div class="rounded-xl bg-surface/65 p-3"><p class="text-[10px] md:text-xs text-muted">Habits</p><p class="text-xl md:text-2xl font-black mt-1">${doneHabits}<span class="text-xs md:text-sm text-muted font-semibold">/${dueHabits.length}</span></p><div class="h-1.5 rounded-full bg-surfaceLight overflow-hidden mt-2"><div class="h-full rounded-full bg-primary" style="width:${habitPct}%"></div></div></div>
+                            <div class="rounded-xl bg-surface/65 p-3"><p class="text-[10px] md:text-xs text-muted">Discipline</p><p class="text-xl md:text-2xl font-black mt-1">Lv ${Number(appState.user.level)||1}</p><p class="text-[10px] text-muted mt-1">${Number(appState.user.xp)||0} XP</p></div>
+                        </div>
                     </div>
                 </section>
 
+                <!-- Six main spaces -->
                 <section>
-                    <div class="flex items-end justify-between gap-3 mb-4"><div><p class="text-[10px] uppercase tracking-[.22em] text-primary font-black">YOUR CONTROL PANEL</p><h2 class="text-2xl md:text-3xl font-black mt-1">Quick launch</h2><p class="text-xs text-muted mt-1">Jump straight into the tools you use every day.</p></div><button onclick="router('spacehub')" class="shrink-0 text-xs font-bold text-primary hover:underline">All spaces <span aria-hidden="true">↗</span></button></div>
-                    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3">${quickActions.map(([route,title,desc,icon,gradient])=>`<button onclick="router('${route}')" class="group relative overflow-hidden text-left rounded-[1.5rem] border border-white/10 bg-gradient-to-br ${gradient} p-4 md:p-5 min-h-[148px] hover:-translate-y-1 hover:border-primary/35 transition duration-200"><div class="flex items-start justify-between gap-2"><span class="w-11 h-11 rounded-2xl bg-surface/70 border border-white/10 flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5 text-primary"></i></span><i data-lucide="arrow-up-right" class="w-4 h-4 text-muted group-hover:text-primary transition"></i></div><p class="font-extrabold text-sm md:text-base mt-5">${title}</p><p class="text-[11px] leading-relaxed text-muted mt-1">${desc}</p></button>`).join('')}</div>
+                    <div class="flex items-end justify-between gap-3 mb-4"><div><p class="text-[10px] uppercase tracking-[.22em] text-primary font-extrabold">YOUR DAILY SPACE</p><h2 class="text-2xl md:text-3xl font-black mt-1">SPACE HUB</h2><p class="text-xs text-muted mt-1">Your six main spaces, ready when you need them.</p></div></div>
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">${homeSpaces.map(([route,title,desc,icon,gradient])=>`<button onclick="router('${route}')" class="group relative overflow-hidden text-left rounded-[1.4rem] border border-white/10 bg-gradient-to-br ${gradient} p-4 md:p-5 min-h-[142px] md:min-h-[158px] hover:-translate-y-0.5 hover:border-primary/35 transition duration-200"><div class="flex items-start justify-between gap-2"><span class="w-11 h-11 rounded-2xl bg-surface/70 border border-white/10 flex items-center justify-center text-primary"><i data-lucide="${icon}" class="w-5 h-5"></i></span><i data-lucide="arrow-up-right" class="w-4 h-4 text-muted group-hover:text-primary transition"></i></div><p class="font-extrabold text-sm md:text-base mt-5 leading-snug">${title}</p><p class="text-[10px] md:text-[11px] leading-relaxed text-muted mt-1">${desc}</p></button>`).join('')}</div>
                 </section>
 
-                <section class="rounded-[1.75rem] border border-white/10 bg-surfaceLight/20 p-5 md:p-6">
-                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5"><div><p class="text-[10px] uppercase tracking-[.22em] text-muted font-black">EXPLORE DAILY SPACE</p><h2 class="text-2xl font-black mt-1">Your spaces</h2></div><p class="text-xs text-muted">Your tools, all connected in one place.</p></div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">${hubFeatures.map(([route,title,desc,icon])=>`<button onclick="router('${route}')" class="group text-left rounded-2xl border border-white/10 bg-surface/65 p-4 hover:border-primary/35 hover:bg-primary/5 transition"><span class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition"><i data-lucide="${icon}" class="w-5 h-5"></i></span><p class="font-bold text-sm mt-3">${title}</p><p class="text-[10px] text-muted leading-relaxed mt-1">${desc}</p></button>`).join('')}</div>
-                </section>
+                <!-- Small doorway to the complete feature directory -->
+                <button onclick="router('spacehub')" class="group w-full flex items-center gap-3 md:gap-4 rounded-2xl border border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 p-4 md:px-5 md:py-4 text-left transition">
+                    <span class="w-11 h-11 shrink-0 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="layout-grid" class="w-5 h-5"></i></span>
+                    <span class="flex-1 min-w-0"><span class="block text-sm font-extrabold">Tap to see all SPACE HUB features</span><span class="block text-xs text-muted mt-1">Explore every feature available in Daily Space.</span></span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 shrink-0 text-primary group-hover:translate-x-1 transition"></i>
+                </button>
 
+                <!-- Schedule and goals -->
                 <section class="grid grid-cols-1 xl:grid-cols-12 gap-4">
-                    <div class="xl:col-span-7 rounded-[1.75rem] border border-white/10 bg-surfaceLight/25 p-5 md:p-6"><div class="flex items-center justify-between gap-3 mb-4"><div><p class="text-[10px] uppercase tracking-[.2em] text-muted font-black">STAY ON TRACK</p><h2 class="text-xl font-black mt-1">Today's schedule</h2></div><button onclick="router('routine')" class="text-xs font-bold text-primary">Open planner ↗</button></div><div class="space-y-2">${todayTasks.slice(0,6).map((t,i)=>`<label class="flex items-center gap-3 rounded-xl border border-white/5 bg-surface/55 p-3.5 hover:border-primary/20 transition"><input type="checkbox" ${t.completed?'checked':''} onchange="toggleTaskDashboard(${t.id})" class="w-4 h-4 accent-primary shrink-0"><span class="flex-1 min-w-0 text-sm ${t.completed?'line-through text-muted':'font-medium'}">${escapeHTML(t.title)}</span><span class="text-[10px] text-muted">${t.completed?'DONE':(i===0?'NEXT':'TASK')}</span></label>`).join('')||'<div class="rounded-2xl border border-dashed border-white/15 p-6 text-center"><i data-lucide="calendar-plus" class="w-7 h-7 mx-auto text-muted"></i><p class="text-sm font-semibold mt-2">Your day is open.</p><p class="text-xs text-muted mt-1">Add a task and give your day some direction.</p><button onclick="router(\'routine\')" class="mt-3 text-xs font-bold text-primary">Create a task</button></div>'}</div></div>
-                    <div class="xl:col-span-5 rounded-[1.75rem] border border-white/10 bg-surfaceLight/25 p-5 md:p-6"><div class="flex items-center justify-between gap-3 mb-4"><div><p class="text-[10px] uppercase tracking-[.2em] text-muted font-black">THINK LONG TERM</p><h2 class="text-xl font-black mt-1">Active goals</h2></div><button onclick="router('goals')" class="text-xs font-bold text-primary">View goals ↗</button></div><div class="space-y-5">${activeGoals.map(g=>`<div><div class="flex justify-between items-start gap-3"><p class="text-sm font-bold">${escapeHTML(g.title)}</p><span class="text-xs font-bold text-primary">${Number(g.progress)||0}%</span></div><div class="h-2 rounded-full bg-surfaceLight overflow-hidden mt-2"><div class="h-full rounded-full bg-gradient-to-r from-primary to-secondary" style="width:${Math.max(0,Math.min(100,Number(g.progress)||0))}%"></div></div></div>`).join('')||'<div class="rounded-2xl border border-dashed border-white/15 p-6 text-center"><i data-lucide="target" class="w-7 h-7 mx-auto text-muted"></i><p class="text-sm font-semibold mt-2">Give yourself a target.</p><p class="text-xs text-muted mt-1">Your next meaningful goal starts here.</p><button onclick="router(\'goals\')" class="mt-3 text-xs font-bold text-primary">Create a goal</button></div>'}</div></div>
+                    <div class="xl:col-span-7 rounded-[1.5rem] border border-white/10 bg-surfaceLight/25 p-5 md:p-6">
+                        <div class="flex items-center justify-between gap-3 mb-4"><div><p class="text-[10px] uppercase tracking-[.2em] text-muted font-extrabold">STAY ON TRACK</p><h2 class="text-xl font-black mt-1">Today's schedule</h2></div><button onclick="router('routine')" class="text-xs font-bold text-primary">View planner ↗</button></div>
+                        <div class="space-y-2">${todayTasks.slice(0,5).map((t,i)=>`<label class="flex items-center gap-3 rounded-xl border border-white/5 bg-surface/55 p-3 hover:border-primary/20 transition"><input type="checkbox" ${t.completed?'checked':''} onchange="toggleTaskDashboard(${t.id})" class="w-4 h-4 accent-primary shrink-0"><span class="flex-1 min-w-0 text-sm ${t.completed?'line-through text-muted':'font-medium'}">${escapeHTML(t.title)}</span><span class="text-[10px] text-muted">${t.completed?'DONE':(i===0?'NEXT':'TASK')}</span></label>`).join('')||'<div class="rounded-xl border border-dashed border-white/15 p-5 text-center"><i data-lucide="calendar-plus" class="w-6 h-6 mx-auto text-muted"></i><p class="text-sm font-semibold mt-2">Your day is open.</p><p class="text-xs text-muted mt-1">Add a task to give your day some direction.</p><button onclick="router(\'routine\')" class="mt-3 text-xs font-bold text-primary">Create a task</button></div>'}</div>
+                    </div>
+                    <div class="xl:col-span-5 rounded-[1.5rem] border border-white/10 bg-surfaceLight/25 p-5 md:p-6">
+                        <div class="flex items-center justify-between gap-3 mb-4"><div><p class="text-[10px] uppercase tracking-[.2em] text-muted font-extrabold">THINK LONG TERM</p><h2 class="text-xl font-black mt-1">Active goals</h2></div><button onclick="router('goals')" class="text-xs font-bold text-primary">View goals ↗</button></div>
+                        <div class="space-y-5">${activeGoals.map(g=>`<div><div class="flex justify-between items-start gap-3"><p class="text-sm font-bold">${escapeHTML(g.title)}</p><span class="text-xs font-bold text-primary">${Math.max(0,Math.min(100,Number(g.progress)||0))}%</span></div><div class="h-2 rounded-full bg-surfaceLight overflow-hidden mt-2"><div class="h-full rounded-full bg-gradient-to-r from-primary to-secondary" style="width:${Math.max(0,Math.min(100,Number(g.progress)||0))}%"></div></div></div>`).join('')||'<div class="rounded-xl border border-dashed border-white/15 p-5 text-center"><i data-lucide="target" class="w-6 h-6 mx-auto text-muted"></i><p class="text-sm font-semibold mt-2">Choose something meaningful to work toward.</p><button onclick="router(\'goals\')" class="mt-3 text-xs font-bold text-primary">Create a goal</button></div>'}</div>
+                    </div>
                 </section>
 
-                <section class="relative overflow-hidden rounded-[1.5rem] border border-primary/15 bg-gradient-to-r from-primary/10 via-surfaceLight/30 to-secondary/10 p-5 md:p-6"><div class="relative flex flex-col sm:flex-row sm:items-center gap-4"><div class="w-11 h-11 shrink-0 rounded-2xl bg-primary/15 flex items-center justify-center text-primary"><i data-lucide="quote" class="w-5 h-5"></i></div><div class="flex-1"><p class="text-sm md:text-base font-semibold">Small actions. Consistent progress. A system you can return to.</p><p class="text-xs text-muted mt-1">Discipline over motivation.</p></div><button onclick="router('ai')" class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-4 py-2.5 text-xs font-bold text-primary">Talk to SPACE AI <i data-lucide="arrow-up-right" class="w-4 h-4"></i></button></div></section>
+                <!-- SPACE AI entry point and daily motivation -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="flex items-center gap-4 rounded-[1.4rem] border border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/5 p-5"><span class="w-11 h-11 shrink-0 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="sparkles" class="w-5 h-5"></i></span><div class="flex-1 min-w-0"><p class="text-[10px] uppercase tracking-[.2em] text-primary font-extrabold">SPACE AI</p><p class="text-sm font-bold mt-1">Need help deciding your next step?</p><p class="text-xs text-muted mt-1">Your assistant is ready when you need a clearer plan.</p><button onclick="router('ai')" class="text-xs font-bold text-primary mt-2">Open SPACE AI ↗</button></div></div>
+                    <div class="flex items-center gap-4 rounded-[1.4rem] border border-white/10 bg-surfaceLight/25 p-5"><span class="w-11 h-11 shrink-0 rounded-xl bg-secondary/15 text-secondary flex items-center justify-center"><i data-lucide="quote" class="w-5 h-5"></i></span><div><p class="text-[10px] uppercase tracking-[.2em] text-muted font-extrabold">A DAILY REMINDER</p><p class="text-sm font-semibold mt-1">“Small actions. Consistent progress.”</p><p class="text-xs text-muted mt-1">Discipline over motivation.</p></div></div>
+                </section>
             </div>`;
+
             startSpaceClock();
             if(!appState.user.spacePreference)setTimeout(showSpaceOnboarding,250);
         }
 
-        function renderSpaceHub(container){container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div><h2 class="text-3xl font-bold">SPACE HUB</h2><p class="text-sm text-muted mt-2">Everything you need. One space.</p></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">${SPACE_FEATURES.map(([route,title,desc,icon,status])=>`<button onclick="router('${route}')" class="ds-feature-card glass-panel border border-white/10 rounded-3xl p-5 text-left"><span class="w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-6 h-6"></i></span><h3 class="font-bold mt-4">${title}</h3><p class="text-xs text-muted mt-1">${desc}</p><span class="inline-block mt-3 text-[10px] font-bold uppercase tracking-wider ${status==='live'?'text-success':'text-warning'}">${status==='live'?'Available':'Foundation / planned'}</span></button>`).join('')}</div></div>`;}
+        function renderSpaceHub(container){
+            const groups=[
+                {title:'Plan & Organise',subtitle:'Shape your day and keep your plans moving.',items:[
+                    ['routine','Daily Planner','Plan tasks and organise your day','calendar-check'],
+                    ['habits','Habit Tracker','Build and track daily routines','repeat'],
+                    ['goals','Goals','Set goals and follow your progress','target'],
+                    ['calendar','Calendar & Special Days','View dates and important days','calendar-days'],
+                    ['journal','Journal','Write private notes and reflections','book-open']
+                ]},
+                {title:'Your Spaces',subtitle:'Explore the dedicated spaces inside Daily Space.',items:[
+                    ['ai','SPACE AI','Your personal AI assistant','bot'],
+                    ['guard','SPACE GUARD','Digital safety tools and guidance','shield-check'],
+                    ['health','SPACE HEALTH','Health and wellbeing information','heart-pulse'],
+                    ['fashion','SPACE FASHION','Explore style ideas and wardrobe topics','shirt'],
+                    ['games','SPACE GAMES','Games, puzzles and brain training','gamepad-2'],
+                    ['selfcontrol','Self-Control Center','Tools for self-discipline','shield'],
+                    ['clock','SPACE CLOCK','Local time and world clocks','clock-3']
+                ]},
+                {title:'Focus & Progress',subtitle:'Build focus and review how far you have come.',items:[
+                    ['focus','Focus Timer','Set aside time for focused work','timer'],
+                    ['analytics','Analytics & Trends','Review your activity and progress','chart-no-axes-combined'],
+                    ['achievements','Achievements','See milestones you have earned','trophy'],
+                    ['finance','Income & Expense Tracker','Track income and expenses','wallet']
+                ]},
+                {title:'Account',subtitle:'Manage your plan and personal settings.',items:[
+                    ['subscription','Premium Plans','Explore available plan options','crown'],
+                    ['profile','Settings & Profile','Manage your account and preferences','settings']
+                ]}
+            ];
+            container.innerHTML=`
+            <div class="p-4 md:p-8 xl:p-10 max-w-7xl mx-auto w-full space-y-7 animate-in fade-in duration-300">
+                <section class="relative overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/15 via-surface to-secondary/10 p-5 md:p-7">
+                    <div class="absolute -right-16 -top-24 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+                    <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div><p class="text-[10px] uppercase tracking-[.22em] text-primary font-extrabold">ONE PLACE · EVERY POSSIBILITY</p><h1 class="text-3xl md:text-4xl font-black mt-2">SPACE HUB</h1><p class="text-sm text-muted mt-2 max-w-xl">Explore all the tools and spaces available in Daily Space. Choose a feature to open it.</p></div>
+                        <button onclick="router('home')" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-surface/70 px-4 py-3 text-sm font-bold hover:bg-surfaceLight transition"><i data-lucide="arrow-left" class="w-4 h-4"></i>Back to Home</button>
+                    </div>
+                </section>
+                ${groups.map(group=>`<section><div class="mb-4"><h2 class="text-xl md:text-2xl font-black">${group.title}</h2><p class="text-xs text-muted mt-1">${group.subtitle}</p></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">${group.items.map(([route,title,desc,icon])=>`<button onclick="router('${route}')" class="group text-left rounded-[1.35rem] border border-white/10 bg-surfaceLight/25 p-4 md:p-5 hover:border-primary/35 hover:bg-primary/5 hover:-translate-y-0.5 transition duration-200"><div class="flex items-start justify-between gap-2"><span class="w-11 h-11 rounded-xl bg-primary/12 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></span><i data-lucide="arrow-up-right" class="w-4 h-4 text-muted group-hover:text-primary transition"></i></div><h3 class="font-extrabold text-sm mt-4">${title}</h3><p class="text-[11px] leading-relaxed text-muted mt-1">${desc}</p></button>`).join('')}</div></section>`).join('')}
+            </div>`;
+        }
 
         function renderSpaceClock(container){const zone=appState.user.primaryTimeZone||Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';if(!Array.isArray(appState.user.worldTimeZones))appState.user.worldTimeZones=[];container.innerHTML=`<div class="p-6 md:p-10 max-w-4xl mx-auto w-full space-y-5"><h2 class="text-2xl font-bold">SPACE CLOCK</h2><p class="text-sm text-muted">Your device timezone is detected automatically. You can also choose a primary timezone.</p><div class="glass-panel rounded-3xl p-6"><p class="text-xs text-primary font-bold uppercase">Primary clock</p><p id="space-clock-time" class="ds-clock-digits text-5xl font-bold mt-3">--:--:--</p><p id="space-clock-date" class="text-sm text-muted mt-2"></p><p id="space-clock-zone" class="text-xs text-muted mt-2"></p><div class="mt-5 flex flex-col sm:flex-row gap-2"><select id="space-timezone-select" class="flex-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="${escapeHTML(zone)}">Use detected timezone (${escapeHTML(zone)})</option>${['Asia/Kolkata','Europe/London','America/New_York','America/Los_Angeles','Asia/Dubai','Asia/Tokyo','Asia/Singapore','Australia/Sydney'].filter(z=>z!==zone).map(z=>`<option value="${z}" ${zone===z?'selected':''}>${z.replaceAll('_',' ')}</option>`).join('')}</select><button onclick="savePrimaryTimezone()" class="rounded-xl bg-primary text-white px-4 py-3 text-sm font-bold">Save timezone</button></div><label class="flex items-center gap-2 text-sm mt-3"><input type="checkbox" ${appState.user.clockFormat==='24h'?'checked':''} onchange="appState.user.clockFormat=this.checked?'24h':'12h';saveState();updateSpaceClock()" class="accent-primary"> Use 24-hour time</label></div><div class="mt-6 border-t border-white/10 pt-5"><h3 class="font-bold">World clocks</h3><div class="flex gap-2 mt-3"><select id="world-clock-add" class="flex-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm">${['Europe/London','America/New_York','America/Los_Angeles','Asia/Dubai','Asia/Tokyo','Asia/Singapore','Australia/Sydney','Pacific/Auckland'].map(z=>`<option value="${z}">${z.replaceAll('_',' ')}</option>`).join('')}</select><button onclick="addWorldClock()" class="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white">Add</button></div><div id="world-clock-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">${appState.user.worldTimeZones.map(z=>`<div class="rounded-xl bg-surfaceLight/50 p-4"><p class="text-xs text-muted">${z.replaceAll('_',' ')}</p><p data-world-clock="${z}" class="text-2xl font-bold ds-clock-digits">--:--:--</p><button onclick="removeWorldClock('${z}')" class="text-xs text-danger mt-2">Remove</button></div>`).join('')||'<p class="text-xs text-muted">Add another city to compare local times.</p>'}</div></div></div>`;startSpaceClock();}
 
