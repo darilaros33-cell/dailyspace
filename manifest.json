@@ -4,7 +4,7 @@
   "start_url": "/dailyspace/",
   "display": "standalone",
   "background_color": "#080b18",
-  "theme_color": "#7657ff",
+  "theme_color": "#080b18",
   "description": "Daily Space is your ultimate personal productivity and life operating system designed to build unbreakable discipline.",
   "id": "/dailyspace/",
   "lang": "en",
@@ -12,6 +12,12 @@
     "productivity"
   ],
   "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "icon.png",
       "sizes": "512x512",
