@@ -26,19 +26,19 @@
 
                     colors: {
 
-                        bgDark: '#080B18',
+                        bgDark: '#071827',
 
-                        surface: '#111629',
+                        surface: '#0D2635',
 
-                        surfaceLight: '#1B2340',
+                        surfaceLight: '#153849',
 
-                        primary: '#8B5CF6',
+                        primary: '#20C9B0',
 
-                        primaryHover: '#7C3AED',
+                        primaryHover: '#12A995',
 
-                        secondary: '#6366F1',
+                        secondary: '#087E8B',
 
-                        muted: '#A1A1B5',
+                        muted: '#929BB2',
 
                         success: '#36C98F',
 
@@ -208,76 +208,22 @@
 
         .ds-guard-ok{color:#36C98F;background:rgba(54,201,143,.12)} .ds-guard-warn{color:#FFB84D;background:rgba(255,184,77,.12)} .ds-guard-bad{color:#FF657A;background:rgba(255,101,122,.12)}
 
-
-
-        /* DAILY SPACE — Phase 2 visual refresh (presentation only) */
-        :root{color-scheme:dark;--ds-bg:#080B18;--ds-panel:#111629;--ds-panel-2:#1B2340;--ds-accent:#8B5CF6;--ds-accent-2:#6366F1;--ds-line:rgba(167,139,250,.16)}
-        html.dark body{background:radial-gradient(ellipse at 12% 0%,rgba(99,102,241,.16),transparent 34%),radial-gradient(ellipse at 88% 18%,rgba(139,92,246,.12),transparent 30%),#080B18!important;color:#F7F7FF}
-        html.dark .glass-panel{background:rgba(17,22,41,.82);border:1px solid var(--ds-line);box-shadow:0 18px 55px rgba(0,0,0,.22)}
-        html.dark aside{background:rgba(12,16,32,.94)!important;border-color:var(--ds-line)!important}
-        html.dark header{background:rgba(12,16,32,.88)!important;border-color:var(--ds-line)!important}
-        .rounded-2xl,.rounded-3xl{border-color:var(--ds-line)}
-        button{transition:background-color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}
-        button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #A78BFA!important;outline-offset:3px}
-        .ds-feature-card{background:linear-gradient(145deg,rgba(27,35,64,.88),rgba(17,22,41,.92));border:1px solid var(--ds-line);border-radius:22px;box-shadow:0 10px 28px rgba(0,0,0,.13)}
-        .ds-feature-card:hover{transform:translateY(-3px);border-color:rgba(167,139,250,.55);box-shadow:0 16px 34px rgba(76,29,149,.18)}
-        .ds-bottom-nav{background:rgba(9,12,27,.96);border-top:1px solid var(--ds-line);box-shadow:0 -12px 35px rgba(0,0,0,.22)}
-        .ds-bottom-nav button.active{color:#fff;background:rgba(139,92,246,.2)}
-        .ds-bottom-nav .ds-ai-nav{background:linear-gradient(135deg,#A78BFA,#6366F1);box-shadow:0 7px 24px rgba(124,58,237,.38)}
-        .ds-system-dot{background:#A78BFA;box-shadow:0 0 12px rgba(167,139,250,.65);animation:none}
-        .ds-setting-card{background:linear-gradient(145deg,rgba(27,35,64,.72),rgba(17,22,41,.8));border:1px solid var(--ds-line);box-shadow:0 8px 24px rgba(0,0,0,.12)}
-        .ds-guard-ok{color:#86EFAC;background:rgba(34,197,94,.12)}
-        .ds-guard-warn{color:#FCD34D;background:rgba(245,158,11,.12)}
-        .ds-guard-bad{color:#FDA4AF;background:rgba(244,63,94,.12)}
-        input,select,textarea{accent-color:#8B5CF6}
-        html.dark input,html.dark select,html.dark textarea{background-color:rgba(27,35,64,.82);border-color:var(--ds-line)}
-        html.dark input:focus,html.dark select:focus,html.dark textarea:focus{border-color:rgba(167,139,250,.75);box-shadow:0 0 0 3px rgba(139,92,246,.13)}
-        ::-webkit-scrollbar-thumb:hover{background:#A78BFA}
-        @media(max-width:767px){
-          #main-viewport{padding-left:0;padding-right:0}
-          .ds-mobile-toolbar{background:rgba(12,16,32,.94);border-color:var(--ds-line);backdrop-filter:blur(18px)}
-          .ds-mobile-toolbar button{border-radius:12px}
-          .ds-bottom-nav{padding-left:10px;padding-right:10px}
-        }
-        @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-
-    
-/* Daily Space full product redesign */
-:root{--ds-violet:#8b5cf6;--ds-indigo:#6366f1;--ds-cyan:#22d3ee;--ds-panel:#111629;--ds-border:rgba(167,139,250,.17)}
-html.dark body{background:radial-gradient(ellipse at 10% -10%,rgba(99,102,241,.20),transparent 38%),radial-gradient(ellipse at 95% 15%,rgba(139,92,246,.13),transparent 32%),#080b18!important}
-.ds-system-dot{animation:dsPulse 1.15s ease-in-out infinite!important}
-@keyframes dsPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.52)}50%{opacity:.55;box-shadow:0 0 0 7px rgba(74,222,128,0)}}
-.ds-home-hero{background:linear-gradient(130deg,rgba(109,40,217,.25),rgba(49,46,129,.13) 55%,rgba(8,145,178,.10));border:1px solid rgba(167,139,250,.22);box-shadow:0 18px 55px rgba(0,0,0,.18)}
-.ds-hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.ds-hub-card{min-height:148px;padding:16px;border:1px solid var(--ds-border);border-radius:22px;background:linear-gradient(145deg,rgba(31,41,72,.86),rgba(17,22,41,.94));text-align:left;transition:transform .18s,border-color .18s,box-shadow .18s}
-.ds-hub-card:hover{transform:translateY(-3px);border-color:rgba(167,139,250,.55);box-shadow:0 14px 32px rgba(76,29,149,.17)}
-.ds-hub-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:rgba(139,92,246,.17);color:#c4b5fd}
-.ds-stat-card{border:1px solid var(--ds-border);border-radius:20px;padding:17px;background:rgba(17,22,41,.75)}
-.ds-progress-track{height:8px;background:rgba(148,163,184,.17);border-radius:99px;overflow:hidden}
-.ds-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#22d3ee)}
-.ds-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}
-.ds-section-head h3{font-size:18px;font-weight:800}
-.ds-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--ds-border);border-radius:999px;font-size:11px;color:#c4b5fd;background:rgba(139,92,246,.10)}
-.ds-tool-card{border:1px solid var(--ds-border);border-radius:20px;padding:16px;background:rgba(17,22,41,.72)}
-.ds-health-number{font-size:30px;font-weight:800;letter-spacing:-1px}
-.ds-ai-specialist{border:1px solid var(--ds-border);background:rgba(17,22,41,.82);border-radius:22px;padding:14px}
-.ds-ai-specialist textarea{width:100%;min-height:88px;resize:vertical;background:rgba(27,35,64,.75);border:1px solid var(--ds-border);border-radius:15px;padding:12px;color:inherit}
-.ds-chat-line{padding:11px 13px;border-radius:15px;margin:8px 0;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.55}
-.ds-chat-line.user{margin-left:auto;background:rgba(124,58,237,.35);border:1px solid rgba(167,139,250,.2)}
-.ds-chat-line.ai{background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.07)}
-.ds-growth-tile{display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--ds-border);border-radius:18px;background:rgba(17,22,41,.72);text-align:left}
-.ds-growth-tile .ds-hub-icon{flex:none}
-.ds-bottom-nav button{min-height:52px}
-.ds-bottom-nav button.active{color:#fff;background:rgba(139,92,246,.2)}
-.ds-bottom-nav .ds-ai-nav{background:linear-gradient(135deg,#8b5cf6,#4f46e5);transform:translateY(-7px)}
-.ds-mobile-toolbar .ds-back-home{display:none!important}
-#main-viewport{scroll-padding-bottom:100px}
-@media(min-width:768px){.ds-hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ds-home-hero{padding:26px!important}}
-@media(min-width:1180px){.ds-hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:767px){.ds-home-hero{border-radius:22px}.ds-hub-card{min-height:138px;padding:13px}.ds-bottom-nav{padding-bottom:calc(7px + env(safe-area-inset-bottom))}.ds-bottom-nav button{font-size:10px}}
-
+    body.ds-special-ai-active .ds-ai-screen{height:100dvh!important;min-height:0!important;padding:12px 14px calc(10px + env(safe-area-inset-bottom))!important;gap:10px!important}
+body.ds-special-ai-active .ds-ai-chat{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important}
+body.ds-special-ai-active .ds-ai-composer{flex:0 0 auto!important;padding:8px 0 calc(8px + env(safe-area-inset-bottom))!important}
+body.ds-special-ai-active .ds-ai-screen{height:100dvh!important;min-height:0!important;padding:12px 14px calc(10px + env(safe-area-inset-bottom))!important;gap:10px!important}
+body.ds-special-ai-active .ds-ai-chat{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important}
+body.ds-special-ai-active .ds-ai-composer{flex:0 0 auto!important;padding:8px 0 calc(8px + env(safe-area-inset-bottom))!important}
 </style>
 
+<style id="daily-space-update-styles">
+.ds-special-ai-screen{height:100dvh;min-height:0;width:100%;display:flex;flex-direction:column;padding:12px 14px calc(10px + env(safe-area-inset-bottom));gap:10px;overflow:hidden}
+body.ds-special-ai-active{overflow:hidden}body.ds-special-ai-active #main-viewport{height:100dvh!important;min-height:0!important;overflow:hidden!important;padding:0!important}body.ds-special-ai-active .ds-bottom-nav,body.ds-special-ai-active .ds-mobile-toolbar{display:none!important}
+.ds-special-ai-chat{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 2px}.ds-special-ai-composer{flex:0 0 auto;padding:8px 0 calc(8px + env(safe-area-inset-bottom));background:rgba(8,15,30,.96)}
+.ds-special-ai-composer textarea{width:100%;min-height:48px;max-height:120px;resize:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:12px;color:inherit}
+.ds-wellness-card{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);border-radius:20px;padding:16px}.ds-wellness-card input,.ds-wellness-card select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px;color:inherit}.ds-wellness-card label{display:block;font-size:11px;color:#9ca3af;font-weight:700;margin:8px 0 5px}.ds-progress{height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.ds-progress>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#38bdf8,#818cf8)}
+@media(min-width:768px){.ds-special-ai-screen{padding:24px;max-width:1100px;margin:auto}}
+</style>
 </head>
 
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
@@ -569,6 +515,7 @@ html.dark body{background:radial-gradient(ellipse at 10% -10%,rgba(99,102,241,.2
                     <i data-lucide="target" class="w-5 h-5"></i> Goal Management
 
                 </button>
+<button onclick="router('growth')" data-nav="growth" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="trending-up" class="w-5 h-5"></i> Growth</button>
 
                 <button onclick="router('calendar')" data-nav="calendar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
 
@@ -576,39 +523,9 @@ html.dark body{background:radial-gradient(ellipse at 10% -10%,rgba(99,102,241,.2
 
                 </button>
 
-                <button onclick="router('selfcontrol')" data-nav="selfcontrol" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-
-                    <i data-lucide="shield" class="w-5 h-5"></i> Self-Control Center
-
-                </button>
-
-                <button onclick="router('focus')" data-nav="focus" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-
-                    <i data-lucide="timer" class="w-5 h-5"></i> Focus Timer
-
-                </button>
-
                 <button onclick="router('finance')" data-nav="finance" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
 
                     <i data-lucide="wallet" class="w-5 h-5 text-warning"></i> Income & Expense Tracker <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
-
-                </button>
-
-                <button onclick="router('analytics')" data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-
-                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics & Trends
-
-                </button>
-
-                <button onclick="router('games')" data-nav="games" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-
-                    <i data-lucide="gamepad-2" class="w-5 h-5 text-success"></i> SPACE GAMES <span class="ml-auto text-[10px] bg-warning/20 text-warning px-2 py-0.5 rounded-full font-bold">PRO</span>
-
-                </button>
-
-                <button onclick="router('achievements')" data-nav="achievements" class="nav-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-muted hover:text-white hover:bg-surfaceLight/50">
-
-                    <i data-lucide="award" class="w-5 h-5"></i> Achievements
 
                 </button>
 
@@ -700,7 +617,7 @@ html.dark body{background:radial-gradient(ellipse at 10% -10%,rgba(99,102,241,.2
 
             <button onclick="router('analytics')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="chart-no-axes-combined" class="w-5 h-5"></i> Analytics & Trends <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
 
-            <button onclick="router('games')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="gamepad-2" class="w-5 h-5"></i> SPACE GAMES <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
+            <button onclick="router('games')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="gamepad-2" class="w-5 h-5"></i> Brain Gym & Games <span class="ml-auto text-[10px] text-warning font-bold">PRO</span></button>
 
             <button onclick="router('achievements')" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium text-muted hover:text-white hover:bg-surfaceLight/50"><i data-lucide="award" class="w-5 h-5"></i> Achievements</button>
 
@@ -737,9 +654,13 @@ html.dark body{background:radial-gradient(ellipse at 10% -10%,rgba(99,102,241,.2
     <nav class="ds-bottom-nav md:hidden" aria-label="Main navigation">
 
         <button data-bottom-nav="home" onclick="router('home')"><i data-lucide="house"></i><span>Home</span></button>
+
         <button data-bottom-nav="routine" onclick="router('routine')"><i data-lucide="list-checks"></i><span>Tasks</span></button>
+
         <button data-bottom-nav="ai" onclick="router('ai')" class="ds-ai-nav" aria-label="Open SPACE AI"><i data-lucide="bot"></i><span>SPACE AI</span></button>
+
         <button data-bottom-nav="habits" onclick="router('habits')"><i data-lucide="repeat"></i><span>Habits</span></button>
+
         <button data-bottom-nav="growth" onclick="router('growth')"><i data-lucide="trending-up"></i><span>Growth</span></button>
 
     </nav>
@@ -1498,7 +1419,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         let lastRouteRenderError = null;
 
-        const routeTitles = {home:'Home',spacehub:'SPACE HUB',health:'SPACE HEALTH',fashion:'SPACE FASHION',guard:'SPACE GUARD',clock:'SPACE CLOCK',journal:'Journal',routine:'Daily Planner',habits:'Habits',goals:'Goals',calendar:'Calendar & Special Days',selfcontrol:'Self-Control Center',focus:'Focus Timer',finance:'Income & Expense Tracker',analytics:'Analytics & Trends',games:'SPACE GAMES',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings & Profile'};
+        const routeTitles = {home:'Home',spacehub:'SPACE HUB',health:'SPACE HEALTH',fashion:'SPACE FASHION',guard:'SPACE GUARD',clock:'SPACE CLOCK',journal:'Journal',routine:'Daily Planner',habits:'Habits',goals:'Goals',calendar:'Calendar & Special Days',selfcontrol:'Self-Control Center',focus:'Focus Timer',finance:'Income & Expense Tracker',analytics:'Analytics & Trends',games:'Brain Gym & Games',achievements:'Achievements',ai:'SPACE AI',subscription:'Premium Plans',profile:'Settings & Profile'};
 
         try { history.replaceState({dailySpace:true, route:'home'}, '', location.href); history.pushState({dailySpaceGuard:true, route:'home'}, '', location.href); } catch(e) {}
 
@@ -1686,7 +1607,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
             if(currentRoute==='selfcontrol'&&activeSelfControlCalendarId!==null){activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
 
-            if(currentRoute!=='home'){if(typeof goBackInApp==='function')goBackInApp();try{history.pushState({dailySpace:true,route:currentRoute},'',`#${currentRoute}`);}catch(e){}return;}
+            if(currentRoute!=='home'){routeHistory=['home'];router('home',false);try{history.pushState({dailySpace:true,route:'home'},'','#home');}catch(e){}return;}
 
             try{history.pushState({dailySpace:true,route:'home'},'','#home');}catch(e){}showExitConfirmation();
 
@@ -1726,7 +1647,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                         </div>
 
-                        <p class="text-xs text-muted text-left">Unlock Calendar & Special Days, Income & Expense Tracker, Analytics & Trends, SPACE GAMES, and expanded SPACE AI features.</p>
+                        <p class="text-xs text-muted text-left">Unlock Calendar & Special Days, Income & Expense Tracker, Analytics & Trends, Brain Gym & Games, and expanded SPACE AI features.</p>
 
                         <button onclick="openRazorpayModal()" class="w-full py-3.5 rounded-2xl bg-warning hover:bg-warning/90 text-bgDark font-bold text-sm transition shadow-lg shadow-warning/20 flex items-center justify-center gap-2">
 
@@ -1746,7 +1667,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         const SPACE_FEATURES=[
 
-            ['routine','Daily Planner','Plan your day','calendar-check','live'],['habits','Habits','Build steady routines','repeat','live'],['goals','Goals','Track meaningful progress','target','live'],['ai','SPACE AI','Your personal AI assistant','bot','live'],['health','SPACE HEALTH','Reliable health education','heart-pulse','foundation'],['fashion','SPACE FASHION','Explore style ideas','shirt','foundation'],['guard','SPACE GUARD','Daily Space security checks','shield-check','foundation'],['games','Brain Gym','Train memory and thinking','gamepad-2','live'],['analytics','Analytics','Understand your progress','chart-no-axes-combined','live'],['selfcontrol','Self-Control','Manage distractions','shield','live'],['focus','Focus Mode','Protect time for deep work','timer','live'],['journal','Journal','Reflect and record thoughts','book-open','planned'],['achievements','Achievements','Celebrate milestones','award','live'],['clock','SPACE CLOCK','Local and world clocks','clock-3','live'],['profile','Settings','Personalise your experience','settings','live']
+            ['routine','Daily Planner','Plan your day','calendar-check','live'],['habits','Habits','Build steady routines','repeat','live'],['goals','Goals','Track meaningful progress','target','live'],['ai','SPACE AI','Your personal AI assistant','bot','live'],['health','SPACE HEALTH','Wellness tracking and education','heart-pulse','live'],['fashion','SPACE FASHION','Explore style ideas','shirt','live'],['guard','SPACE GUARD','Personal digital safety','shield-check','live'],['clock','SPACE CLOCK','Local and world clocks','clock-3','live'],['journal','Journal','Reflect and record thoughts','book-open','planned'],['profile','Settings','Personalise your experience','settings','live']
 
         ];
 
@@ -1774,7 +1695,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-4"><div class="glass-panel rounded-3xl p-5 lg:col-span-2 bg-gradient-to-br from-primary/15 to-secondary/10 border border-primary/20"><div class="flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-widest text-primary">SPACE CLOCK · YOUR LOCAL TIME</p><p id="space-clock-time" class="ds-clock-digits text-4xl md:text-5xl font-bold mt-2">--:--:--</p><p id="space-clock-date" class="text-sm text-muted mt-1">Loading local date…</p><p id="space-clock-zone" class="text-xs text-muted mt-2">Detecting timezone…</p></div><button onclick="router('clock')" class="rounded-xl bg-surfaceLight/70 px-4 py-3 text-xs font-bold">World clocks <i data-lucide="arrow-up-right" class="inline w-3 h-3"></i></button></div></div><div class="glass-panel rounded-3xl p-5 flex flex-col justify-between"><div><p class="text-xs uppercase tracking-widest text-muted font-bold">Your daily space</p><p class="text-lg font-semibold mt-2">Everything you need. One space.</p><p class="text-sm text-muted mt-1">One meaningful action is a good place to begin.</p></div><button onclick="router('ai')" class="mt-4 w-full rounded-xl bg-primary py-3 text-sm font-bold text-white"><i data-lucide="sparkles" class="inline w-4 h-4 mr-1"></i>Ask SPACE AI</button></div></section>
 
-                <section><div class="flex items-end justify-between mb-3"><div><h3 class="text-xl font-bold">SPACE HUB</h3><p class="text-xs text-muted mt-1">Everything you need. One space.</p></div><button onclick="router('spacehub')" class="text-xs text-primary font-bold">Open full hub →</button></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">${SPACE_FEATURES.filter(x=>['ai','guard','health','fashion','games','selfcontrol'].includes(x[0])).map(([route,title,desc,icon,status])=>`<button onclick="router('${route}')" class="ds-feature-card text-left glass-panel border border-white/10 rounded-2xl p-4"><span class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></span><p class="font-bold text-sm mt-3">${title}</p><p class="text-[11px] text-muted mt-1">${desc}</p></button>`).join('')}</div></section>
+                <section><div class="flex items-end justify-between mb-3"><div><h3 class="text-xl font-bold">SPACE HUB</h3><p class="text-xs text-muted mt-1">Everything you need. One space.</p></div><button onclick="router('spacehub')" class="text-xs text-primary font-bold">Open full hub →</button></div><div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">${SPACE_FEATURES.slice(0,10).map(([route,title,desc,icon,status])=>`<button onclick="router('${route}')" class="ds-feature-card text-left glass-panel border border-white/10 rounded-2xl p-4"><span class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></span><p class="font-bold text-sm mt-3">${title}</p><p class="text-[11px] text-muted mt-1">${desc}</p></button>`).join('')}</div></section>
 
                 <section class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's tasks</span><span>${taskPct}%</span></div><p class="text-3xl font-bold mt-2">${doneTasks}<span class="text-base text-muted"> / ${todayTasks.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${taskPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><div class="flex justify-between text-xs text-muted"><span class="font-bold uppercase">Today's habits</span><span>${habitPct}%</span></div><p class="text-3xl font-bold mt-2">${doneHabits}<span class="text-base text-muted"> / ${dueHabits.length}</span></p><div class="h-2 bg-surfaceLight rounded-full mt-3 overflow-hidden"><div class="h-full bg-success" style="width:${habitPct}%"></div></div></div><div class="glass-panel rounded-2xl p-5"><p class="text-xs text-muted font-bold uppercase">Discipline level</p><p class="text-3xl font-bold mt-2">Level ${Number(appState.user.level)||1}</p><p class="text-sm text-muted mt-1">${Number(appState.user.xp)||0} XP · ${escapeHTML(appState.user.title||'Discipline Builder')}</p></div></section>
 
@@ -2216,7 +2137,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
             const today=localDateKey();
 
-            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=isHabitCompleteForPeriod(h,today);const status=done?((h.frequency||'Daily').toLowerCase()==='weekly'?'Completed this week':'Completed today'):h.paused?'Tracking paused':(h.frequency||'Daily')==='Weekly'?'Due this week':isHabitScheduledDate(h,today)?'Not completed today':'Not scheduled today';return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${escapeHTML(h.category||'Personal')}</span><h3 class="font-bold text-lg mt-2">${escapeHTML(h.title)}</h3></div></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="text-xs font-semibold text-muted">${h.paused?'Paused':(h.frequency||'Daily')}</span><span class="text-xs font-bold ${h.paused?'text-danger':done?'text-success':'text-muted'}">${status}</span></div><div class="flex gap-2"><button onclick="event.stopPropagation();toggleHabitPause(${h.id})" class="flex-1 py-2 rounded-xl text-xs font-bold ${h.paused?'bg-success/15 text-success':'bg-danger/15 text-danger'}">${h.paused?'Resume habit':'Pause habit'}</button><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="px-3 py-2 rounded-xl bg-danger/10 text-danger text-xs font-semibold">Delete</button></div><p class="mt-2 rounded-lg border px-3 py-2 text-sm font-semibold ${h.paused?'ds-paused-status':'ds-active-status'}">${h.paused?'Paused · Your history is preserved. Paused days do not count as missed days or break your streak.':'Active · Tracking is enabled for scheduled days.'}</p><p class="text-[11px] text-muted">ⓘ Pause temporarily stops tracking without deleting this habit. Resume whenever you are ready. Your previous completion history stays saved.</p><p class="text-xs text-primary font-semibold">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
+            container.innerHTML=`<div class="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-6 animate-in fade-in duration-300"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2 class="text-2xl font-bold flex items-center gap-2"><i data-lucide="repeat" class="w-6 h-6 text-primary"></i> Advanced Habit Tracker</h2><p class="mt-2 inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary"><i data-lucide="calendar-days" class="w-4 h-4"></i> Tap a habit to view its activity calendar</p></div><button onclick="openAddHabitModal()" class="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold">+ New Habit</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${appState.habits.map(h=>{if(!Array.isArray(h.completedDates))h.completedDates=h.completedToday?[today]:[];const done=isHabitCompleteForPeriod(h,today);const status=done?((h.frequency||'Daily').toLowerCase()==='weekly'?'Completed this week':'Completed today'):h.paused?'Tracking paused':(h.frequency||'Daily')==='Weekly'?'Due this week':isHabitScheduledDate(h,today)?'Not completed today':'Not scheduled today';return `<div role="button" tabindex="0" onclick="openHabitCalendar(${h.id})" onkeydown="if(event.key==='Enter')openHabitCalendar(${h.id})" class="glass-panel p-6 rounded-3xl space-y-3 cursor-pointer hover:border-primary/40 border border-transparent"><div class="flex items-start justify-between gap-3"><div><span class="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">${escapeHTML(h.category||'Personal')}</span><h3 class="font-bold text-lg mt-2">${escapeHTML(h.title)}</h3></div></div><div class="flex items-center justify-between pt-2 border-t border-white/5"><span class="text-xs font-semibold text-muted">${h.paused?'Paused':(h.frequency||'Daily')}</span><span class="text-[10px] font-bold ${h.paused?'text-danger':done?'text-success':'text-muted'}">${status}</span></div><div class="flex gap-2"><button onclick="event.stopPropagation();toggleHabitPause(${h.id})" class="flex-1 py-2 rounded-xl text-xs font-bold ${h.paused?'bg-success/15 text-success':'bg-danger/15 text-danger'}">${h.paused?'Resume habit':'Pause habit'}</button><button onclick="event.stopPropagation();deleteHabit(${h.id})" class="px-3 py-2 rounded-xl bg-danger/10 text-danger text-xs font-semibold">Delete</button></div><p class="mt-2 rounded-lg border px-3 py-2 text-sm font-semibold ${h.paused?'ds-paused-status':'ds-active-status'}">${h.paused?'Paused · Your history is preserved. Paused days do not count as missed days or break your streak.':'Active · Tracking is enabled for scheduled days.'}</p><p class="text-[11px] text-muted">ⓘ Pause temporarily stops tracking without deleting this habit. Resume whenever you are ready. Your previous completion history stays saved.</p><p class="text-xs text-primary font-semibold">📅 Tap to view your activity calendar</p></div>`}).join('')||'<p class="text-sm text-muted">No habits yet. Add your first habit.</p>'}</div></div>`;
 
         }
 
@@ -3492,7 +3413,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function renderGames(container) {
 
-            container.innerHTML = `<div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-2xl font-bold">SPACE GAMES</h2><p class="text-sm text-muted">Play, improve your score and earn XP for correct answers.</p><p class="text-xs text-primary mt-1">${appState.gameStats?.totalCorrect||0} correct answers · ${appState.gameStats?.gamesPlayed||0} game sessions played</p></div><div class="flex items-center gap-1 p-1 rounded-xl bg-surfaceLight/50"><button onclick="setGameDifficulty('easy')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='easy'?'bg-success text-bgDark':'text-muted'}">Easy</button><button onclick="setGameDifficulty('moderate')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='moderate'?'bg-warning text-bgDark':'text-muted'}">Medium</button><button onclick="setGameDifficulty('difficult')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='difficult'?'bg-danger text-white':'text-muted'}">Hard</button></div></div>
+            container.innerHTML = `<div class="p-5 md:p-10 max-w-7xl mx-auto w-full space-y-6"><div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-2xl font-bold">Brain Gym & Games</h2><p class="text-sm text-muted">Play, improve your score and earn XP for correct answers.</p><p class="text-xs text-primary mt-1">${appState.gameStats?.totalCorrect||0} correct answers · ${appState.gameStats?.gamesPlayed||0} game sessions played</p></div><div class="flex items-center gap-1 p-1 rounded-xl bg-surfaceLight/50"><button onclick="setGameDifficulty('easy')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='easy'?'bg-success text-bgDark':'text-muted'}">Easy</button><button onclick="setGameDifficulty('moderate')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='moderate'?'bg-warning text-bgDark':'text-muted'}">Medium</button><button onclick="setGameDifficulty('difficult')" class="px-3 py-2 rounded-lg text-xs ${gameDifficulty==='difficult'?'bg-danger text-white':'text-muted'}">Hard</button></div></div>
 
             ${!currentGameId ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${[['memory','Memory Matrix','Remember and repeat a sequence of tiles.','grid-3x3'],['math','Speed Math','Solve arithmetic questions.','calculator'],['pattern','Pattern Logic','Find the missing number.','brain'],['scramble','Word Scramble','Unscramble a useful word.','spell-check']].map(([id,title,desc,ico])=>`<button onclick="startBrainGame('${id}')" class="glass-panel p-6 rounded-3xl text-left space-y-3 hover:border-primary/50 border border-white/5"><i data-lucide="${ico}" class="w-7 h-7 text-primary"></i><h3 class="font-bold">${title}</h3><p class="text-xs text-muted">${desc}</p><span class="text-xs text-primary font-bold">${!appState.user?.isPremium&&id!=='memory'?'PRO · Upgrade to play':'Play game →'}</span></button>`).join('')}</div>` : `<div class="glass-panel p-6 rounded-3xl max-w-xl mx-auto space-y-5"><div class="flex items-center justify-between"><button onclick="exitBrainGame()" class="text-sm text-muted">← Back to games</button><div class="text-right"><span class="text-sm font-bold text-primary">Score: <span id="live-game-score">${gameScore}</span></span><p class="text-[11px] text-muted">Time: <span id="game-elapsed">00:00</span> · Best: ${appState.gameStats?.highScores?.[currentGameId]||0}</p></div></div><div id="game-arena"></div></div>`}</div>`;
 
@@ -3504,7 +3425,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
         function setGameDifficulty(diff){ gameDifficulty=diff; if(currentGameId) { gameScore=0; startBrainGame(currentGameId); } else renderGames(document.getElementById('main-viewport')); }
 
-        function startBrainGame(type){ clearMemoryTimers();clearInterval(gameTimerInterval);currentGameId=type;gameScore=0;gameActive=true;gameCanNext=false;memorySequence=[];memoryInputIndex=0;gameStartedAt=Date.now();if(!appState.gameStats)appState.gameStats={gamesPlayed:0,totalCorrect:0,totalPoints:0,highScores:{}};appState.gameStats.gamesPlayed=(Number(appState.gameStats.gamesPlayed)||0)+1;saveState();gameTimerInterval=setInterval(updateGameElapsed,1000);renderGames(document.getElementById('main-viewport')); }
+        function startBrainGame(type){ if(!appState.user?.isPremium&&type!=='memory'){showToast('This game is available with Daily Space PRO.','info');return;} clearMemoryTimers();clearInterval(gameTimerInterval);currentGameId=type;gameScore=0;gameActive=true;gameCanNext=false;memorySequence=[];memoryInputIndex=0;gameStartedAt=Date.now();if(!appState.gameStats)appState.gameStats={gamesPlayed:0,totalCorrect:0,totalPoints:0,highScores:{}};appState.gameStats.gamesPlayed=(Number(appState.gameStats.gamesPlayed)||0)+1;saveState();gameTimerInterval=setInterval(updateGameElapsed,1000);renderGames(document.getElementById('main-viewport')); }
 
         function exitBrainGame(){ clearMemoryTimers();clearInterval(gameTimerInterval);gameTimerInterval=null;currentGameId=null;gameActive=false;gameStartedAt=null;renderGames(document.getElementById('main-viewport')); }
 
@@ -3790,7 +3711,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                         <h2 class="text-3xl font-bold">Choose Your Operational Level</h2>
 
-                        <p class="text-muted text-sm">PRO includes Calendar & Special Days, Income & Expense Tracker, Analytics & Trends, SPACE GAMES, and expanded SPACE AI features.</p>
+                        <p class="text-muted text-sm">PRO includes Calendar & Special Days, Income & Expense Tracker, Analytics & Trends, Brain Gym & Games, and expanded SPACE AI features.</p>
 
                     </div>
 
@@ -3854,7 +3775,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
                                     <li class="flex items-center gap-2 font-semibold"><i data-lucide="chart-no-axes-combined" class="w-4 h-4 text-primary"></i> <strong>Analytics & Trends:</strong> Detailed trends, comparisons and reports.</li>
 
-                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>SPACE GAMES:</strong> Memory Matrix, Math, Pattern & Scramble.</li>
+                                    <li class="flex items-center gap-2 font-semibold"><i data-lucide="gamepad-2" class="w-4 h-4 text-success"></i> <strong>Brain Gym & Games:</strong> Memory Matrix, Math, Pattern & Scramble.</li>
 
                                 </ul>
 
@@ -3994,7 +3915,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
 
 
-                <div class="ds-setting-card space-y-4"><h3 class="font-bold text-lg">Personalised Space</h3><p class="text-xs text-muted">This choice personalises optional content. Your core features remain available in either experience.</p><select onchange="appState.user.spacePreference=this.value;saveState();showToast('Personalised space updated.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="" ${!appState.user.spacePreference?'selected':''}>Choose a space</option><option value="womens" ${appState.user.spacePreference==='womens'?'selected':''}>Women’s Space</option><option value="mens" ${appState.user.spacePreference==='mens'?'selected':''}>Men's Space</option></select></div>
+                <div class="ds-setting-card space-y-4"><h3 class="font-bold text-lg">Personalised Space</h3><p class="text-xs text-muted">This choice personalises optional content. Your core features remain available in either experience.</p><select onchange="appState.user.spacePreference=this.value;saveState();showToast('Personalised space updated.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm"><option value="" ${!appState.user.spacePreference?'selected':''}>Choose a space</option><option value="womens" ${appState.user.spacePreference==='womens'?'selected':''}>Women's Space</option><option value="mens" ${appState.user.spacePreference==='mens'?'selected':''}>Men's Space</option></select></div>
 
                 <div class="ds-setting-card space-y-4"><h3 class="font-bold text-lg">Language</h3><p class="text-xs text-muted">Choose the language SPACE AI should use. Full interface localisation is being built in stages.</p><select onchange="appState.user.language=this.value;saveState();showToast('AI language preference saved.','success')" class="w-full rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm">${[['en','English'],['ml','Malayalam'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],['kn','Kannada'],['es','Spanish'],['ar','Arabic'],['fr','French'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese (Simplified)']].map(([v,n])=>`<option value="${v}" ${(appState.user.language||'en')===v?'selected':''}>${n}</option>`).join('')}</select></div>
 
@@ -4709,273 +4630,46 @@ window.sendAIMessage = sendAIMessage;
         };
 
     
-
-/* ================= DAILY SPACE COMPLETE REDESIGN LAYER =================
-   This layer extends the existing app. It deliberately reuses the original
-   Firebase, state, Gemini, task, habit, goals, focus and achievement logic.
-*/
+/* ===== Agreed Daily Space changes: Growth, Wellness, Guard and specialist AIs ===== */
 (function(){
-    const dsOriginalRouter = router;
-    const dsSpecialists = {
-        guard:{title:'SPACE GUARD AI',subtitle:'Digital safety, privacy and scam awareness',icon:'shield-check',prompt:'You are SPACE GUARD AI, a practical digital-safety educator inside Daily Space. Help with account security, privacy, scam awareness, safe browsing and security hygiene. Never claim to scan the user’s phone, accounts or network. Give safe, defensive guidance. Do not ask for passwords, OTPs, recovery codes or secret keys.'},
-        health:{title:'SPACE HEALTH AI',subtitle:'General wellness education and healthy routines',icon:'heart-pulse',prompt:'You are SPACE HEALTH AI, an age-appropriate general wellness educator inside Daily Space. Provide balanced educational information about sleep, hydration, everyday movement, nutrition, stress and seeking trusted support. Do not diagnose, prescribe, encourage restrictive eating or excessive exercise, or replace a qualified health professional. For urgent or concerning symptoms, advise contacting a trusted adult and qualified clinician.'},
-        fashion:{title:'SPACE FASHION AI',subtitle:'Personal style, outfit planning and wardrobe ideas',icon:'shirt',prompt:'You are SPACE FASHION AI, a respectful personal-style assistant. Follow the user’s saved fashion preference when relevant, but never make assumptions about body shape or judge appearance. Offer practical outfit coordination, colour combinations, occasion planning and wardrobe organisation. Avoid body-shaming or appearance pressure.'}
-    };
-    const dsSafe = v => typeof escapeHTML==='function' ? escapeHTML(String(v??'')) : String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    function dsPersist(){ if(!appState.healthLog)appState.healthLog={water:0,sleep:0,activity:0,notes:[]}; if(!appState.specialistChats)appState.specialistChats={guard:[],health:[],fashion:[]}; saveState(); }
-    function dsToday(){return typeof localDateKey==='function'?localDateKey():new Date().toISOString().slice(0,10);}
-    function dsSetNav(route){
-        document.querySelectorAll('[data-bottom-nav]').forEach(b=>b.classList.toggle('active',b.dataset.bottomNav===route));
-        const label=document.getElementById('ds-current-page');if(label)label.textContent=(routeTitles&&routeTitles[route])||({growth:'Growth'}[route])||'Daily Space';
-        const back=document.querySelector('.ds-mobile-toolbar button[aria-label="Go back"]');if(back)back.style.visibility=route==='home'?'hidden':'visible';
-        document.body.classList.toggle('route-home',route==='home');
-        document.body.classList.toggle('ai-fullscreen',route==='ai');
-        if(window.lucide)lucide.createIcons();
-    }
-    function dsCustomNavigate(route, renderer, addHistory=true){
-        if(addHistory && route!==currentRoute){routeHistory=Array.isArray(routeHistory)?routeHistory: ['home'];if(routeHistory[routeHistory.length-1]!==route)routeHistory.push(route);try{history.pushState({dailySpace:true,route},'',`#${route}`)}catch(e){}}
-        currentRoute=route;document.body.classList.remove('ai-keyboard-open');
-        const menu=document.getElementById('mobile-menu');if(menu)menu.classList.add('hidden');
-        const vp=document.getElementById('main-viewport');if(!vp)return;vp.innerHTML='';renderer(vp);dsSetNav(route);
-    }
-    function dsRenderGrowth(container){
-        const goals=Array.isArray(appState.goals)?appState.goals:[],completed=goals.filter(g=>g.status==='Completed').length;
-        const tasks=Array.isArray(appState.tasks)?appState.tasks:[],done=tasks.filter(t=>t.completed).length;
-        const xp=Number(appState.user?.totalXP||appState.user?.xp||0),level=Number(appState.user?.level||1);
-        const focusMins=Math.floor(Number(appState.focusStats?.totalSeconds||0)/60);
-        const tiles=[
-            ['goals','My Goals','Review milestones and next steps','target'],
-            ['analytics','Analytics','See activity and progress trends','chart-no-axes-combined'],
-            ['achievements','Achievements','Your unlocked milestones','award'],
-            ['achievements','XP & Levels','Track experience and level progress','zap'],
-            ['analytics','Personal Statistics','Your activity at a glance','chart-no-axes-combined']
-        ];
-        container.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto w-full space-y-6">
-          <header><span class="ds-pill"><i data-lucide="trending-up" class="w-3 h-3"></i> PERSONAL GROWTH</span><h2 class="text-3xl font-extrabold mt-3">Your progress, in one place.</h2><p class="text-sm text-muted mt-2">Small consistent actions build meaningful progress.</p></header>
-          <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div class="ds-stat-card"><p class="text-xs text-muted">Current level</p><p class="ds-health-number">LV ${level}</p></div>
-            <div class="ds-stat-card"><p class="text-xs text-muted">Total XP</p><p class="ds-health-number">${xp}</p></div>
-            <div class="ds-stat-card"><p class="text-xs text-muted">Tasks completed</p><p class="ds-health-number">${done}</p></div>
-            <div class="ds-stat-card"><p class="text-xs text-muted">Focus time</p><p class="ds-health-number">${focusMins}<span class="text-sm">m</span></p></div>
-          </section>
-          <section class="ds-tool-card"><div class="flex justify-between text-sm"><b>Goal progress</b><span class="text-muted">${completed}/${goals.length} completed</span></div><div class="ds-progress-track mt-3"><div class="ds-progress-fill" style="width:${goals.length?Math.round(completed/goals.length*100):0}%"></div></div></section>
-          <section class="grid grid-cols-1 sm:grid-cols-2 gap-3">${tiles.map(([r,t,d,i])=>`<button class="ds-growth-tile" onclick="router('${r}')"><span class="ds-hub-icon"><i data-lucide="${i}"></i></span><span class="min-w-0 flex-1"><b class="block">${t}</b><small class="text-muted">${d}</small></span><i data-lucide="chevron-right" class="w-4 h-4 text-muted"></i></button>`).join('')}</section>
-        </div>`;
-    }
-    function dsRenderHome(container){
-        if(typeof evaluateAchievements==='function')evaluateAchievements();
-        const today=dsToday(),tasks=(appState.tasks||[]).filter(t=>t.date===today),doneTasks=tasks.filter(t=>t.completed).length;
-        const habits=(appState.habits||[]).filter(h=>{try{return isHabitScheduledDate(h,today)}catch(e){return true}});
-        const doneHabits=habits.filter(h=>{try{return isHabitCompleteForPeriod(h,today)}catch(e){return !!h.completedToday}});const activeGoals=(appState.goals||[]).filter(g=>g.status!=='Completed').slice(0,3);
-        const taskPct=tasks.length?Math.round(doneTasks/tasks.length*100):0,habitPct=habits.length?Math.round(doneHabits.length/habits.length*100):0;
-        const cards=[
-            ['ai','SPACE AI','Your personal life assistant','bot'],
-            ['guard','SPACE GUARD','Privacy and digital safety','shield-check'],
-            ['health','SPACE HEALTH','Wellness and healthy routines','heart-pulse'],
-            ['fashion','SPACE FASHION','Style ideas and wardrobe tools','shirt'],
-            ['games','SPACE GAMES','Memory, logic and brain games','gamepad-2'],
-            ['selfcontrol','Self-Control','Build focus and manage distractions','shield']
-        ];
-        container.innerHTML=`<div class="p-5 md:p-9 max-w-7xl mx-auto w-full space-y-6">
-          <section class="ds-home-hero rounded-3xl p-5 md:p-7">
-            <div class="flex flex-wrap items-center justify-between gap-3"><span class="inline-flex items-center gap-2 rounded-full border border-green-400/20 bg-green-400/10 px-3 py-1.5 text-xs font-bold text-green-300"><span class="ds-system-dot w-2 h-2 rounded-full bg-green-400"></span>SYSTEM ONLINE</span><span class="ds-pill">DISCIPLINE OVER MOTIVATION</span></div>
-            <h2 class="text-3xl md:text-4xl font-extrabold mt-5">Good ${new Date().getHours()<12?'morning':new Date().getHours()<17?'afternoon':'evening'}, ${dsSafe(appState.user?.name||'Commander')}.</h2>
-            <p class="text-sm text-muted mt-2">${new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · Make today count, one step at a time.</p>
-            <div class="flex flex-wrap gap-2 mt-5"><button onclick="router('routine')" class="px-4 py-3 rounded-xl bg-primary text-white text-sm font-bold"><i data-lucide="plus" class="inline w-4 h-4 mr-1"></i>Add a task</button><button onclick="router('focus')" class="px-4 py-3 rounded-xl bg-surfaceLight/80 text-sm font-bold"><i data-lucide="timer" class="inline w-4 h-4 mr-1"></i>Start focus</button></div>
-          </section>
-          <section class="ds-tool-card">
-            <div class="flex items-center justify-between gap-3"><div><p class="text-[11px] uppercase tracking-widest text-primary font-bold">SPACE CLOCK · LOCAL TIME</p><p id="space-clock-time" class="text-3xl md:text-4xl font-extrabold tracking-tight mt-1">--:--:--</p><p id="space-clock-date" class="text-xs text-muted mt-1">Loading local date…</p><p id="space-clock-zone" class="text-[11px] text-muted mt-1"></p></div><button onclick="router('clock')" class="px-3 py-2 rounded-xl bg-surfaceLight text-xs font-bold">World clocks <i data-lucide="arrow-up-right" class="inline w-3 h-3"></i></button></div>
-          </section>
-          <section><div class="ds-section-head"><div><h3>SPACE HUB</h3><p class="text-xs text-muted mt-1">Everything you need. One space.</p></div><button onclick="router('spacehub')" class="text-xs text-primary font-bold">Open Full Hub →</button></div><div class="ds-hub-grid">${cards.map(([r,t,d,i])=>`<button class="ds-hub-card" onclick="router('${r}')"><span class="ds-hub-icon"><i data-lucide="${i}" class="w-5 h-5"></i></span><b class="block text-sm mt-3">${t}</b><span class="block text-[11px] text-muted mt-1">${d}</span></button>`).join('')}</div></section>
-          <section><div class="ds-section-head"><div><h3>Today's Overview</h3><p class="text-xs text-muted mt-1">A quick snapshot of your day.</p></div></section>
-          <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            <div class="ds-stat-card"><div class="flex justify-between text-xs text-muted"><b>TASKS</b><span>${taskPct}%</span></div><p class="text-2xl font-extrabold mt-2">${doneTasks}<span class="text-sm text-muted"> / ${tasks.length}</span></p><div class="ds-progress-track mt-3"><div class="ds-progress-fill" style="width:${taskPct}%"></div></div></div>
-            <div class="ds-stat-card"><div class="flex justify-between text-xs text-muted"><b>HABITS</b><span>${habitPct}%</span></div><p class="text-2xl font-extrabold mt-2">${doneHabits.length}<span class="text-sm text-muted"> / ${habits.length}</span></p><div class="ds-progress-track mt-3"><div class="ds-progress-fill" style="width:${habitPct}%"></div></div></div>
-            <div class="ds-stat-card"><p class="text-xs text-muted font-bold">CURRENT LEVEL</p><p class="text-2xl font-extrabold mt-2">Level ${Number(appState.user?.level)||1}</p><p class="text-xs text-muted mt-1">${Number(appState.user?.totalXP||appState.user?.xp)||0} XP earned</p></div>
-          </section>
-          <section class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <div class="ds-tool-card"><div class="flex justify-between items-center"><h3 class="font-bold">Today's Schedule</h3><button onclick="router('routine')" class="text-xs text-primary font-bold">Manage tasks →</button></div>
-              <div class="mt-3 space-y-2">${tasks.length?tasks.slice(0,5).map(t=>`<div class="flex items-center gap-2 rounded-xl bg-surfaceLight/40 p-3"><span class="w-2 h-2 rounded-full ${t.completed?'bg-green-400':'bg-violet-400'}"></span><span class="text-sm flex-1 ${t.completed?'line-through text-muted':''}">${dsSafe(t.title||'Untitled task')}</span><span class="text-[10px] text-muted">${t.completed?'Done':'Planned'}</span></div>`).join(''):'<p class="text-xs text-muted py-3">No tasks scheduled for today yet.</p>'}</div>
-            </div>
-            <div class="ds-tool-card"><div class="flex justify-between items-center"><h3 class="font-bold">Active Goals</h3><button onclick="router('goals')" class="text-xs text-primary font-bold">View all →</button></div>
-              <div class="mt-3 space-y-2">${activeGoals.length?activeGoals.map(g=>`<div class="rounded-xl bg-surfaceLight/40 p-3"><b class="text-sm">${dsSafe(g.title||'Untitled goal')}</b><p class="text-[10px] text-muted mt-1">${Number(g.progress)||0}% progress</p></div>`).join(''):'<p class="text-xs text-muted py-3">Add a goal to start tracking longer-term progress.</p>'}</div>
-            </div>
-          </section>
-          <section class="ds-tool-card"><div class="flex justify-between items-center gap-3"><div><b>Daily Motivation</b><p class="text-sm text-muted mt-1">Consistency is built through the next small action.</p></div><button onclick="router('journal')" class="text-xs text-primary font-bold">Open Journal →</button></div></section>
-        </div>`;
-        if(typeof startSpaceClock==='function')startSpaceClock();
-    }
-    function dsRenderHealth(container){
-        dsPersist();const log=appState.healthLog;const day=dsToday();if(log.date!==day){log.water=0;log.sleep=0;log.activity=0;log.date=day;}
-        container.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto w-full space-y-6">
-          <header><span class="ds-pill"><i data-lucide="heart-pulse" class="w-3 h-3"></i> WELLNESS SPACE</span><h2 class="text-3xl font-extrabold mt-3">SPACE HEALTH</h2><p class="text-sm text-muted mt-2">Gentle, practical wellness tracking. This is educational, not medical diagnosis.</p></header>
-          <section class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <article class="ds-tool-card"><p class="text-xs text-muted font-bold">WATER INTAKE</p><p class="ds-health-number mt-2"><span id="ds-water-count">${log.water||0}</span><span class="text-sm text-muted"> / 8 glasses</span></p><div class="flex gap-2 mt-3"><button onclick="dsHealthAdjust('water',-1)" class="px-3 py-2 rounded-xl bg-surfaceLight">−</button><button onclick="dsHealthAdjust('water',1)" class="flex-1 px-3 py-2 rounded-xl bg-primary text-white text-sm font-bold">+ Add glass</button></div></article>
-            <article class="ds-tool-card"><p class="text-xs text-muted font-bold">SLEEP LAST NIGHT</p><p class="ds-health-number mt-2"><span id="ds-sleep-count">${log.sleep||0}</span><span class="text-sm text-muted"> hours</span></p><div class="flex gap-2 mt-3"><button onclick="dsHealthAdjust('sleep',-0.5)" class="px-3 py-2 rounded-xl bg-surfaceLight">−</button><button onclick="dsHealthAdjust('sleep',0.5)" class="flex-1 px-3 py-2 rounded-xl bg-primary text-white text-sm font-bold">+ 30 min</button></div></article>
-            <article class="ds-tool-card"><p class="text-xs text-muted font-bold">MOVEMENT</p><p class="ds-health-number mt-2"><span id="ds-activity-count">${log.activity||0}</span><span class="text-sm text-muted"> minutes</span></p><div class="flex gap-2 mt-3"><button onclick="dsHealthAdjust('activity',-5)" class="px-3 py-2 rounded-xl bg-surfaceLight">−</button><button onclick="dsHealthAdjust('activity',5)" class="flex-1 px-3 py-2 rounded-xl bg-primary text-white text-sm font-bold">+ 5 min</button></div></article>
-          </section>
-          <section class="grid grid-cols-1 md:grid-cols-2 gap-3"><article class="ds-tool-card"><h3 class="font-bold">Nutrition basics</h3><p class="text-sm text-muted mt-2">Aim for varied meals, regular nourishment, and a mix of foods. Individual needs differ; avoid rigid rules or restrictive plans.</p></article><article class="ds-tool-card"><h3 class="font-bold">Mental wellness</h3><p class="text-sm text-muted mt-2">Take breaks, stay connected with supportive people, and seek help when stress feels difficult to manage.</p></article></section>
-          <section class="ds-tool-card"><div class="flex justify-between items-center"><h3 class="font-bold">Health & wellness journal</h3><button onclick="router('healthai')" class="text-xs text-primary font-bold">Ask SPACE HEALTH AI →</button></div><textarea id="ds-health-note" class="w-full mt-3 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm" rows="3" placeholder="Optional note about how you're feeling or your wellness routine…"></textarea><button onclick="dsSaveHealthNote()" class="mt-2 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-bold">Save note</button><div id="ds-health-notes" class="mt-3 space-y-2">${(log.notes||[]).slice(-4).reverse().map(n=>`<div class="rounded-xl bg-surfaceLight/50 p-3"><small class="text-muted">${dsSafe(n.date)}</small><p class="text-sm mt-1">${dsSafe(n.text)}</p></div>`).join('')}</div></section>
-          <button onclick="router('healthai')" class="w-full ds-tool-card text-left"><b>SPACE HEALTH AI</b><p class="text-xs text-muted mt-1">Ask general wellness questions and get age-appropriate educational guidance.</p></button>
-        </div>`;
-    }
-    function dsHealthAdjust(key,delta){dsPersist();const log=appState.healthLog;log[key]=Math.max(0,Math.min(key==='water'?30:key==='sleep'?24:1440,Math.round((Number(log[key])||0)+delta*10)/10));saveState();const id={'water':'ds-water-count','sleep':'ds-sleep-count','activity':'ds-activity-count'}[key];const el=document.getElementById(id);if(el)el.textContent=log[key];}
-    function dsSaveHealthNote(){const el=document.getElementById('ds-health-note');const text=el?.value.trim();if(!text)return showToast('Write a short note first.','info');dsPersist();appState.healthLog.notes.push({date:dsToday(),text});saveState();router('health');showToast('Wellness note saved.','success');}
-    function dsRenderFashion(container){
-        const pref=appState.user?.spacePreference||'';const label=pref==='mens'?'Men’s style space':pref==='womens'?'Women’s style space':'Personal style space';
-        container.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto w-full space-y-6"><header><span class="ds-pill"><i data-lucide="shirt" class="w-3 h-3"></i> PERSONAL STYLE</span><h2 class="text-3xl font-extrabold mt-3">SPACE FASHION</h2><p class="text-sm text-muted mt-2">${label}. Change this preference in Settings whenever you want.</p></header>
-          <section class="ds-home-hero rounded-3xl p-5"><h3 class="text-xl font-bold">Your style, your choice.</h3><p class="text-sm text-muted mt-2">Build outfits around comfort, personal taste, colour and occasion — without pressure to follow trends.</p><button onclick="router('fashionai')" class="mt-4 px-4 py-3 rounded-xl bg-primary text-white text-sm font-bold">Ask SPACE FASHION AI</button></section>
-          <section class="grid grid-cols-1 sm:grid-cols-2 gap-3">${[['Colour combinations','Explore colours that complement each other.'],['Occasion planning','Think through casual, formal and celebration outfits.'],['Wardrobe organiser','Plan combinations from clothes you already own.'],['Accessories','Choose practical finishing touches.']].map(([a,b])=>`<article class="ds-tool-card"><b>${a}</b><p class="text-xs text-muted mt-2">${b}</p></article>`).join('')}</section>
-          <section class="ds-tool-card"><h3 class="font-bold">Personalised fashion space</h3><p class="text-xs text-muted mt-1">Your saved preference is used to tailor fashion suggestions. It does not limit access to other features.</p><p class="text-sm mt-3">${pref==='mens'?'Men’s Space selected':pref==='womens'?'Women’s Space selected':'No preference selected'}</p><button onclick="router('profile')" class="mt-3 text-sm text-primary font-bold">Change in Settings →</button></section></div>`;
-    }
-    function dsRenderSpecialist(container,kind){
-        dsPersist();const cfg=dsSpecialists[kind],historyItems=appState.specialistChats[kind]||[];
-        container.innerHTML=`<div class="p-5 md:p-8 max-w-4xl mx-auto w-full space-y-4"><header class="flex items-center gap-3"><div class="ds-hub-icon"><i data-lucide="${cfg.icon}" class="w-6 h-6"></i></div><div><h2 class="text-xl font-extrabold">${cfg.title}</h2><p class="text-xs text-muted">${cfg.subtitle}</p></div></header>
-          <div class="ds-tool-card"><div id="ds-specialist-log" class="min-h-[220px] max-h-[52vh] overflow-y-auto">${historyItems.length?historyItems.map(m=>`<div class="ds-chat-line ${m.role==='user'?'user':'ai'}">${dsSafe(m.text)}</div>`).join(''):`<div class="ds-chat-line ai">Hello. I'm ${cfg.title}. What would you like help with?</div>`}</div>
-          <textarea id="ds-specialist-input" placeholder="Write your question…" class="mt-3" rows="3"></textarea><div class="flex justify-between items-center gap-2 mt-2"><button onclick="dsClearSpecialist('${kind}')" class="px-3 py-2 rounded-xl bg-surfaceLight text-xs">Clear chat</button><button id="ds-specialist-send" onclick="dsSendSpecialist('${kind}')" class="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold">Send <i data-lucide="send" class="inline w-4 h-4 ml-1"></i></button></div></div>
-          <p class="text-[11px] text-muted">Uses the existing Daily Space Gemini connection. Conversations are saved with your app data. Do not enter passwords, OTPs or private credentials.</p></div>`;
-        const log=document.getElementById('ds-specialist-log');if(log)log.scrollTop=log.scrollHeight;
-    }
-    async function dsSendSpecialist(kind){
-        const input=document.getElementById('ds-specialist-input'),text=input?.value.trim();if(!text)return;
-        if(!window.dailySpaceAI?.model){showToast('SPACE AI is not ready yet. Please try again after the AI connection loads.','warning');return;}
-        dsPersist();const cfg=dsSpecialists[kind],historyItems=appState.specialistChats[kind]||(appState.specialistChats[kind]=[]);
-        historyItems.push({role:'user',text});input.value='';const log=document.getElementById('ds-specialist-log');if(log){log.innerHTML+=`<div class="ds-chat-line user">${dsSafe(text)}</div><div class="ds-chat-line ai" id="ds-specialist-thinking">Thinking…</div>`;log.scrollTop=log.scrollHeight;}
-        const button=document.getElementById('ds-specialist-send');if(button)button.disabled=true;
-        try{
-            const prior=historyItems.slice(-12,-1).map(m=>`${m.role==='user'?'User':'Assistant'}: ${m.text}`).join('\n');
-            const language={en:'English',ml:'Malayalam',hi:'Hindi',ta:'Tamil',te:'Telugu',kn:'Kannada',es:'Spanish',ar:'Arabic',fr:'French',pt:'Portuguese',ja:'Japanese',ko:'Korean',zh:'Simplified Chinese'}[appState.user?.language||'en']||'English';
-            const chat=window.dailySpaceAI.model.startChat();
-            const prompt=`${cfg.prompt}\nRespond in ${language}, unless the user requests another language.\nPrevious conversation:\n${prior||'None'}\nCurrent user message:\n${text}`;
-            const result=await chat.sendMessage(prompt);const reply=result?.response?.text?.()||'I could not produce a response. Please try again.';
-            historyItems.push({role:'assistant',text:reply});saveState();
-            const thinking=document.getElementById('ds-specialist-thinking');if(thinking)thinking.remove();
-            if(log){log.innerHTML+=`<div class="ds-chat-line ai">${dsSafe(reply)}</div>`;log.scrollTop=log.scrollHeight;}
-        }catch(err){console.error('Specialist AI error',err);const thinking=document.getElementById('ds-specialist-thinking');if(thinking)thinking.textContent='I could not connect right now. Please try again.';}
-        finally{if(button)button.disabled=false;saveState();}
-    }
-    function dsClearSpecialist(kind){if(!confirm('Clear this specialist conversation?'))return;appState.specialistChats[kind]=[];saveState();router(kind+'ai');}
-    function dsRenderAnalytics(container){
-        const tasks=Array.isArray(appState.tasks)?appState.tasks:[],habits=Array.isArray(appState.habits)?appState.habits:[],goals=Array.isArray(appState.goals)?appState.goals:[];
-        const completed=tasks.filter(t=>t.completed).length,activeGoals=goals.filter(g=>g.status!=='Completed').length,focus=Math.floor(Number(appState.focusStats?.totalSeconds||0)/60);
-        const last7=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const key=dsTodayKey(d);const n=tasks.filter(t=>t.date===key&&t.completed).length;return {label:d.toLocaleDateString(undefined,{weekday:'short'}),n};});
-        const max=Math.max(1,...last7.map(x=>x.n));
-        container.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto w-full space-y-5"><header><span class="ds-pill">YOUR PROGRESS</span><h2 class="text-3xl font-extrabold mt-3">Analytics & Trends</h2><p class="text-sm text-muted mt-2">A clear view of your recorded activity.</p></header>
-          <section class="grid grid-cols-2 md:grid-cols-4 gap-3"><div class="ds-stat-card"><p class="text-xs text-muted">Completed tasks</p><p class="ds-health-number">${completed}</p></div><div class="ds-stat-card"><p class="text-xs text-muted">Habits tracked</p><p class="ds-health-number">${habits.length}</p></div><div class="ds-stat-card"><p class="text-xs text-muted">Active goals</p><p class="ds-health-number">${activeGoals}</p></div><div class="ds-stat-card"><p class="text-xs text-muted">Focus minutes</p><p class="ds-health-number">${focus}</p></div></section>
-          <section class="ds-tool-card"><h3 class="font-bold">Tasks completed · last 7 days</h3><div class="flex items-end gap-3 h-44 mt-5">${last7.map(x=>`<div class="flex-1 h-full flex flex-col justify-end items-center gap-2"><span class="text-xs text-muted">${x.n}</span><div class="w-full rounded-t-lg bg-gradient-to-t from-violet-700 to-cyan-400" style="height:${Math.max(4,x.n/max*100)}%"></div><span class="text-[10px] text-muted">${x.label}</span></div>`).join('')}</div></section>
-          <section class="ds-tool-card"><h3 class="font-bold">Your records</h3><div class="grid grid-cols-2 gap-3 mt-3 text-sm"><div class="rounded-xl bg-surfaceLight/50 p-3"><span class="text-muted text-xs">All tasks</span><b class="block text-xl">${tasks.length}</b></div><div class="rounded-xl bg-surfaceLight/50 p-3"><span class="text-muted text-xs">Completed goals</span><b class="block text-xl">${goals.filter(g=>g.status==='Completed').length}</b></div></div><p class="text-xs text-muted mt-3">Analytics are calculated from the data saved in this account. Empty periods are shown as zero, not fabricated.</p></section></div>`;
-    }
-    function dsTodayKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+ const originalRouter=router;const originalDeveloperScanner=renderSpaceGuard;
+ const profiles={
+  health:{name:'SPACE HEALTH AI',icon:'heart-pulse',subtitle:'Your wellness education assistant',greeting:"Hello! I'm SPACE HEALTH AI. I can help with general wellness education and healthy routines. What would you like to ask?",system:"You are SPACE HEALTH AI. Always identify yourself as SPACE HEALTH AI, never SPACE AI. Be calm, caring and clear. Provide age-appropriate general wellness education about sleep, hydration, balanced nutrition, movement, hygiene and stress. Do not diagnose, prescribe, encourage restrictive eating or excessive exercise, or replace a clinician. For concerning issues, encourage a trusted adult and qualified health professional."},
+  guard:{name:'SPACE GUARD AI',icon:'shield-check',subtitle:'Your personal digital safety assistant',greeting:"Hello! I'm SPACE GUARD AI. I can help you understand online risks, suspicious messages and privacy. What would you like to check?",system:"You are SPACE GUARD AI. Always identify yourself as SPACE GUARD AI, never SPACE AI. Be alert, practical and reassuring. Help users recognise phishing, scams, suspicious links, privacy risks, account security issues and safe online behaviour. Never request passwords, OTPs, recovery codes or private keys. Never claim to scan a phone, account or network."},
+  fashion:{name:'SPACE FASHION AI',icon:'shirt',subtitle:'Your personal style assistant',greeting:"Hello! I'm SPACE FASHION AI. I can help with outfit ideas, colour combinations and wardrobe planning. What are you thinking about?",system:"You are SPACE FASHION AI. Always identify yourself as SPACE FASHION AI, never SPACE AI. Be creative, respectful and encouraging. Help with colour coordination, practical outfits, occasion planning and wardrobe organisation. Never judge bodies, compare appearances or create pressure about physical ideals."}
+ };
+ const esc=v=>escapeHTML(String(v==null?'':v));
+ function ensure(){if(!appState.wellness||typeof appState.wellness!=='object')appState.wellness={days:{},sleepRecords:{}};if(!appState.wellness.days)appState.wellness.days={};if(!appState.wellness.sleepRecords)appState.wellness.sleepRecords={};if(!appState.specialistAI)appState.specialistAI={};Object.keys(profiles).forEach(k=>{if(!Array.isArray(appState.specialistAI[k]))appState.specialistAI[k]=[];});}
+ function today(){return localDateKey();}function dayLog(){ensure();return appState.wellness.days[today()]||(appState.wellness.days[today()]={waterGlasses:0,activities:[]});}
+ function show(route,render,add=true){if(add&&route!==currentRoute){if(routeHistory.at(-1)!==route)routeHistory.push(route);try{history.pushState({dailySpace:true,route},'',`#${route}`)}catch(e){}}currentRoute=route;document.body.classList.remove('ai-fullscreen','ai-keyboard-open');const v=document.getElementById('main-viewport');if(!v)return;v.innerHTML='';render(v);document.querySelectorAll('[data-bottom-nav]').forEach(b=>b.classList.toggle('active',b.dataset.bottomNav===route));if(lucide)lucide.createIcons();}
+ function growth(c){const goals=appState.goals||[];c.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto space-y-5"><h2 class="text-3xl font-extrabold">Growth</h2><p class="text-sm text-muted">Understand your progress and celebrate meaningful milestones.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${[['goals','target','My Goals','Manage goals and milestones'],['analytics','chart-no-axes-combined','Analytics','Detailed trends, charts and comparisons'],['achievements','award','Achievements','Automatically earned milestone badges'],['xplevels','zap','XP & Levels','Experience and progression'],['personalstats','chart-pie','Personal Statistics','Lifetime totals and personal records']].map(([r,i,t,d])=>`<button onclick="router('${r}')" class="glass-panel rounded-2xl p-5 text-left flex items-center gap-3"><i data-lucide="${i}" class="w-7 h-7 text-primary"></i><span class="flex-1"><b class="block">${t}</b><small class="text-muted">${d}</small></span><i data-lucide="chevron-right"></i></button>`).join('')}</div><div class="glass-panel rounded-2xl p-4 text-sm">Goals completed: <b>${goals.filter(g=>g.status==='Completed').length} / ${goals.length}</b></div></div>`;}
+ function personal(c){const t=appState.tasks||[],h=appState.habits||[],g=appState.goals||[],a=appState.achievementsList||[],f=Number(appState.focusStats?.totalSeconds)||0;const stats=[['Tasks completed',t.filter(x=>x.completed).length],['Total tasks',t.length],['Habits created',h.length],['Goals completed',g.filter(x=>x.status==='Completed'||Number(x.progress)>=100).length],['Focus time',`${Math.floor(f/3600)}h ${Math.floor(f%3600/60)}m`],['Current level',appState.user.level||1],['Lifetime XP',Number(appState.user.totalXP)||Number(appState.user.xp)||0],['Achievements unlocked',a.filter(x=>x.unlocked).length],['Longest current habit streak',`${Math.max(0,...h.map(x=>getHabitStreak(x)||0))} days`]];c.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto space-y-5"><button onclick="router('growth')" class="text-sm text-primary">← Growth</button><h2 class="text-3xl font-extrabold">Personal Statistics</h2><p class="text-sm text-muted">Your account totals, calculated from saved activity.</p><div class="grid grid-cols-2 md:grid-cols-3 gap-3">${stats.map(([k,v])=>`<article class="glass-panel rounded-2xl p-4"><p class="text-xs text-muted">${k}</p><p class="text-2xl font-bold mt-2">${v}</p></article>`).join('')}</div><p class="text-xs text-muted">Historical totals depend on the records available in your account.</p></div>`;}
+ function xpPage(c){const xp=Number(appState.user.totalXP)||Number(appState.user.xp)||0,level=Number(appState.user.level)||1,req=level*100;c.innerHTML=`<div class="p-5 md:p-9 max-w-5xl mx-auto space-y-5"><button onclick="router('growth')" class="text-sm text-primary">← Growth</button><h2 class="text-3xl font-extrabold">XP & Levels</h2><div class="glass-panel rounded-3xl p-6"><p class="text-xs text-muted">CURRENT LEVEL</p><p class="text-4xl font-bold mt-2">Level ${level}</p><p class="text-sm text-muted">${xp} lifetime XP</p><div class="ds-progress mt-4"><span style="width:${Math.min(100,req?Number(appState.user.xp||0)/req*100:0)}%"></span></div><p class="text-xs text-muted mt-2">${Number(appState.user.xp)||0} / ${req} XP toward next level</p></div><p class="text-xs text-muted">XP is awarded by Daily Space activity rules and existing XP event records.</p></div>`;}
+ function analytics(c){const t=appState.tasks||[],h=appState.habits||[],g=appState.goals||[],e=appState.expenses||[],f=Number(appState.focusStats?.totalSeconds)||0;const base=new Date();base.setHours(12,0,0,0);const ds=Array.from({length:30},(_,i)=>{let d=new Date(base);d.setDate(d.getDate()-29+i);return d;});const task=ds.map(d=>{let k=localDateKey(d);return t.filter(x=>x.completed&&(x.completedAt?localDateKey(new Date(x.completedAt))===k:x.date===k)).length;});const habit=ds.map(d=>{let k=localDateKey(d);return h.reduce((n,x)=>n+((x.completedDates||[]).includes(k)?1:0),0);});const max=Math.max(1,...task,...habit);const done=t.filter(x=>x.completed).length,inc=e.filter(x=>x.type==='income').reduce((n,x)=>n+(Number(x.amount)||0),0),spent=e.filter(x=>x.type!=='income').reduce((n,x)=>n+(Number(x.amount)||0),0);c.innerHTML=`<div class="p-5 md:p-9 max-w-7xl mx-auto space-y-5"><button onclick="router('growth')" class="text-sm text-primary">← Growth</button><h2 class="text-3xl font-extrabold">Analytics</h2><p class="text-sm text-muted">Detailed analysis of your recorded activity.</p><div class="grid grid-cols-2 lg:grid-cols-4 gap-3">${[['Tasks completed',done],['Tasks remaining',t.length-done],['Focus time',`${Math.floor(f/3600)}h ${Math.floor(f%3600/60)}m`],['Average goal progress',`${g.length?Math.round(g.reduce((n,x)=>n+(Number(x.progress)||0),0)/g.length):0}%`]].map(([k,v])=>`<div class="glass-panel rounded-2xl p-4"><p class="text-xs text-muted">${k}</p><p class="text-2xl font-bold mt-2">${v}</p></div>`).join('')}</div><section class="glass-panel rounded-3xl p-5"><h3 class="font-bold">Task completions · last 30 days</h3><div class="flex items-end gap-1 h-36 mt-5">${task.map((v,i)=>`<div title="${localDateKey(ds[i])}: ${v}" class="flex-1 rounded-t bg-primary/80" style="height:${Math.max(3,v/max*100)}%"></div>`).join('')}</div></section><section class="glass-panel rounded-3xl p-5"><h3 class="font-bold">Habit completions · last 30 days</h3><div class="flex items-end gap-1 h-32 mt-5">${habit.map((v,i)=>`<div title="${localDateKey(ds[i])}: ${v}" class="flex-1 rounded-t bg-success/80" style="height:${Math.max(3,v/max*100)}%"></div>`).join('')}</div></section><section class="glass-panel rounded-2xl p-5"><h3 class="font-bold">Financial overview</h3><p class="text-sm text-muted mt-2">Recorded income: ${inc.toFixed(2)} · Recorded expenses: ${spent.toFixed(2)}</p><p class="text-xs text-muted mt-2">Financial figures use transactions already saved in your account.</p></section></div>`;}
+ function achievements(c){evaluateAchievements();const list=appState.achievementsList||[];c.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto space-y-5"><button onclick="router('growth')" class="text-sm text-primary">← Growth</button><h2 class="text-3xl font-bold">Achievements</h2><p class="text-sm text-muted">Badges unlock automatically when your saved activity meets the requirements.</p><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">${list.map(a=>`<article class="glass-panel rounded-2xl p-5 ${a.unlocked?'border border-primary/40':'opacity-70'}"><div class="flex justify-between"><i data-lucide="${esc(a.icon||'award')}" class="w-7 h-7 text-primary"></i><b class="text-[10px] ${a.unlocked?'text-success':'text-muted'}">${a.unlocked?'UNLOCKED':'LOCKED'}</b></div><h3 class="font-bold mt-4">${esc(a.title)}</h3><p class="text-xs text-muted mt-1">${esc(a.desc)}</p>${a.unlockedAt?`<p class="text-[10px] text-muted mt-3">Unlocked ${new Date(a.unlockedAt).toLocaleDateString()}</p>`:''}</article>`).join('')}</div></div>`;}
+ function health(c){ensure();const l=dayLog(),activities=l.activities||[],total=activities.reduce((n,a)=>n+(Number(a.minutes)||0),0),sleep=appState.wellness.sleepRecords[today()];c.innerHTML=`<div class="p-5 md:p-9 max-w-5xl mx-auto space-y-5"><h2 class="text-3xl font-extrabold">SPACE HEALTH</h2><p class="text-sm text-muted">Daily wellness records. This is a personal tracker, not a medical device.</p><section class="ds-wellness-card"><h3 class="font-bold">Water intake</h3><p class="text-xs text-muted mt-1">One tap adds one glass.</p><p class="text-3xl font-bold mt-3">${Number(l.waterGlasses)||0} <small class="text-sm text-muted">glasses today</small></p><div class="ds-progress mt-3"><span style="width:${Math.min(100,(Number(l.waterGlasses)||0)/8*100)}%"></span></div><button onclick="dsAddWater()" class="mt-4 rounded-xl bg-primary text-white px-4 py-3 text-sm font-bold">+ Add 1 glass</button> <button onclick="dsUndoWater()" class="rounded-xl bg-surfaceLight px-4 py-3 text-sm">Undo</button></section><section class="ds-wellness-card"><h3 class="font-bold">Sleep record</h3><p class="text-xs text-muted mt-1">Record last night's actual sleep. You can edit it.</p><div class="grid grid-cols-2 gap-3 mt-3"><div><label>Hours</label><input id="ds-sleep-hours" type="number" min="0" max="24" value="${sleep?Math.floor(sleep.minutes/60):''}" placeholder="e.g. 7"></div><div><label>Minutes</label><select id="ds-sleep-minutes"><option value="0">00 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option></select></div></div><p class="text-xs text-muted mt-2">Night ending on ${today()}</p><button onclick="dsSaveSleep()" class="mt-3 rounded-xl bg-primary text-white px-4 py-3 text-sm font-bold">${sleep?'Update sleep record':'Save sleep record'}</button>${sleep?'<button onclick="dsDeleteSleep()" class="ml-2 text-xs text-danger">Delete record</button>':''}</section><section class="ds-wellness-card"><h3 class="font-bold">Daily movement</h3><p class="text-2xl font-bold mt-2">${total} <small class="text-sm text-muted">minutes recorded today</small></p><div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3"><div><label>Activity type</label><select id="ds-activity-type"><option>Walking</option><option>Running</option><option>Cycling</option><option>Sports</option><option>Yoga / stretching</option><option>Other movement</option></select></div><div><label>Duration (minutes)</label><input id="ds-activity-minutes" type="number" min="1" max="1440" placeholder="e.g. 20"></div></div><button onclick="dsSaveActivity()" class="mt-3 rounded-xl bg-primary text-white px-4 py-3 text-sm font-bold">Save activity</button><div class="space-y-2 mt-4">${activities.map((a,i)=>`<div class="rounded-xl bg-surfaceLight/50 p-3 flex"><span class="flex-1 text-sm">${esc(a.type)} · ${a.minutes} min</span><button onclick="dsDeleteActivity(${i})" class="text-xs text-danger">Remove</button></div>`).join('')}</div></section><p class="text-xs text-muted">Saved to your Daily Space account and synchronised using the existing cloud-save system when signed in.</p></div>`;if(sleep)document.getElementById('ds-sleep-minutes').value=String(sleep.minutes%60);}
+ function persist(){saveState();if(lucide)lucide.createIcons();}function addWater(){let l=dayLog();l.waterGlasses=Math.max(0,(Number(l.waterGlasses)||0)+1);persist();health(document.getElementById('main-viewport'));}function undoWater(){let l=dayLog();l.waterGlasses=Math.max(0,(Number(l.waterGlasses)||0)-1);persist();health(document.getElementById('main-viewport'));}
+ function saveSleep(){let h=Number(document.getElementById('ds-sleep-hours')?.value),m=Number(document.getElementById('ds-sleep-minutes')?.value);if(!Number.isInteger(h)||h<0||h>24||![0,15,30,45].includes(m)||h*60+m<1||h*60+m>1440)return showToast('Enter a valid sleep duration.','warning');ensure();appState.wellness.sleepRecords[today()]={minutes:h*60+m,updatedAt:new Date().toISOString()};persist();health(document.getElementById('main-viewport'));showToast('Sleep record saved.','success');}function deleteSleep(){if(!confirm('Delete this sleep record?'))return;delete appState.wellness.sleepRecords[today()];persist();health(document.getElementById('main-viewport'));}
+ function saveActivity(){let type=document.getElementById('ds-activity-type')?.value,minutes=Number(document.getElementById('ds-activity-minutes')?.value);if(!Number.isInteger(minutes)||minutes<1||minutes>1440)return showToast('Enter activity duration in whole minutes.','warning');dayLog().activities.push({type,minutes,createdAt:new Date().toISOString()});persist();health(document.getElementById('main-viewport'));showToast('Activity saved.','success');}function deleteActivity(i){if(!confirm('Remove this activity record?'))return;dayLog().activities.splice(i,1);persist();health(document.getElementById('main-viewport'));}
+ function guard(c){const sections=[['lock-keyhole','Account Security','Learn about strong unique passwords, sign-in alerts, recovery options and multi-factor authentication.'],['shield-alert','Scam Awareness','Recognise urgency, impersonation, suspicious links and unexpected payment requests.'],['fingerprint','Privacy Centre','Review app permissions, location sharing, profile visibility and data-sharing choices.'],['smartphone','Device Safety','Keep your device and apps updated, use a screen lock and install apps from trusted sources.'],['book-open-check','Security Education','Learn about phishing, unsafe downloads, public Wi-Fi and social engineering.']];c.innerHTML=`<div class="p-5 md:p-9 max-w-5xl mx-auto space-y-5"><h2 class="text-3xl font-extrabold">SPACE GUARD</h2><p class="text-sm text-muted">Your personal digital safety centre. SPACE GUARD provides guidance; it does not scan your phone, accounts or network.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${sections.map(([i,t,d])=>`<article class="glass-panel rounded-2xl p-5"><i data-lucide="${i}" class="w-6 h-6 text-primary"></i><h3 class="font-bold mt-3">${t}</h3><p class="text-xs text-muted mt-2">${d}</p></article>`).join('')}</div><button onclick="router('guardai')" class="w-full glass-panel rounded-2xl p-5 text-left"><b>SPACE GUARD AI</b><p class="text-xs text-muted mt-1">Ask about suspicious messages, links and online safety.</p></button></div>`;}
+ function fashion(c){renderSpaceFashion(c);const b=document.createElement('button');b.className='w-full glass-panel rounded-2xl p-5 mt-4 text-left';b.innerHTML='<b>SPACE FASHION AI</b><p class="text-xs text-muted mt-1">Ask for colour combinations, outfit ideas and wardrobe planning.</p>';b.onclick=()=>router('fashionai');c.firstElementChild?.appendChild(b);}
+ function aiRoom(c,kind){ensure();const p=profiles[kind],items=appState.specialistAI[kind];c.innerHTML=`<section class="ds-special-ai-screen"><header class="flex items-center justify-between gap-3 border-b border-white/10 pb-3 shrink-0"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-2xl bg-primary/15 text-primary grid place-items-center"><i data-lucide="${p.icon}"></i></div><div><h2 class="font-bold text-lg">${p.name}</h2><p class="text-xs text-muted">${p.subtitle}</p></div></div><button onclick="dsClearAI('${kind}')" class="w-10 h-10 rounded-xl bg-surfaceLight" aria-label="Clear conversation"><i data-lucide="trash-2"></i></button></header><div id="ds-special-chat" class="ds-special-ai-chat" role="log" aria-live="polite">${items.length?items.map(m=>`<div class="flex ${m.role==='user'?'justify-end':'justify-start'}"><div class="max-w-[88%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${m.role==='user'?'bg-primary text-white':'bg-surfaceLight/80 border border-white/5'}">${esc(m.text).replace(/\n/g,'<br>')}</div></div>`).join(''):`<div class="flex justify-start"><div class="max-w-[88%] px-4 py-3 rounded-2xl text-sm bg-surfaceLight/80 border border-white/5">${esc(p.greeting)}</div></div>`}</div><div class="ds-special-ai-composer"><div class="flex items-end gap-2"><textarea id="ds-special-input" rows="1" placeholder="Message ${p.name}…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dsSendAI('${kind}');}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea><button onclick="dsSendAI('${kind}')" class="w-12 h-12 shrink-0 rounded-2xl bg-primary text-white grid place-items-center" aria-label="Send"><i data-lucide="send"></i></button></div><p class="text-[10px] text-muted mt-2 text-center">Uses your existing Daily Space Gemini connection. Never share passwords or OTPs.</p></div></section>`;const box=document.getElementById('ds-special-chat');if(box)box.scrollTop=box.scrollHeight;}
+ async function sendAI(kind){let input=document.getElementById('ds-special-input'),text=input?.value.trim();if(!text)return;if(!window.dailySpaceAI?.model)return showToast('SPACE AI is not ready yet.','warning');if(window.dailySpaceAI.isBusy)return;ensure();let p=profiles[kind],history=appState.specialistAI[kind];history.push({role:'user',text});input.value='';aiRoom(document.getElementById('main-viewport'),kind);let box=document.getElementById('ds-special-chat');box.insertAdjacentHTML('beforeend','<p id="ds-ai-thinking" class="text-xs text-muted p-3">Thinking…</p>');box.scrollTop=box.scrollHeight;window.dailySpaceAI.isBusy=true;saveState();try{const names={en:'English',ml:'Malayalam',hi:'Hindi',ta:'Tamil',te:'Telugu',kn:'Kannada',es:'Spanish',ar:'Arabic',fr:'French',pt:'Portuguese',ja:'Japanese',ko:'Korean',zh:'Simplified Chinese'},lang=names[appState.user.language||'en']||'English',context=history.slice(0,-1).slice(-10).map(x=>`${x.role==='user'?'User':p.name}: ${x.text}`).join('\n');const session=window.dailySpaceAI.model.startChat();const prompt=`${p.system}\nReply in ${lang}, unless user requests otherwise.\nPrevious conversation:\n${context||'None'}\nCurrent user message: ${text}\nRemember: you are ${p.name}.`;let result=await session.sendMessage(prompt),reply=result?.response?.text?.()||'I could not produce a response. Please try again.';history.push({role:'assistant',text:reply});}catch(e){console.error(p.name,e);history.push({role:'assistant',text:'I cannot connect right now. Please try again shortly.'});}finally{window.dailySpaceAI.isBusy=false;saveState();if(currentRoute===kind+'ai')aiRoom(document.getElementById('main-viewport'),kind);}}
+ function clearAI(kind){if(!confirm(`Clear ${profiles[kind].name} chat?`))return;ensure();appState.specialistAI[kind]=[];saveState();aiRoom(document.getElementById('main-viewport'),kind);}
+ window.dsAddWater=addWater;window.dsUndoWater=undoWater;window.dsSaveSleep=saveSleep;window.dsDeleteSleep=deleteSleep;window.dsSaveActivity=saveActivity;window.dsDeleteActivity=deleteActivity;window.dsSendAI=sendAI;window.dsClearAI=clearAI;
+ routeTitles['developer-security']='Developer Security Dashboard';routeTitles.growth='Growth';routeTitles.personalstats='Personal Statistics';routeTitles.xplevels='XP & Levels';routeTitles.healthai='SPACE HEALTH AI';routeTitles.guardai='SPACE GUARD AI';routeTitles.fashionai='SPACE FASHION AI';
+ window.router=router=function(route,add=true){if(route==='developer-security'){(async()=>{try{if(!currentFirebaseUser)return show(route,c=>{c.innerHTML='<div class="p-8 max-w-xl mx-auto"><h2 class="text-2xl font-bold">Developer Security Dashboard</h2><p class="text-sm text-muted mt-2">Administrator sign-in is required.</p></div>';},add);const token=await currentFirebaseUser.getIdTokenResult(true);if(token?.claims?.admin===true)show(route,originalDeveloperScanner,add);else show(route,c=>{c.innerHTML='<div class="p-8 max-w-xl mx-auto glass-panel rounded-2xl"><h2 class="text-2xl font-bold">Developer Security Dashboard</h2><p class="text-sm text-muted mt-2">Access denied. This dashboard requires a verified Firebase administrator custom claim.</p></div>';},add);}catch(e){show(route,c=>{c.innerHTML='<div class="p-8">Administrator verification could not be completed.</div>';},add);}})();return;}
+    if(route==='growth'){show(route,growth,add);return;}if(route==='personalstats'){show(route,personal,add);return;}if(route==='xplevels'){show(route,xpPage,add);return;}if(route==='analytics'){if(appState.user?.isPremium)show(route,analytics,add);else{show(route,v=>renderLockedFeature(v,'Analytics & Trends','Detailed Analytics & Trends is part of Daily Space PRO.','chart-no-axes-combined'),add);}return;}if(route==='achievements'){show(route,achievements,add);return;}if(route==='health'){document.body.classList.remove('ds-special-ai-active');originalRouter(route,add);return;}if(route==='guard'){show(route,guard,add);return;}if(route==='fashion'){document.body.classList.remove('ds-special-ai-active');originalRouter(route,add);setTimeout(()=>fashion(document.getElementById('main-viewport')),0);return;}if(route==='healthai'||route==='guardai'||route==='fashionai'){const k=route==='healthai'?'health':route==='guardai'?'guard':'fashion';show(route,c=>aiRoom(c,k),add);return;}if(route==='ai'){document.body.classList.add('ds-special-ai-active');originalRouter(route,add);return;}document.body.classList.remove('ds-special-ai-active','ai-keyboard-open');originalRouter(route,add);};
+ const oldRenderAI=renderAI;window.renderAI=renderAI=function(c){oldRenderAI(c);document.body.classList.add('ds-special-ai-active');};
+ window.renderSpaceHealth=renderSpaceHealth=health;window.renderSpaceGuard=renderSpaceGuard=guard;window.renderAnalytics=renderAnalytics=analytics;window.renderAchievements=renderAchievements=achievements;
+ const oldBack=goBackInApp;window.goBackInApp=goBackInApp=function(){if(['ai','healthai','guardai','fashionai'].includes(currentRoute)){document.body.classList.remove('ds-special-ai-active');if(routeHistory.length>1)routeHistory.pop();router(routeHistory.at(-1)||'home',false);return;}oldBack();};
+ // AI room keyboard: resize using the visual viewport where supported.
+ const adjustAI=()=>{if(document.body.classList.contains('ds-special-ai-active')){const box=document.getElementById('ds-special-chat')||document.getElementById('ai-chat-box');if(box)box.scrollTop=box.scrollHeight;}};window.addEventListener('resize',adjustAI);if(window.visualViewport)window.visualViewport.addEventListener('resize',adjustAI);
+/* Reversible cumulative achievement milestones. */
+ const dsMilestones=[...[[1,'First Task','Complete your first task'],[5,'Task Builder','Complete 5 tasks'],[10,'Task Momentum','Complete 10 tasks'],[25,'Task Champion','Complete 25 tasks'],[50,'Task Expert','Complete 50 tasks'],[100,'Task Legend','Complete 100 tasks']].map(([n,t,d])=>({id:100+n,title:t,desc:d,icon:'check-circle-2',kind:'tasks',target:n})),...[[1,'Habit Starter','Record a habit completion'],[5,'Habit Builder','Record 5 habit completions'],[10,'Habit Momentum','Record 10 habit completions'],[25,'Habit Champion','Record 25 habit completions'],[50,'Habit Expert','Record 50 habit completions']].map(([n,t,d])=>({id:200+n,title:t,desc:d,icon:'repeat',kind:'habits',target:n})),...[[1,'Focus Initiate','Complete 1 hour of focus'],[5,'Focus Builder','Complete 5 hours of focus'],[10,'Focus Champion','Complete 10 hours of focus'],[25,'Deep Work Expert','Complete 25 hours of focus']].map(([n,t,d])=>({id:300+n,title:t,desc:d,icon:'timer',kind:'focus',target:n})),...[[1,'Goal Achiever','Complete your first goal'],[3,'Goal Builder','Complete 3 goals'],[5,'Goal Champion','Complete 5 goals'],[10,'Goal Legend','Complete 10 goals']].map(([n,t,d])=>({id:400+n,title:t,desc:d,icon:'target',kind:'goals',target:n}))];
+ const dsEvaluateOriginal=evaluateAchievements;
+ window.evaluateAchievements=evaluateAchievements=function(){dsEvaluateOriginal();if(!Array.isArray(appState.achievementsList))appState.achievementsList=[];dsMilestones.forEach(m=>{if(!appState.achievementsList.some(a=>Number(a.id)===m.id))appState.achievementsList.push({...m,unlocked:false});});const totals={tasks:(appState.tasks||[]).filter(t=>t.completed).length,habits:(appState.habits||[]).reduce((n,h)=>n+(Array.isArray(h.completedDates)?h.completedDates.length:0),0),focus:(Number(appState.focusStats?.totalSeconds)||0)/3600,goals:(appState.goals||[]).filter(g=>g.status==='Completed'||Number(g.progress)>=100).length};dsMilestones.forEach(m=>{const a=appState.achievementsList.find(x=>Number(x.id)===m.id);if(!a)return;const yes=totals[m.kind]>=m.target;if(yes&&!a.unlocked){a.unlocked=true;a.unlockedAt=new Date().toISOString();showToast(`Achievement unlocked: ${a.title}`,'success');}else if(!yes&&a.unlocked){a.unlocked=false;delete a.unlockedAt;showToast(`Achievement relocked: ${a.title}`,'info');}});};
 
-    // Extend the original router rather than replacing its existing route handlers.
-    window.router = router = function(route,addHistory=true){
-        if(route==='tasks')route='routine';
-        if(route==='spacegames')route='games';
-        if(route==='growth'){dsCustomNavigate('growth',dsRenderGrowth,addHistory);return;}
-        if(route==='guardai'){dsCustomNavigate('guardai',v=>dsRenderSpecialist(v,'guard'),addHistory);return;}
-        if(route==='healthai'){dsCustomNavigate('healthai',v=>dsRenderSpecialist(v,'health'),addHistory);return;}
-        if(route==='fashionai'){dsCustomNavigate('fashionai',v=>dsRenderSpecialist(v,'fashion'),addHistory);return;}
-        if(route==='home'){dsOriginalRouter('home',addHistory);const back=document.querySelector('.ds-mobile-toolbar button[aria-label="Go back"]');if(back)back.style.visibility='hidden';return;}
-        if(route==='analytics'||route==='calendar'||route==='games'){
-            // These personal productivity features remain accessible; PRO can still be used for subscription-only extras.
-            const vp=document.getElementById('main-viewport');
-            if(addHistory&&route!==currentRoute){if(routeHistory[routeHistory.length-1]!==route)routeHistory.push(route);try{history.pushState({dailySpace:true,route},'',`#${route}`)}catch(e){}}
-            currentRoute=route;document.body.classList.remove('ai-fullscreen','ai-keyboard-open');if(vp){vp.innerHTML='';if(route==='analytics')dsRenderAnalytics(vp);else if(route==='calendar')renderCalendar(vp);else renderGames(vp);}
-            dsSetNav(route);return;
-        }
-        dsOriginalRouter(route,addHistory);
-        dsSetNav(route);
-    };
-    window.goBackInApp = goBackInApp = function(){
-        if(currentRoute==='games'&&currentGameId){exitBrainGame();return;}
-        if(currentRoute==='habits'&&activeHabitCalendarId!==null){activeHabitCalendarId=null;renderHabits(document.getElementById('main-viewport'));return;}
-        if(currentRoute==='goals'&&activeGoalDetailId!==null){activeGoalDetailId=null;renderGoals(document.getElementById('main-viewport'));return;}
-        if(currentRoute==='selfcontrol'&&activeSelfControlCalendarId!==null){activeSelfControlCalendarId=null;renderSelfControl(document.getElementById('main-viewport'));return;}
-        if(currentRoute!=='home'){
-            if(routeHistory.length>1)routeHistory.pop();
-            const previous=routeHistory[routeHistory.length-1]||'home';
-            router(previous,false);
-            try{history.replaceState({dailySpace:true,route:previous},'',`#${previous}`)}catch(e){}
-            return;
-        }
-        showExitConfirmation();
-    };
-
-    // Core homepage: exact six-card specification.
-    window.renderDashboard = renderDashboard = dsRenderHome;
-    window.renderSpaceHealth = renderSpaceHealth = dsRenderHealth;
-    window.renderSpaceFashion = renderSpaceFashion = dsRenderFashion;
-    window.renderAnalytics = renderAnalytics = dsRenderAnalytics;
-    window.dsHealthAdjust=dsHealthAdjust;window.dsSaveHealthNote=dsSaveHealthNote;
-    window.dsSendSpecialist=dsSendSpecialist;window.dsClearSpecialist=dsClearSpecialist;
-
-    // Keep the complete hub; only rename Brain Gym in its catalogue.
-    const gamesFeature=SPACE_FEATURES.find(x=>x[0]==='games');if(gamesFeature){gamesFeature[1]='SPACE GAMES';gamesFeature[2]='Memory, logic and brain games';}
-    routeTitles.growth='Growth';routeTitles.guardai='SPACE GUARD AI';routeTitles.healthai='SPACE HEALTH AI';routeTitles.fashionai='SPACE FASHION AI';
-    // The hub cards use the exact six chosen on Home; full hub remains the full feature directory.
-    window.addEventListener('load',()=>{dsSetNav(currentRoute);});
-
-    // Specialist assistants are also discoverable from the full SPACE HUB.
-    const dsOldHubRender=renderSpaceHub;
-    window.renderSpaceHub=renderSpaceHub=function(container){
-        dsOldHubRender(container);
-        const wrap=document.createElement('section');
-        wrap.className='max-w-7xl mx-auto w-full px-5 md:px-10 pb-8';
-        wrap.innerHTML=`<div class="ds-section-head"><div><h3>Specialist AI Assistants</h3><p class="text-xs text-muted mt-1">Focused support, powered by the existing Gemini connection.</p></div></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${[['guardai','SPACE GUARD AI','Digital safety','shield-check'],['healthai','SPACE HEALTH AI','Wellness education','heart-pulse'],['fashionai','SPACE FASHION AI','Personal style','shirt']].map(([r,t,d,i])=>`<button onclick="router('${r}')" class="ds-tool-card text-left"><span class="ds-hub-icon"><i data-lucide="${i}"></i></span><b class="block mt-3">${t}</b><small class="text-muted">${d}</small></button>`).join('')}</div>`;
-        container.appendChild(wrap);
-        if(window.lucide)lucide.createIcons();
-    };
-
-
-    // Re-run the real in-page checks on demand and retain a short history; never claim to scan the device.
-    const dsOriginalGuardCheck=runSpaceGuardChecks;
-    window.runSpaceGuardChecks=runSpaceGuardChecks=function(showResult=false){
-        const report=dsOriginalGuardCheck(false);
-        appState.securityHistory=Array.isArray(appState.securityHistory)?appState.securityHistory:[];
-        appState.securityHistory.unshift({at:report.checkedAt,ok:report.ok,findings:report.matches.length+report.insecure.length+report.duplicateIds.length});
-        appState.securityHistory=appState.securityHistory.slice(0,20);saveState();
-        if(showResult)return dsOriginalGuardCheck(true);
-        return report;
-    };
-    // Open specialist AI from the existing feature pages.
-    const oldGuardRender=renderSpaceGuard;
-    window.renderSpaceGuard=renderSpaceGuard=function(container){
-        oldGuardRender(container);
-        const target=container.querySelector('.max-w-4xl')||container;
-        if(!container.querySelector('[data-guard-ai-link]')){
-            const btn=document.createElement('button');btn.dataset.guardAiLink='1';btn.className='mt-4 w-full ds-tool-card text-left';btn.innerHTML='<b>SPACE GUARD AI</b><p class="text-xs text-muted mt-1">Ask about privacy, suspicious messages and account protection.</p>';btn.onclick=()=>router('guardai');target.appendChild(btn);
-        }
-    };
-    // Avoid a false claim that UPI handoff means a successful subscription.
-    const oldPayment=executeRazorpayPayment;
-    window.executeRazorpayPayment=executeRazorpayPayment=function(){
-        if(!selectedUpiApp){showToast('Select Google Pay, PhonePe or Paytm first.','warning');return;}
-        const ok=confirm('Daily Space will open your selected UPI app. Payment is not verified by this website, and PRO will not activate automatically. Continue?');
-        if(ok)oldPayment();
-    };
-
-    function dsRenderEmailComposer(container){
-        const sender=currentFirebaseUser?.email||'Not signed in';
-        container.innerHTML=`<div class="p-5 md:p-9 max-w-3xl mx-auto w-full space-y-5"><header><span class="ds-pill">COMMUNICATION</span><h2 class="text-3xl font-extrabold mt-3">Email Composer</h2><p class="text-sm text-muted mt-2">Prepare an email using your signed-in account as the visible sender identity.</p></header>
-          <section class="ds-tool-card space-y-3"><div class="rounded-xl bg-surfaceLight/50 p-3"><p class="text-[10px] uppercase tracking-widest text-muted font-bold">From · Signed-in account</p><p class="text-sm font-semibold mt-1">${dsSafe(sender)}</p><p class="text-[10px] text-muted mt-1">Your email app controls which account actually sends the message.</p></div>
-          <label class="block text-xs font-bold text-muted">TO<input id="ds-email-to" type="email" class="w-full mt-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm" placeholder="recipient@example.com"></label>
-          <label class="block text-xs font-bold text-muted">SUBJECT<input id="ds-email-subject" class="w-full mt-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm" placeholder="Email subject"></label>
-          <label class="block text-xs font-bold text-muted">MESSAGE<textarea id="ds-email-body" rows="7" class="w-full mt-1 rounded-xl bg-surfaceLight border border-white/10 p-3 text-sm" placeholder="Write your email…"></textarea></label>
-          <div class="flex flex-wrap gap-2"><button onclick="dsCopyEmailDraft()" class="px-4 py-3 rounded-xl bg-surfaceLight text-sm font-bold">Copy draft</button><button onclick="dsOpenEmailApp()" class="px-4 py-3 rounded-xl bg-primary text-white text-sm font-bold">Open email app</button></div></section>
-          <p class="text-xs text-muted">This creates a draft only. Daily Space does not have permission to send email directly. Check the From account in your email app before sending.</p></div>`;
-    }
-    function dsEmailValues(){return {to:document.getElementById('ds-email-to')?.value.trim()||'',subject:document.getElementById('ds-email-subject')?.value||'',body:document.getElementById('ds-email-body')?.value||''};}
-    function dsCopyEmailDraft(){const v=dsEmailValues();const text=`To: ${v.to}\nSubject: ${v.subject}\n\n${v.body}`;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>showToast('Email draft copied.','success')).catch(()=>showToast('Could not copy. Please select and copy the draft.','warning'));else showToast('Clipboard is unavailable in this browser.','warning');}
-    function dsOpenEmailApp(){const v=dsEmailValues();if(!v.to||!v.to.includes('@'))return showToast('Enter a valid recipient email address.','warning');const url='mailto:'+encodeURIComponent(v.to)+'?subject='+encodeURIComponent(v.subject)+'&body='+encodeURIComponent(v.body);window.location.href=url;}
-    window.dsCopyEmailDraft=dsCopyEmailDraft;window.dsOpenEmailApp=dsOpenEmailApp;
-    const dsRouterBeforeEmail=router;
-    window.router=router=function(route,addHistory=true){if(route==='email'){dsCustomNavigate('email',dsRenderEmailComposer,addHistory);return;}return dsRouterBeforeEmail(route,addHistory);};
-    const dsHubBeforeEmail=renderSpaceHub;
-    window.renderSpaceHub=renderSpaceHub=function(container){dsHubBeforeEmail(container);const card=document.createElement('button');card.className='ds-tool-card text-left mx-5 md:mx-10 mb-6';card.innerHTML='<span class="ds-hub-icon"><i data-lucide="mail"></i></span><b class="block mt-3">Email Composer</b><small class="text-muted">Draft emails with your signed-in sender account displayed.</small>';card.onclick=()=>router('email');container.appendChild(card);if(window.lucide)lucide.createIcons();};
-    routeTitles.email='Email Composer';
-
-    // Browser back should follow the app's actual in-app stack instead of forcing Home.
-    // Replace the legacy reset-to-home branch in its listener at the source level where possible.
 })();
 
 </script>
