@@ -4425,55 +4425,101 @@ ${JSON.stringify(userMessage)}
         const today=localDateKey();
         const validDate=value=>{const d=String(value||today);const x=new Date(d+'T12:00:00');return !Number.isNaN(x.getTime())&&localDateKey(x)===d?d:null;};
         const findByTitle=(list,name)=>{const q=String(name||'').trim().toLowerCase();return (list||[]).filter(x=>String(x.title||x.text||x.rule||'').trim().toLowerCase()===q);};
-        const refresh=route=>{saveState();if(route)router(route);else if(currentRoute==='ai'){renderAI(document.getElementById('main-viewport'));lucide.createIcons();}};
-        let item, matches, date;
+        const refresh=route=>{saveState();if(route){router(route);}else if(currentRoute==='ai'){renderAI(document.getElementById('main-viewport'));lucide.createIcons();}};
+        const unique=(list,name,label)=>{const found=findByTitle(list,name);if(found.length!==1)return {error:found.length?`More than one ${label} matches that name. Please be more specific.`:`I could not find that ${label}.`};return {item:found[0]};};
+        let item,matches,date;
         switch(action){
             case 'create_task':
                 if(!title)return {ok:false,message:'I need a task title before I can add it.'};
-                date=validDate(args.date);if(!date)return {ok:false,message:'That task date is invalid. Please specify a valid date.'};
-                item={id:Date.now(),title,date,time:String(args.time||'').trim()||'Anytime',category:String(args.category||'Personal'),priority:'Medium',completed:false};
-                appState.tasks.push(item);refresh();return {ok:true,message:`Added task “${item.title}” for ${date}${item.time!=='Anytime'?' at '+item.time:''}.`};
+                date=validDate(args.date);if(!date)return {ok:false,message:'That task date is invalid.'};
+                item={id:Date.now(),title,date,time:String(args.time||'').trim()||'Anytime',category:String(args.category||'Personal'),priority:['Low','Medium','High'].includes(args.priority)?args.priority:'Medium',completed:false};
+                appState.tasks.push(item);refresh();return {ok:true,message:`Added task “${item.title}” for ${date}.`};
             case 'complete_task':
-                matches=findByTitle(appState.tasks,title).filter(x=>!x.completed);if(matches.length!==1)return {ok:false,message:matches.length?'I found more than one matching task. Please specify its date.':'I could not find an unfinished task with that title.'};
+                matches=findByTitle(appState.tasks,title).filter(x=>!x.completed);if(matches.length!==1)return {ok:false,message:matches.length?'More than one unfinished task matches. Specify its date.':'I could not find an unfinished task with that title.'};
                 item=matches[0];item.completed=true;item.completedAt=new Date().toISOString();adjustXPEvent(`task:${item.id}`,10);if(!item.xpAwarded){item.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;}evaluateAchievements();refresh();return {ok:true,message:`Marked “${item.title}” complete.`};
             case 'delete_task':
-                matches=findByTitle(appState.tasks,title);if(matches.length!==1)return {ok:false,message:matches.length?'More than one task has that title. Please specify its date.':'I could not find that task.'};
-                if(!confirm(`Delete task “${matches[0].title}”?`))return {ok:false,message:'Deletion cancelled.'};appState.tasks=appState.tasks.filter(x=>x.id!==matches[0].id);refresh();return {ok:true,message:`Deleted task “${title}”.`};
+                ({item,error}=unique(appState.tasks,title,'task'));if(error)return {ok:false,message:error};if(!confirm(`Delete task “${item.title}”?`))return {ok:false,message:'Deletion cancelled.'};appState.tasks=appState.tasks.filter(x=>x.id!==item.id);refresh();return {ok:true,message:`Deleted task “${item.title}”.`};
             case 'create_habit':
-                if(!title)return {ok:false,message:'Please provide a habit name.'};appState.habits.push({id:Date.now(),title,category:String(args.category||'Personal'),frequency:'Daily',completedDates:[],completedToday:false,streak:0,targetDays:30});refresh('habits');return {ok:true,message:`Created habit “${title}”.`};
-            case 'complete_habit':
-            case 'pause_habit':case 'resume_habit':
-                matches=findByTitle(appState.habits,title);if(matches.length!==1)return {ok:false,message:matches.length?'More than one habit has that name.':'I could not find that habit.'};item=matches[0];
-                if(action==='complete_habit'){if(!isHabitScheduledDate(item,today))return {ok:false,message:'That habit is paused or not scheduled today.'};if(!Array.isArray(item.completedDates))item.completedDates=[];if(isHabitCompleteForPeriod(item,today))return {ok:true,message:`“${title}” is already marked complete for its current period.`};if(!item.completedDates.includes(today))item.completedDates.push(today);item.completedToday=true;}
-                else item.paused=action==='pause_habit';refresh('habits');return {ok:true,message:action==='complete_habit'?`Marked “${title}” complete for today.`:`${action==='pause_habit'?'Paused':'Resumed'} “${title}”.`};
+                if(!title)return {ok:false,message:'Please provide a habit name.'};if(findByTitle(appState.habits,title).length)return {ok:false,message:'A habit with that name already exists.'};
+                appState.habits.push({id:Date.now(),title,category:String(args.category||'Personal'),frequency:['Daily','Weekdays','Weekends','Weekly'].includes(args.frequency)?args.frequency:'Daily',completedDates:[],completedToday:false,streak:0,targetDays:30});refresh('habits');return {ok:true,message:`Created habit “${title}”.`};
+            case 'complete_habit':case 'pause_habit':case 'resume_habit':case 'delete_habit':
+                ({item,error}=unique(appState.habits,title,'habit'));if(error)return {ok:false,message:error};
+                if(action==='complete_habit'){if(!isHabitScheduledDate(item,today))return {ok:false,message:'That habit is paused or not scheduled today.'};if(!Array.isArray(item.completedDates))item.completedDates=[];if(isHabitCompleteForPeriod(item,today))return {ok:true,message:`“${title}” is already complete for today.`};if(!item.completedDates.includes(today))item.completedDates.push(today);item.completedToday=true;item.streak=getHabitStreak(item);}
+                else if(action==='pause_habit'||action==='resume_habit'){if(action==='pause_habit'&&!item.paused){if(typeof toggleHabitPause==='function')toggleHabitPause(item.id);else item.paused=true;}else if(action==='resume_habit'&&item.paused){if(typeof toggleHabitPause==='function')toggleHabitPause(item.id);else item.paused=false;}else return {ok:true,message:action==='pause_habit'?'That habit is already paused.':'That habit is already active.'};}
+                else {if(!confirm(`Delete habit “${item.title}” and its history?`))return {ok:false,message:'Deletion cancelled.'};appState.habits=appState.habits.filter(x=>x.id!==item.id);}
+                refresh('habits');return {ok:true,message:action==='complete_habit'?`Marked “${title}” complete for today.`:action==='delete_habit'?`Deleted habit “${title}”.`:`${action==='pause_habit'?'Paused':'Resumed'} “${title}”.`};
             case 'create_goal':
-                if(!title||!details)return {ok:false,message:'Please provide a goal title and at least one first step.'};item={id:Date.now(),title,category:String(args.category||'Personal'),steps:[{text:details,completed:false}],progress:0,status:'Active'};appState.goals.push(item);refresh('goals');return {ok:true,message:`Created goal “${title}” with first step “${details}”.`};
-            case 'add_goal_step':
-                matches=findByTitle(appState.goals,title);if(matches.length!==1||!details)return {ok:false,message:'Please specify one existing goal and the step to add.'};item=matches[0];normalizeGoal(item);item.steps.push({text:details,completed:false});normalizeGoal(item);refresh('goals');return {ok:true,message:`Added step to “${title}”: ${details}.`};
-            case 'complete_goal_step':
-                matches=findByTitle(appState.goals,title);if(matches.length!==1||!details)return {ok:false,message:'Please specify the goal and exact step.'};item=matches[0];normalizeGoal(item);const stepMatches=item.steps.filter(x=>x.text.toLowerCase()===details.toLowerCase());if(stepMatches.length!==1)return {ok:false,message:'I could not identify exactly one matching step.'};stepMatches[0].completed=true;normalizeGoal(item);evaluateAchievements();refresh('goals');return {ok:true,message:`Completed step “${details}” in “${title}”.`};
+                if(!title||!details)return {ok:false,message:'Please provide a goal title and its first step.'};item={id:Date.now(),title,category:String(args.category||'Personal'),steps:[{text:details,completed:false}],progress:0,status:'Active'};appState.goals.push(item);refresh('goals');return {ok:true,message:`Created goal “${title}” with first step “${details}”.`};
+            case 'add_goal_step':case 'complete_goal_step':
+                ({item,error}=unique(appState.goals,title,'goal'));if(error)return {ok:false,message:error};if(!details)return {ok:false,message:'Please provide the exact step text.'};normalizeGoal(item);
+                if(action==='add_goal_step'){item.steps.push({text:details,completed:false});normalizeGoal(item);}
+                else {const sm=item.steps.filter(x=>String(x.text).toLowerCase()===details.toLowerCase());if(sm.length!==1)return {ok:false,message:'I could not identify exactly one matching goal step.'};sm[0].completed=true;normalizeGoal(item);evaluateAchievements();}
+                refresh('goals');return {ok:true,message:action==='add_goal_step'?`Added step to “${title}”.`:`Completed “${details}” in “${title}”.`};
+            case 'delete_goal':
+                ({item,error}=unique(appState.goals,title,'goal'));if(error)return {ok:false,message:error};if(!confirm(`Delete goal “${item.title}” and its steps?`))return {ok:false,message:'Deletion cancelled.'};appState.goals=appState.goals.filter(x=>x.id!==item.id);evaluateAchievements();refresh('goals');return {ok:true,message:`Deleted goal “${item.title}”.`};
             case 'create_journal_entry':
                 if(!details)return {ok:false,message:'Please provide the journal text to save.'};if(!Array.isArray(appState.journalEntries))appState.journalEntries=[];appState.journalEntries.push({date:new Date().toISOString(),text:details});refresh('journal');return {ok:true,message:'Your journal entry has been saved.'};
             case 'add_self_control_commitment':
-                if(!details)return {ok:false,message:'Please describe the commitment.'};if(!Array.isArray(appState.selfControlItems))appState.selfControlItems=[];appState.selfControlItems.push({id:Date.now(),text:details,startDate:today,completedDates:[]});refresh('selfcontrol');return {ok:true,message:'Your self-control commitment has been added, starting today.'};
+                if(!details)return {ok:false,message:'Please describe the commitment.'};if(!Array.isArray(appState.selfControlItems))appState.selfControlItems=[];appState.selfControlItems.push({id:Date.now(),text:details,startDate:today,completedDates:[]});refresh('selfcontrol');return {ok:true,message:'Your self-control commitment has been added.'};
             case 'add_personal_rule':
                 if(!details)return {ok:false,message:'Please describe the personal rule.'};if(!Array.isArray(appState.rules))appState.rules=[];appState.rules.push({id:Date.now(),rule:details});refresh('selfcontrol');return {ok:true,message:'Your personal rule has been saved.'};
+            case 'toggle_self_control_date':
+                ({item,error}=unique(appState.selfControlItems,args.commitment||title,'commitment'));if(error)return {ok:false,message:error};date=validDate(args.date);if(!date||date>today||(item.startDate&&date<item.startDate))return {ok:false,message:'That date cannot be marked for this commitment.'};if(!Array.isArray(item.completedDates))item.completedDates=[];item.completedDates=item.completedDates.includes(date)?item.completedDates.filter(x=>x!==date):[...item.completedDates,date];item.completedDates.sort();refresh('selfcontrol');return {ok:true,message:`Updated commitment “${item.text}” for ${date}.`};
             case 'record_transaction':
-                const amount=Number(args.amount);date=validDate(args.date);if(!title||!Number.isFinite(amount)||amount<=0||!date||!['income','expense'].includes(args.transactionType))return {ok:false,message:'To record this, I need a title, positive amount, income or expense type, and valid date.'};appState.expenses.push({id:Date.now(),title,amount,type:args.transactionType,date,category:String(args.category||'AI entry'),paymentMethod:'',notes:'Added with SPACE AI'});refresh('finance');return {ok:true,message:`Recorded ${args.transactionType} of ₹${amount.toFixed(2)} for “${title}”.`};
+                const amount=Number(args.amount);date=validDate(args.date);if(!title||!Number.isFinite(amount)||amount<=0||!date||!['income','expense'].includes(args.transactionType))return {ok:false,message:'I need a title, positive amount, income or expense type, and valid date.'};appState.expenses.push({id:Date.now(),title,amount,type:args.transactionType,date,category:String(args.category||'AI entry'),paymentMethod:'',notes:'Added with SPACE AI'});refresh('finance');return {ok:true,message:`Recorded ${args.transactionType} of ₹${amount.toFixed(2)} for “${title}”.`};
             case 'set_monthly_budget':
-                const budget=Number(args.amount);if(!Number.isFinite(budget)||budget<0)return {ok:false,message:'Please provide a valid non-negative budget amount.'};const month=today.slice(0,7);if(!appState.financeBudgets)appState.financeBudgets={};appState.financeBudgets[month]={...(appState.financeBudgets[month]||{}),total:budget};refresh('finance');return {ok:true,message:`Saved this month's budget as ₹${budget.toFixed(2)}.`};
+                const budget=Number(args.amount);if(!Number.isFinite(budget)||budget<0)return {ok:false,message:'Please provide a valid non-negative budget.'};const month=today.slice(0,7);if(!appState.financeBudgets)appState.financeBudgets={};appState.financeBudgets[month]={...(appState.financeBudgets[month]||{}),total:budget};refresh('finance');return {ok:true,message:`Saved this month's budget as ₹${budget.toFixed(2)}.`};
             case 'start_focus_timer':
                 const mins=Number(args.durationMinutes);if(!Number.isInteger(mins)||mins<1||mins>1439)return {ok:false,message:'Choose a focus duration from 1 to 1439 minutes.'};if(isFocusRunning)return {ok:false,message:'A focus session is already running.'};router('focus');setFocusDuration(mins);toggleFocusTimer();return {ok:true,message:`Started a ${mins}-minute focus session.`};
             case 'pause_focus_timer':if(!isFocusRunning)return {ok:false,message:'The focus timer is not running.'};router('focus');toggleFocusTimer();return {ok:true,message:'Paused the focus timer.'};
             case 'resume_focus_timer':if(isFocusRunning)return {ok:false,message:'The focus timer is already running.'};router('focus');toggleFocusTimer();return {ok:true,message:'Resumed the focus timer.'};
             case 'stop_focus_timer':router('focus');stopFocusTimer();return {ok:true,message:'Stopped and reset the focus timer.'};
-            case 'navigate':
-                const routeMap={'home':'home','tasks':'routine','daily routine':'routine','routine':'routine','habits':'habits','goals':'goals','calendar':'calendar','self-control':'selfcontrol','self control':'selfcontrol','focus':'focus','focus timer':'focus','finance':'finance','expenses':'finance','analytics':'analytics','games':'games','journal':'journal','achievements':'achievements','settings':'profile','profile':'profile','space hub':'spacehub','space clock':'clock','space guard':'guard','space health':'health','space fashion':'fashion'};const route=routeMap[String(args.destination||'').toLowerCase()];if(!route)return {ok:false,message:'That section is not available to open.'};router(route);return {ok:true,message:`Opened ${args.destination}.`};
+            case 'create_routine_activity':
+                if(!title)return {ok:false,message:'Please provide a routine activity name.'};const weekdays=Array.isArray(args.weekdays)?args.weekdays.map(Number).filter(x=>Number.isInteger(x)&&x>=0&&x<=6):[1,2,3,4,5];if(!weekdays.length)return {ok:false,message:'Choose at least one weekday.'};const duration=Math.max(1,Math.min(1440,Number(args.durationMinutes)||30));const time=String(args.time||'07:00');if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(time))return {ok:false,message:'Use a 24-hour time such as 07:30.'};appState.routineActivities.push({id:Date.now(),title,time,duration,weekdays,active:true,completedDates:[]});refresh('routine');return {ok:true,message:`Added “${title}” to your routine.`};
             case 'toggle_routine_activity':
-                matches=(appState.routineActivities||[]).filter(x=>String(x.title||'').toLowerCase()===title.toLowerCase());if(matches.length!==1)return {ok:false,message:'I could not identify exactly one routine activity.'};item=matches[0];const key=today;if(!Array.isArray(item.completedDates))item.completedDates=[];if(item.completedDates.includes(key))item.completedDates=item.completedDates.filter(x=>x!==key);else item.completedDates.push(key);refresh('routine');return {ok:true,message:`Updated today's completion for routine activity “${title}”.`};
+                matches=(appState.routineActivities||[]).filter(x=>String(x.title||'').toLowerCase()===title.toLowerCase());if(matches.length!==1)return {ok:false,message:'I could not identify exactly one routine activity.'};item=matches[0];if(!Array.isArray(item.completedDates))item.completedDates=[];item.completedDates=item.completedDates.includes(today)?item.completedDates.filter(x=>x!==today):[...item.completedDates,today];refresh('routine');return {ok:true,message:`Updated today's completion for routine activity “${title}”.`};
+            case 'start_game':
+                const gameId=String(args.gameId||'');if(!['memory','math','pattern','scramble'].includes(gameId))return {ok:false,message:'Choose Memory Matrix, Speed Math, Pattern Logic, or Word Scramble.'};if(!appState.user?.isPremium&&gameId!=='memory')return {ok:false,message:'That game requires Daily Space PRO. I have not started it.'};router('games');startBrainGame(gameId);return {ok:true,message:`Opened ${gameId==='memory'?'Memory Matrix':gameId==='math'?'Speed Math':gameId==='pattern'?'Pattern Logic':'Word Scramble'}.`};
+            case 'set_game_difficulty':
+                const diff=String(args.difficulty||'');if(!['easy','moderate','difficult'].includes(diff))return {ok:false,message:'Choose easy, moderate, or difficult.'};gameDifficulty=diff;saveState();if(currentRoute==='games')renderGames(document.getElementById('main-viewport'));return {ok:true,message:`Game difficulty set to ${diff}.`};
+            case 'set_primary_timezone':
+                const zone=String(args.timezone||'');try{new Intl.DateTimeFormat('en',{timeZone:zone});}catch(e){return {ok:false,message:'That timezone is not recognised.'};}appState.user.primaryTimeZone=zone;refresh('clock');return {ok:true,message:`Primary clock timezone set to ${zone}.`};
+            case 'add_world_clock':
+                const worldZone=String(args.timezone||'');try{new Intl.DateTimeFormat('en',{timeZone:worldZone});}catch(e){return {ok:false,message:'That timezone is not recognised.'};}if(!Array.isArray(appState.user.worldTimeZones))appState.user.worldTimeZones=[];if(worldZone!==appState.user.primaryTimeZone&&!appState.user.worldTimeZones.includes(worldZone))appState.user.worldTimeZones.push(worldZone);refresh('clock');return {ok:true,message:`Added world clock for ${worldZone}.`};
+            case 'remove_world_clock':
+                const removeZone=String(args.timezone||'');if(!(appState.user.worldTimeZones||[]).includes(removeZone))return {ok:false,message:'That world clock was not found.'};appState.user.worldTimeZones=appState.user.worldTimeZones.filter(z=>z!==removeZone);refresh('clock');return {ok:true,message:`Removed world clock for ${removeZone}.`};
+            case 'set_preference':
+                const setting=String(args.setting||''),value=String(args.value??'');
+                if(setting==='theme'){if(!['aurora-black','pure-light','aurora-purple','emerald'].includes(value))return {ok:false,message:'Choose a supported theme.'};setTheme(value);}
+                else if(setting==='language'){if(!['en','ml','hi','ta','te','kn','es','ar','fr','pt','ja','ko','zh'].includes(value))return {ok:false,message:'That language is not supported.'};appState.user.language=value;saveState();}
+                else if(setting==='voiceRepliesEnabled'){appState.user.voiceRepliesEnabled=value==='true';saveState();}
+                else if(setting==='clockFormat'){if(!['12h','24h'].includes(value))return {ok:false,message:'Choose 12h or 24h.'};appState.user.clockFormat=value;saveState();}
+                else if(setting==='profileName'){if(!value.trim()||value.length>60)return {ok:false,message:'Enter a profile name up to 60 characters.'};appState.user.name=value.trim();saveState();}
+                else if(setting==='profileTitle'){if(!value.trim()||value.length>80)return {ok:false,message:'Enter a profile title up to 80 characters.'};appState.user.title=value.trim();saveState();}
+                else return {ok:false,message:'That setting is not connected to SPACE AI.'};
+                return {ok:true,message:`Updated ${setting}.`};
+            case 'navigate':
+                const routeMap={'home':'home','space hub':'spacehub','space health':'health','space fashion':'fashion','space guard':'guard','space clock':'clock','journal':'journal','tasks':'routine','daily routine':'routine','routine':'routine','habits':'habits','goals':'goals','calendar':'calendar','self-control':'selfcontrol','self control':'selfcontrol','focus':'focus','focus center':'focus','focus timer':'focus','finance':'finance','expenses':'finance','analytics':'analytics','games':'games','brain gym':'games','achievements':'achievements','settings':'profile','profile':'profile'};const route=routeMap[String(args.destination||'').toLowerCase()];if(!route)return {ok:false,message:'That section is not available to open.'};router(route);return {ok:true,message:`Opened ${args.destination}.`};
+            case 'get_feature_data':
+                const feature=String(args.feature||'').toLowerCase();
+                if(feature==='tasks')return {ok:true,data:(appState.tasks||[]).map(x=>({title:x.title,date:x.date,completed:!!x.completed,priority:x.priority||'Medium'}))};
+                if(feature==='habits')return {ok:true,data:(appState.habits||[]).map(x=>({title:x.title,frequency:x.frequency,paused:!!x.paused,completedToday:(x.completedDates||[]).includes(today),streak:getHabitStreak(x)}))};
+                if(feature==='goals')return {ok:true,data:(appState.goals||[]).map(x=>{normalizeGoal(x);return {title:x.title,status:x.status,progress:x.progress,steps:x.steps.map(z=>({text:z.text,completed:!!z.completed}))};})};
+                if(feature==='routine')return {ok:true,data:(appState.routineActivities||[]).map(x=>({title:x.title,time:x.time,duration:x.duration,active:x.active!==false,completedToday:(x.completedDates||[]).includes(today)}))};
+                if(feature==='journal')return {ok:true,data:(appState.journalEntries||[]).slice(-10).map(x=>({date:x.date,text:x.text}))};
+                if(feature==='finance')return {ok:true,data:(appState.expenses||[]).slice(-30).map(x=>({title:x.title,type:x.type,amount:x.amount,date:x.date,category:x.category}))};
+                if(feature==='self-control')return {ok:true,data:{commitments:(appState.selfControlItems||[]).map(x=>({text:x.text,successfulDays:(x.completedDates||[]).length})),rules:(appState.rules||[]).map(x=>x.rule)}};
+                if(feature==='focus')return {ok:true,data:{running:isFocusRunning,remainingSeconds:focusSecondsRemaining,totalSeconds:Number(appState.focusStats?.totalSeconds)||0,sessions:(appState.focusStats?.sessions||[]).length}};
+                if(feature==='games')return {ok:true,data:appState.gameStats||{}};
+                if(feature==='achievements')return {ok:true,data:(appState.achievementsList||[]).map(x=>({title:x.title,unlocked:!!x.unlocked}))};
+                if(feature==='analytics')return {ok:true,data:{tasksCompleted:(appState.tasks||[]).filter(x=>x.completed).length,taskCount:(appState.tasks||[]).length,habitCount:(appState.habits||[]).length,goalCount:(appState.goals||[]).length,focusMinutes:Math.round((Number(appState.focusStats?.totalSeconds)||0)/60),income:(appState.expenses||[]).filter(x=>x.type==='income').reduce((n,x)=>n+(Number(x.amount)||0),0),expenses:(appState.expenses||[]).filter(x=>x.type!=='income').reduce((n,x)=>n+(Number(x.amount)||0),0)}};
+                if(feature==='settings')return {ok:true,data:{theme:appState.user.theme,language:appState.user.language,voiceRepliesEnabled:!!appState.user.voiceRepliesEnabled,clockFormat:appState.user.clockFormat,profileName:appState.user.name,profileTitle:appState.user.title}};
+                if(feature==='clock')return {ok:true,data:{primaryTimeZone:appState.user.primaryTimeZone||Intl.DateTimeFormat().resolvedOptions().timeZone,clockFormat:appState.user.clockFormat||'12h',worldTimeZones:appState.user.worldTimeZones||[]}};
+                if(feature==='calendar')return {ok:true,data:{selectedDate:`${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-${String(selectedCalendarDay).padStart(2,'0')}`,specialDay:SPECIAL_DAYS_DATABASE[`${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-${String(selectedCalendarDay).padStart(2,'0')}`]||null}};
+                return {ok:false,message:'Choose a supported feature: tasks, habits, goals, routine, journal, finance, self-control, focus, games, achievements, analytics, settings, or calendar.'};
             case 'get_app_summary':
-                const ts=appState.tasks||[],hs=appState.habits||[],gs=appState.goals||[],todayTasks=ts.filter(x=>x.date===today);return {ok:true,summary:{date:today,tasks:{total:ts.length,completed:ts.filter(x=>x.completed).length,today:todayTasks.map(x=>({title:x.title,completed:!!x.completed}))},habits:hs.map(x=>({title:x.title,paused:!!x.paused,completedToday:(x.completedDates||[]).includes(today)})),goals:gs.map(x=>({title:x.title,progress:x.progress||0,status:x.status||'Active'})),journalEntries:(appState.journalEntries||[]).length,selfControlCommitments:(appState.selfControlItems||[]).length,focusMinutes:Math.round((Number(appState.focusStats?.totalSeconds)||0)/60),transactions:(appState.expenses||[]).length}};
-            default:return {ok:false,message:'That action is not supported yet. I have not changed anything.'};
+                const ts=appState.tasks||[],hs=appState.habits||[],gs=appState.goals||[],todayTasks=ts.filter(x=>x.date===today),due=hs.filter(x=>isHabitScheduledDate(x,today));return {ok:true,summary:{date:today,tasks:{total:ts.length,completed:ts.filter(x=>x.completed).length,today:todayTasks.map(x=>({title:x.title,completed:!!x.completed}))},habits:{total:hs.length,dueToday:due.length,completedToday:due.filter(x=>isHabitCompleteForPeriod(x,today)).length},goals:gs.map(x=>({title:x.title,progress:x.progress||0,status:x.status||'Active'})),routineActivities:(appState.routineActivities||[]).length,journalEntries:(appState.journalEntries||[]).length,selfControlCommitments:(appState.selfControlItems||[]).length,personalRules:(appState.rules||[]).length,focusMinutes:Math.round((Number(appState.focusStats?.totalSeconds)||0)/60),transactions:(appState.expenses||[]).length,achievementsUnlocked:(appState.achievementsList||[]).filter(x=>x.unlocked).length,gameStats:appState.gameStats||{}}};
+            default:return {ok:false,message:'That action is not supported. Nothing was changed.'};
         }
     }
 
@@ -4905,11 +4951,12 @@ await saveAIPersonalMemory(txt);
 
         window.dailySpaceAI.isBusy = false;
 
-
-
-        renderAI(document.getElementById('main-viewport'));
-
-        lucide.createIcons();
+        // A Gemini tool may have navigated to another app section while this
+        // request was in flight. Never overwrite that section with the AI chat.
+        if (currentRoute === 'ai') {
+            renderAI(document.getElementById('main-viewport'));
+            lucide.createIcons();
+        }
 
     }
 
@@ -5245,7 +5292,7 @@ window.sendAIMessage = sendAIMessage;
             description: "Perform a supported action inside the user's Daily Space app, or retrieve a saved app summary. Use this for requests to create, update, complete, navigate, or inspect app features. Never claim success without the returned result.",
             parameters: Schema.object({
                 properties: {
-                    action: Schema.string({description:"Action to perform", enum:["create_task","complete_task","delete_task","create_habit","complete_habit","pause_habit","resume_habit","create_goal","add_goal_step","complete_goal_step","create_journal_entry","add_self_control_commitment","add_personal_rule","record_transaction","set_monthly_budget","start_focus_timer","pause_focus_timer","resume_focus_timer","stop_focus_timer","navigate","get_app_summary","toggle_routine_activity"]}),
+                    action: Schema.string({description:"Action to perform", enum:["create_task","complete_task","delete_task","create_habit","complete_habit","pause_habit","resume_habit","delete_habit","create_goal","add_goal_step","complete_goal_step","delete_goal","create_journal_entry","add_self_control_commitment","add_personal_rule","toggle_self_control_date","record_transaction","set_monthly_budget","start_focus_timer","pause_focus_timer","resume_focus_timer","stop_focus_timer","create_routine_activity","toggle_routine_activity","start_game","set_game_difficulty","set_primary_timezone","add_world_clock","remove_world_clock","set_preference","navigate","get_feature_data","get_app_summary"]}),
                     title: Schema.string({description:"Task, habit, goal, transaction, rule, commitment, or activity name. Optional when not needed."}),
                     date: Schema.string({description:"Date in YYYY-MM-DD format. For tasks and transactions; use the user's local date when appropriate."}),
                     time: Schema.string({description:"Optional task time, such as 6:30 PM."}),
@@ -5254,9 +5301,19 @@ window.sendAIMessage = sendAIMessage;
                     amount: Schema.number({description:"Positive transaction amount or monthly budget amount."}),
                     transactionType: Schema.string({description:"income or expense."}),
                     durationMinutes: Schema.integer({description:"Focus timer duration in minutes."}),
-                    destination: Schema.string({description:"App section to open, e.g. home, tasks, habits, goals, calendar, self-control, focus, finance, analytics, games, journal, achievements, settings, space hub, space clock, space guard, space health, space fashion."})
+                    destination: Schema.string({description:"App section to open, e.g. home, tasks, habits, goals, calendar, self-control, focus, finance, analytics, games, journal, achievements, settings, space hub, space clock, space guard, space health, space fashion."}),
+                    feature: Schema.string({description:"Feature data to inspect: tasks, habits, goals, routine, journal, finance, self-control, focus, games, achievements, analytics, settings, or calendar."}),
+                    setting: Schema.string({description:"Preference to update: theme, language, voiceRepliesEnabled, clockFormat, profileName, or profileTitle."}),
+                    value: Schema.string({description:"New preference value."}),
+                    priority: Schema.string({description:"Task priority: Low, Medium, or High."}),
+                    frequency: Schema.string({description:"Habit frequency: Daily, Weekdays, Weekends, or Weekly."}),
+                    weekdays: Schema.array({items:Schema.integer(),description:"Routine weekdays, where Sunday is 0 and Saturday is 6."}),
+                    commitment: Schema.string({description:"Name of a self-control commitment."}),
+                    gameId: Schema.string({description:"Game id: memory, math, pattern, or scramble."}),
+                    difficulty: Schema.string({description:"Game difficulty: easy, moderate, or difficult."}),
+                    timezone: Schema.string({description:"IANA timezone name, such as Asia/Kolkata or Europe/London."})
                 },
-                optionalProperties:["title","date","time","details","category","amount","transactionType","durationMinutes","destination"]
+                optionalProperties:["title","date","time","details","category","amount","transactionType","durationMinutes","destination","feature","setting","value","priority","frequency","weekdays","commitment","gameId","difficulty","timezone"]
             })
         }]
     };
@@ -5305,7 +5362,7 @@ IMPORTANT:
 
 You are an assistant for Daily Space, but you can also answer general questions.
 
-You have access to the daily_space_action tool. Use it whenever the user asks you to perform an action, change something, open a section, or inspect saved Daily Space data. Do not merely explain how to do an action that the tool supports. The app executes the tool and returns the result; only report success when the tool result says ok=true. Ask a brief clarification if required details are missing. For deleting records, the app may ask the user to confirm. For actions not listed in the tool, be honest that the capability is not connected yet; never claim to control a feature without an actual tool result.
+You have access to the daily_space_action tool. Use it whenever the user asks you to perform an action, change something, open a section, or inspect saved Daily Space data. The tool supports task, habit, goal, routine, journal, self-control, finance, focus timer, navigation, preferences, game launching and difficulty, world clocks, achievements, game-statistics, analytics, and calendar-data actions. Use get_feature_data to inspect a feature before answering questions about its saved data. Do not merely explain how to do an action that the tool supports. The app executes the tool and returns the result; only report success when the tool result says ok=true. Ask a brief clarification if required details are missing. For deleting records, the app may ask the user to confirm. For actions not listed in the tool, be honest that the capability is not connected yet; never claim to control a feature without an actual tool result.
 
 Never pretend to have accessed app data unless it has actually been provided to you.
 
