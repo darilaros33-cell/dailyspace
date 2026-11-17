@@ -4418,6 +4418,67 @@ ${JSON.stringify(userMessage)}
 
 
 
+        function executeDailySpaceTool(args={}) {
+        const action=String(args.action||'');
+        const title=String(args.title||'').trim();
+        const details=String(args.details||'').trim();
+        const today=localDateKey();
+        const validDate=value=>{const d=String(value||today);const x=new Date(d+'T12:00:00');return !Number.isNaN(x.getTime())&&localDateKey(x)===d?d:null;};
+        const findByTitle=(list,name)=>{const q=String(name||'').trim().toLowerCase();return (list||[]).filter(x=>String(x.title||x.text||x.rule||'').trim().toLowerCase()===q);};
+        const refresh=route=>{saveState();if(route)router(route);else if(currentRoute==='ai'){renderAI(document.getElementById('main-viewport'));lucide.createIcons();}};
+        let item, matches, date;
+        switch(action){
+            case 'create_task':
+                if(!title)return {ok:false,message:'I need a task title before I can add it.'};
+                date=validDate(args.date);if(!date)return {ok:false,message:'That task date is invalid. Please specify a valid date.'};
+                item={id:Date.now(),title,date,time:String(args.time||'').trim()||'Anytime',category:String(args.category||'Personal'),priority:'Medium',completed:false};
+                appState.tasks.push(item);refresh();return {ok:true,message:`Added task “${item.title}” for ${date}${item.time!=='Anytime'?' at '+item.time:''}.`};
+            case 'complete_task':
+                matches=findByTitle(appState.tasks,title).filter(x=>!x.completed);if(matches.length!==1)return {ok:false,message:matches.length?'I found more than one matching task. Please specify its date.':'I could not find an unfinished task with that title.'};
+                item=matches[0];item.completed=true;item.completedAt=new Date().toISOString();adjustXPEvent(`task:${item.id}`,10);if(!item.xpAwarded){item.xpAwarded=true;appState.lifetimeTasksCompleted=(Number(appState.lifetimeTasksCompleted)||0)+1;}evaluateAchievements();refresh();return {ok:true,message:`Marked “${item.title}” complete.`};
+            case 'delete_task':
+                matches=findByTitle(appState.tasks,title);if(matches.length!==1)return {ok:false,message:matches.length?'More than one task has that title. Please specify its date.':'I could not find that task.'};
+                if(!confirm(`Delete task “${matches[0].title}”?`))return {ok:false,message:'Deletion cancelled.'};appState.tasks=appState.tasks.filter(x=>x.id!==matches[0].id);refresh();return {ok:true,message:`Deleted task “${title}”.`};
+            case 'create_habit':
+                if(!title)return {ok:false,message:'Please provide a habit name.'};appState.habits.push({id:Date.now(),title,category:String(args.category||'Personal'),frequency:'Daily',completedDates:[],completedToday:false,streak:0,targetDays:30});refresh('habits');return {ok:true,message:`Created habit “${title}”.`};
+            case 'complete_habit':
+            case 'pause_habit':case 'resume_habit':
+                matches=findByTitle(appState.habits,title);if(matches.length!==1)return {ok:false,message:matches.length?'More than one habit has that name.':'I could not find that habit.'};item=matches[0];
+                if(action==='complete_habit'){if(!isHabitScheduledDate(item,today))return {ok:false,message:'That habit is paused or not scheduled today.'};if(!Array.isArray(item.completedDates))item.completedDates=[];if(isHabitCompleteForPeriod(item,today))return {ok:true,message:`“${title}” is already marked complete for its current period.`};if(!item.completedDates.includes(today))item.completedDates.push(today);item.completedToday=true;}
+                else item.paused=action==='pause_habit';refresh('habits');return {ok:true,message:action==='complete_habit'?`Marked “${title}” complete for today.`:`${action==='pause_habit'?'Paused':'Resumed'} “${title}”.`};
+            case 'create_goal':
+                if(!title||!details)return {ok:false,message:'Please provide a goal title and at least one first step.'};item={id:Date.now(),title,category:String(args.category||'Personal'),steps:[{text:details,completed:false}],progress:0,status:'Active'};appState.goals.push(item);refresh('goals');return {ok:true,message:`Created goal “${title}” with first step “${details}”.`};
+            case 'add_goal_step':
+                matches=findByTitle(appState.goals,title);if(matches.length!==1||!details)return {ok:false,message:'Please specify one existing goal and the step to add.'};item=matches[0];normalizeGoal(item);item.steps.push({text:details,completed:false});normalizeGoal(item);refresh('goals');return {ok:true,message:`Added step to “${title}”: ${details}.`};
+            case 'complete_goal_step':
+                matches=findByTitle(appState.goals,title);if(matches.length!==1||!details)return {ok:false,message:'Please specify the goal and exact step.'};item=matches[0];normalizeGoal(item);const stepMatches=item.steps.filter(x=>x.text.toLowerCase()===details.toLowerCase());if(stepMatches.length!==1)return {ok:false,message:'I could not identify exactly one matching step.'};stepMatches[0].completed=true;normalizeGoal(item);evaluateAchievements();refresh('goals');return {ok:true,message:`Completed step “${details}” in “${title}”.`};
+            case 'create_journal_entry':
+                if(!details)return {ok:false,message:'Please provide the journal text to save.'};if(!Array.isArray(appState.journalEntries))appState.journalEntries=[];appState.journalEntries.push({date:new Date().toISOString(),text:details});refresh('journal');return {ok:true,message:'Your journal entry has been saved.'};
+            case 'add_self_control_commitment':
+                if(!details)return {ok:false,message:'Please describe the commitment.'};if(!Array.isArray(appState.selfControlItems))appState.selfControlItems=[];appState.selfControlItems.push({id:Date.now(),text:details,startDate:today,completedDates:[]});refresh('selfcontrol');return {ok:true,message:'Your self-control commitment has been added, starting today.'};
+            case 'add_personal_rule':
+                if(!details)return {ok:false,message:'Please describe the personal rule.'};if(!Array.isArray(appState.rules))appState.rules=[];appState.rules.push({id:Date.now(),rule:details});refresh('selfcontrol');return {ok:true,message:'Your personal rule has been saved.'};
+            case 'record_transaction':
+                const amount=Number(args.amount);date=validDate(args.date);if(!title||!Number.isFinite(amount)||amount<=0||!date||!['income','expense'].includes(args.transactionType))return {ok:false,message:'To record this, I need a title, positive amount, income or expense type, and valid date.'};appState.expenses.push({id:Date.now(),title,amount,type:args.transactionType,date,category:String(args.category||'AI entry'),paymentMethod:'',notes:'Added with SPACE AI'});refresh('finance');return {ok:true,message:`Recorded ${args.transactionType} of ₹${amount.toFixed(2)} for “${title}”.`};
+            case 'set_monthly_budget':
+                const budget=Number(args.amount);if(!Number.isFinite(budget)||budget<0)return {ok:false,message:'Please provide a valid non-negative budget amount.'};const month=today.slice(0,7);if(!appState.financeBudgets)appState.financeBudgets={};appState.financeBudgets[month]={...(appState.financeBudgets[month]||{}),total:budget};refresh('finance');return {ok:true,message:`Saved this month's budget as ₹${budget.toFixed(2)}.`};
+            case 'start_focus_timer':
+                const mins=Number(args.durationMinutes);if(!Number.isInteger(mins)||mins<1||mins>1439)return {ok:false,message:'Choose a focus duration from 1 to 1439 minutes.'};if(isFocusRunning)return {ok:false,message:'A focus session is already running.'};router('focus');setFocusDuration(mins);toggleFocusTimer();return {ok:true,message:`Started a ${mins}-minute focus session.`};
+            case 'pause_focus_timer':if(!isFocusRunning)return {ok:false,message:'The focus timer is not running.'};router('focus');toggleFocusTimer();return {ok:true,message:'Paused the focus timer.'};
+            case 'resume_focus_timer':if(isFocusRunning)return {ok:false,message:'The focus timer is already running.'};router('focus');toggleFocusTimer();return {ok:true,message:'Resumed the focus timer.'};
+            case 'stop_focus_timer':router('focus');stopFocusTimer();return {ok:true,message:'Stopped and reset the focus timer.'};
+            case 'navigate':
+                const routeMap={'home':'home','tasks':'routine','daily routine':'routine','routine':'routine','habits':'habits','goals':'goals','calendar':'calendar','self-control':'selfcontrol','self control':'selfcontrol','focus':'focus','focus timer':'focus','finance':'finance','expenses':'finance','analytics':'analytics','games':'games','journal':'journal','achievements':'achievements','settings':'profile','profile':'profile','space hub':'spacehub','space clock':'clock','space guard':'guard','space health':'health','space fashion':'fashion'};const route=routeMap[String(args.destination||'').toLowerCase()];if(!route)return {ok:false,message:'That section is not available to open.'};router(route);return {ok:true,message:`Opened ${args.destination}.`};
+            case 'toggle_routine_activity':
+                matches=(appState.routineActivities||[]).filter(x=>String(x.title||'').toLowerCase()===title.toLowerCase());if(matches.length!==1)return {ok:false,message:'I could not identify exactly one routine activity.'};item=matches[0];const key=today;if(!Array.isArray(item.completedDates))item.completedDates=[];if(item.completedDates.includes(key))item.completedDates=item.completedDates.filter(x=>x!==key);else item.completedDates.push(key);refresh('routine');return {ok:true,message:`Updated today's completion for routine activity “${title}”.`};
+            case 'get_app_summary':
+                const ts=appState.tasks||[],hs=appState.habits||[],gs=appState.goals||[],todayTasks=ts.filter(x=>x.date===today);return {ok:true,summary:{date:today,tasks:{total:ts.length,completed:ts.filter(x=>x.completed).length,today:todayTasks.map(x=>({title:x.title,completed:!!x.completed}))},habits:hs.map(x=>({title:x.title,paused:!!x.paused,completedToday:(x.completedDates||[]).includes(today)})),goals:gs.map(x=>({title:x.title,progress:x.progress||0,status:x.status||'Active'})),journalEntries:(appState.journalEntries||[]).length,selfControlCommitments:(appState.selfControlItems||[]).length,focusMinutes:Math.round((Number(appState.focusStats?.totalSeconds)||0)/60),transactions:(appState.expenses||[]).length}};
+            default:return {ok:false,message:'That action is not supported yet. I have not changed anything.'};
+        }
+    }
+
+        window.executeDailySpaceTool = executeDailySpaceTool;
+
 function tryExecuteAIAction(raw){
 
     const text=String(raw||'').trim();const lower=text.toLowerCase();
@@ -4425,6 +4486,34 @@ function tryExecuteAIAction(raw){
     const reply=(message)=>({handled:true,message});
 
     let m;
+
+    // Understand ordinary task requests such as “Add a task Study” and
+    // “Add a task Study for tomorrow”, not only the old rigid command syntax.
+    if ((m = text.match(/^(?:please\s+)?(?:can you\s+)?(?:add|create|make)\s+(?:a\s+)?task\s*(?:called\s+|named\s+|:\s*)?(.+)$/i))) {
+        let details = m[1].trim();
+        let date = localDateKey();
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dayAfterTomorrow = new Date();
+        dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+        const datePhrases = [
+            { re: /\s+(?:for|on|due)\s+day after tomorrow\s*$/i, value: localDateKey(dayAfterTomorrow) },
+            { re: /\s+(?:for|on|due)\s+tomorrow\s*$/i, value: localDateKey(tomorrow) },
+            { re: /\s+(?:for|on|due)\s+today\s*$/i, value: localDateKey() }
+        ];
+        for (const item of datePhrases) {
+            if (item.re.test(details)) { date = item.value; details = details.replace(item.re, '').trim(); break; }
+        }
+        const explicitDate = details.match(/\s+(?:for|on|due)\s+(\d{4}-\d{2}-\d{2})\s*$/i);
+        if (explicitDate) { date = explicitDate[1]; details = details.replace(explicitDate[0], '').trim(); }
+        if (!details) return reply('Please tell me the task name.');
+        const parsedDate = new Date(date + 'T12:00:00');
+        if (Number.isNaN(parsedDate.getTime()) || localDateKey(parsedDate) !== date) return reply('Please provide a valid task date.');
+        const task = { id: Date.now(), title: details, date, time: '', category: 'Personal', priority: 'Medium', completed: false };
+        appState.tasks.push(task);
+        saveState();
+        return reply(`Done! I added “${task.title}” to your tasks for ${date === localDateKey() ? 'today' : date}.`);
+    }
 
     if((m=text.match(/^(?:add|create) task\s*:\s*(.+?)\s+on\s+(\d{4}-\d{2}-\d{2})(?:\s+at\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm))?$/i))){const title=m[1].trim(),date=m[2];const parsedDate=new Date(date+'T12:00:00');if(Number.isNaN(parsedDate.getTime())||localDateKey(parsedDate)!==date)return reply('Please use a valid calendar date in YYYY-MM-DD format.');let time='Anytime';if(m[3]){let h=Number(m[3]),min=m[4]||'00',ap=(m[5]||'AM').toUpperCase();if(h<1||h>12||Number(min)>59)return reply('I could not create that task: please use a valid 12-hour time.');time=`${h}:${String(min).padStart(2,'0')} ${ap}`;}if(!title)return reply('Please include a task title.');const task={id:Date.now(),title,date,time,category:'Personal',priority:'Medium',completed:false};appState.tasks.push(task);saveState();return reply(`Task created: ${title}, due ${date}${time!=='Anytime'?' at '+time:''}.`);}
 
@@ -4688,6 +4777,11 @@ ${personalMemoryContext}
 
 
 
+Previous conversation:
+${memoryContext || 'No earlier messages.'}
+
+
+
 ${languageInstruction}
 
 
@@ -4720,17 +4814,28 @@ ${txt}`;
 
         // Send message to Gemini
 
-        const result =
+        let result = await window.dailySpaceAI.chat.sendMessage(messageToSend);
 
-            await window.dailySpaceAI.chat.sendMessage(messageToSend);
+        // Execute Gemini function calls locally, then return their results to Gemini.
+        // Limit the loop to avoid runaway tool cycles.
+        for (let turn = 0; turn < 3; turn++) {
+            const calls = typeof result.response.functionCalls === 'function' ? result.response.functionCalls() : [];
+            if (!calls || !calls.length) break;
+            const responses = [];
+            for (const call of calls) {
+                if (call.name !== 'daily_space_action') {
+                    responses.push({type:'functionResponse',functionResponse:{name:call.name,response:{ok:false,message:'Unknown Daily Space action.'}}});
+                    continue;
+                }
+                let outcome;
+                try { outcome = window.executeDailySpaceTool ? window.executeDailySpaceTool(call.args || {}) : {ok:false,message:'Daily Space action bridge is unavailable.'}; }
+                catch (toolError) { console.error('SPACE AI action error:',toolError); outcome={ok:false,message:'The action could not be completed due to an app error. No success is being reported.'}; }
+                responses.push({type:'functionResponse',functionResponse:{name:call.name,response:outcome}});
+            }
+            result = await window.dailySpaceAI.chat.sendMessage(responses);
+        }
 
-
-
-        const aiReply =
-
-            result.response.text() ||
-
-            'I received an empty response. Please try again.';
+        const aiReply = result.response.text() || 'The app action was processed, but I could not generate a final reply. Please check the relevant section.';
 
         if (appState.user.voiceRepliesEnabled) speakAIReply(aiReply);
 
@@ -4895,7 +5000,7 @@ window.sendAIMessage = sendAIMessage;
 
     import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app-check.js";
 
-    import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-ai.js";
+    import { getAI, getGenerativeModel, GoogleAIBackend, Schema } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-ai.js";
 
     import {
 
@@ -5133,11 +5238,38 @@ window.sendAIMessage = sendAIMessage;
 
 
 
+    // SPACE AI app-control tools. Gemini chooses an action; this app validates and executes it.
+    const dailySpaceActionTool = {
+        functionDeclarations: [{
+            name: "daily_space_action",
+            description: "Perform a supported action inside the user's Daily Space app, or retrieve a saved app summary. Use this for requests to create, update, complete, navigate, or inspect app features. Never claim success without the returned result.",
+            parameters: Schema.object({
+                properties: {
+                    action: Schema.string({description:"Action to perform", enum:["create_task","complete_task","delete_task","create_habit","complete_habit","pause_habit","resume_habit","create_goal","add_goal_step","complete_goal_step","create_journal_entry","add_self_control_commitment","add_personal_rule","record_transaction","set_monthly_budget","start_focus_timer","pause_focus_timer","resume_focus_timer","stop_focus_timer","navigate","get_app_summary","toggle_routine_activity"]}),
+                    title: Schema.string({description:"Task, habit, goal, transaction, rule, commitment, or activity name. Optional when not needed."}),
+                    date: Schema.string({description:"Date in YYYY-MM-DD format. For tasks and transactions; use the user's local date when appropriate."}),
+                    time: Schema.string({description:"Optional task time, such as 6:30 PM."}),
+                    details: Schema.string({description:"Journal text, goal step text, commitment text, or other action details."}),
+                    category: Schema.string({description:"Optional category."}),
+                    amount: Schema.number({description:"Positive transaction amount or monthly budget amount."}),
+                    transactionType: Schema.string({description:"income or expense."}),
+                    durationMinutes: Schema.integer({description:"Focus timer duration in minutes."}),
+                    destination: Schema.string({description:"App section to open, e.g. home, tasks, habits, goals, calendar, self-control, focus, finance, analytics, games, journal, achievements, settings, space hub, space clock, space guard, space health, space fashion."})
+                },
+                optionalProperties:["title","date","time","details","category","amount","transactionType","durationMinutes","destination"]
+            })
+        }]
+    };
+
+
+
     const ai = getAI(app, { backend: new GoogleAIBackend() });
 
     const model = getGenerativeModel(ai, {
 
         model: "gemini-3.5-flash-lite",
+
+        tools: [dailySpaceActionTool],
 
         systemInstruction: `
 
@@ -5172,6 +5304,8 @@ YOUR ROLE:
 IMPORTANT:
 
 You are an assistant for Daily Space, but you can also answer general questions.
+
+You have access to the daily_space_action tool. Use it whenever the user asks you to perform an action, change something, open a section, or inspect saved Daily Space data. Do not merely explain how to do an action that the tool supports. The app executes the tool and returns the result; only report success when the tool result says ok=true. Ask a brief clarification if required details are missing. For deleting records, the app may ask the user to confirm. For actions not listed in the tool, be honest that the capability is not connected yet; never claim to control a feature without an actual tool result.
 
 Never pretend to have accessed app data unless it has actually been provided to you.
 
