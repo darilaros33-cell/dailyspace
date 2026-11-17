@@ -319,6 +319,31 @@ body.ds-special-ai-active .ds-bottom-nav,body.ds-special-ai-active .ds-mobile-to
 .ds-ai-audit-btn svg{width:16px;height:16px}
 @media(max-width:640px){.ds-health-shell{padding:14px!important;gap:14px!important}.ds-health-header h2{font-size:27px!important}.ds-health-header>button{padding:10px 12px!important;font-size:13px!important}.ds-health-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ds-health-nav-item{min-height:46px;padding:10px;font-size:12px}.ds-health-ai-screen .ds-ai-brand h2{font-size:16px}.ds-ai-audit-btn{padding:8px;font-size:11px}.ds-ai-audit-btn span{display:inline}.ds-health-ai-screen .ds-ai-disclaimer{font-size:10px}}
 @media(min-width:768px){body.ds-special-ai-active #main-viewport{padding-bottom:0!important}}
+/* SPACE HEALTH is an immersive section: hide the global app navigation on every health screen. */
+body.route-health-space .ds-bottom-nav,
+body.route-health-space .ds-mobile-toolbar{display:none!important}
+body.route-health-space #main-viewport{padding-bottom:0!important}
+body.route-health-space.ds-special-ai-active #main-viewport{height:100dvh!important;overflow:hidden!important}
+/* Health AI uses the same active theme tokens as the main SPACE AI interface. */
+.ds-health-ai-screen{background:var(--ds-bg)!important;background-image:none!important;color:var(--ds-text,#fff)}
+.ds-health-ai-screen .ds-ai-conversation{background:transparent}
+.ds-health-ai-screen .ds-chat-bubble.assistant-bubble{background:var(--ds-surface-light)!important;color:var(--ds-text,#fff)!important;border:1px solid var(--ds-border)!important}
+.ds-health-ai-screen .ds-chat-bubble.user-bubble{background:var(--ds-primary)!important;color:#fff!important;border:1px solid transparent!important}
+.ds-health-ai-screen .ds-ai-composer-shell{background:var(--ds-surface)!important;border:1px solid var(--ds-border)!important;box-shadow:none!important}
+.ds-health-ai-screen .ds-special-ai-composer{background:linear-gradient(180deg,transparent,var(--ds-bg) 22%)!important}
+.ds-health-ai-screen .ds-ai-disclaimer{color:var(--ds-muted)!important}
+.ds-health-ai-screen .ds-health-ai-header{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 12px;border-bottom:1px solid var(--ds-border)}
+.ds-health-ai-screen .ds-health-ai-identity{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.ds-health-ai-screen .ds-health-ai-heart{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:15px;background:color-mix(in srgb,var(--ds-primary) 16%,transparent);color:var(--ds-primary);border:1px solid var(--ds-border)}
+.ds-health-ai-screen .ds-health-ai-heart svg{width:25px;height:25px}
+.ds-health-ai-screen .ds-health-ai-heading{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.ds-health-ai-screen .ds-health-ai-heading h2{font-size:17px;font-weight:800;line-height:1.2;color:var(--ds-text,#fff)}
+.ds-health-ai-screen .ds-health-ai-heading p{font-size:11px;color:var(--ds-muted);line-height:1.3}
+.ds-health-ai-screen .ds-ai-audit-btn{margin-top:4px;background:color-mix(in srgb,var(--ds-primary) 15%,transparent);color:var(--ds-primary);padding:6px 9px;font-size:11px}
+.ds-health-ai-screen .ds-health-clear{margin-left:auto}
+.ds-health-ai-screen .ds-health-back{width:38px;height:38px;flex-basis:38px}
+.ds-health-ai-screen .ds-ai-brand,.ds-health-ai-screen .ds-ai-topbar{display:none!important}
+@media(max-width:380px){.ds-health-ai-screen .ds-health-ai-header{gap:7px;padding-left:9px;padding-right:9px}.ds-health-ai-screen .ds-health-ai-heart{width:40px;height:40px;flex-basis:40px}.ds-health-ai-screen .ds-health-ai-heading h2{font-size:16px}}
 </style>
 
 </head>
@@ -1594,6 +1619,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
             document.body.classList.toggle('ai-fullscreen', route === 'ai');
             document.body.classList.toggle('ds-special-ai-active', route === 'healthai');
+            document.body.classList.toggle('route-health-space', route === 'health' || route === 'healthai');
 
             document.body.classList.toggle('route-home', route === 'home');
 
@@ -5189,9 +5215,9 @@ window.sendAIMessage = sendAIMessage;
   const welcome=`<div class="ds-ai-welcome"><div class="ds-ai-orb"><i data-lucide="${p.icon}"></i><span></span></div><p class="ds-ai-eyebrow">YOUR PERSONAL WELLNESS COMPANION</p><h3>How can I help today?</h3><p class="ds-ai-welcome-copy">Ask a question, explore a topic or get help understanding everyday wellness information.</p><div class="ds-ai-suggestions">${suggestions.map(x=>`<button type="button" onclick="dsHealthPrompt(this)" class="ds-ai-suggestion">${esc(x)}<i data-lucide="arrow-up-right"></i></button>`).join('')}</div></div>`;
   const messages=items.map(m=>`<div class="ds-chat-row ${m.role==='user'?'is-user':'is-assistant'}">${m.role==='assistant'?`<div class="ds-chat-avatar"><i data-lucide="${p.icon}"></i></div>`:''}<div class="ds-chat-bubble ${m.role==='user'?'user-bubble':'assistant-bubble'}">${esc(m.text).replace(/\n/g,'<br>')}</div></div>`).join('');
   c.innerHTML=`<section class="ds-special-ai-screen ds-health-ai-screen ds-health-ai-fullscreen">
-   <header class="ds-ai-topbar"><button type="button" onclick="goBackInApp()" class="ds-ai-icon-btn" aria-label="Go back"><i data-lucide="arrow-left"></i></button><div class="ds-ai-brand"><div class="ds-ai-brand-icon"><i data-lucide="${p.icon}"></i><span class="ds-ai-online-dot"></span></div><div class="min-w-0"><h2>${p.name}</h2><p>Your personal health assistant</p></div></div><div class="ds-ai-header-actions"><button type="button" onclick="dsHealthDeepAudit()" class="ds-ai-audit-btn" title="Run health audit"><i data-lucide="sparkles"></i><span>Run Health Audit</span></button><button type="button" onclick="dsClearAI('${kind}')" class="ds-ai-icon-btn" aria-label="Clear conversation" title="Clear conversation"><i data-lucide="trash-2"></i></button></div></header>
+   <header class="ds-health-ai-header"><button type="button" onclick="goBackInApp()" class="ds-ai-icon-btn ds-health-back" aria-label="Go back"><i data-lucide="arrow-left"></i></button><div class="ds-health-ai-identity"><div class="ds-health-ai-heart"><i data-lucide="heart-pulse"></i></div><div class="ds-health-ai-heading"><h2>Health AI</h2><p>Your personal health assistant</p><button type="button" onclick="dsHealthDeepAudit()" class="ds-ai-audit-btn" title="Run health audit"><i data-lucide="sparkles"></i><span>Run Health Audit</span></button></div></div><button type="button" onclick="dsClearAI('${kind}')" class="ds-ai-icon-btn ds-health-clear" aria-label="Clear chat" title="Clear chat"><i data-lucide="trash-2"></i></button></header>
    <div class="ds-ai-conversation" id="ds-special-chat" role="log" aria-live="polite">${items.length?messages:welcome}</div>
-   <div class="ds-special-ai-composer"><div class="ds-ai-composer-shell"><textarea id="ds-special-input" rows="1" maxlength="4000" aria-label="Message ${p.name}" placeholder="Ask SPACE HEALTH AI…" aria-label="Ask SPACE HEALTH AI" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dsSendAI('${kind}');}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,132)+'px'"></textarea><button type="button" onclick="dsHealthVoiceInput()" class="ds-ai-voice-btn" aria-label="Voice input" title="Voice input"><i data-lucide="mic"></i></button><button type="button" onclick="dsSendAI('${kind}')" class="ds-ai-send-btn ds-health-send-btn" aria-label="Send message"><i data-lucide="send"></i><span>Send</span></button></div><p class="ds-ai-disclaimer"><i data-lucide="shield-check"></i> Helpful information, not a medical diagnosis. Avoid sharing private details.</p></div>
+   <div class="ds-special-ai-composer"><div class="ds-ai-composer-shell"><textarea id="ds-special-input" rows="1" maxlength="4000" aria-label="Message ${p.name}" placeholder="Ask Health AI…" aria-label="Ask Health AI" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dsSendAI('${kind}');}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,132)+'px'"></textarea><button type="button" onclick="dsHealthVoiceInput()" class="ds-ai-voice-btn" aria-label="Voice input" title="Voice input"><i data-lucide="mic"></i></button><button type="button" onclick="dsSendAI('${kind}')" class="ds-ai-send-btn ds-health-send-btn" aria-label="Send message"><i data-lucide="send"></i><span>Send</span></button></div><p class="ds-ai-disclaimer"><i data-lucide="shield-check"></i> Helpful information, not a medical diagnosis. Avoid sharing private details.</p></div>
   </section>`;
   const box=document.getElementById('ds-special-chat');if(box)box.scrollTop=box.scrollHeight;if(lucide)lucide.createIcons();
  }
