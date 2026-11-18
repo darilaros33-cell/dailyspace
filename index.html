@@ -1607,6 +1607,12 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
 
 
 
+        // Reset the shared app content scroller whenever a new section is rendered.
+        function resetMainViewportScroll(viewport) {
+            if (!viewport) return;
+            viewport.scrollTop = 0;
+        }
+
         function router(route, addHistory = true) {
 
             if (!route) route = 'home';
@@ -1731,6 +1737,7 @@ if (!Number.isFinite(Number(appState.focusStats.totalSeconds))) appState.focusSt
             }
 
             if (window.lucide) lucide.createIcons();
+            resetMainViewportScroll(viewport);
 
         }
 
@@ -5155,7 +5162,7 @@ window.sendAIMessage = sendAIMessage;
  const esc=v=>escapeHTML(String(v==null?'':v));
  function ensure(){if(!appState.wellness||typeof appState.wellness!=='object')appState.wellness={days:{},sleepRecords:{}};if(!appState.wellness.days)appState.wellness.days={};if(!appState.wellness.sleepRecords)appState.wellness.sleepRecords={};if(!appState.specialistAI)appState.specialistAI={};Object.keys(profiles).forEach(k=>{if(!Array.isArray(appState.specialistAI[k]))appState.specialistAI[k]=[];});}
  function today(){return localDateKey();}function dayLog(){ensure();return appState.wellness.days[today()]||(appState.wellness.days[today()]={waterGlasses:0,activities:[]});}
- function show(route,render,add=true){if(add&&route!==currentRoute){if(routeHistory.at(-1)!==route)routeHistory.push(route);try{history.pushState({dailySpace:true,route},'',`#${route}`)}catch(e){}}currentRoute=route;document.body.classList.remove('ai-fullscreen','ai-keyboard-open');const v=document.getElementById('main-viewport');if(!v)return;v.innerHTML='';render(v);document.querySelectorAll('[data-bottom-nav]').forEach(b=>b.classList.toggle('active',b.dataset.bottomNav===route));if(lucide)lucide.createIcons();}
+ function show(route,render,add=true){if(add&&route!==currentRoute){if(routeHistory.at(-1)!==route)routeHistory.push(route);try{history.pushState({dailySpace:true,route},'',`#${route}`)}catch(e){}}currentRoute=route;document.body.classList.remove('ai-fullscreen','ai-keyboard-open');const v=document.getElementById('main-viewport');if(!v)return;v.innerHTML='';render(v);document.querySelectorAll('[data-bottom-nav]').forEach(b=>b.classList.toggle('active',b.dataset.bottomNav===route));if(lucide)lucide.createIcons();resetMainViewportScroll(v);}
  function growth(c){const goals=appState.goals||[];c.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto space-y-5"><h2 class="text-3xl font-extrabold">Growth</h2><p class="text-sm text-muted">Understand your progress and celebrate meaningful milestones.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${[['goals','target','My Goals','Manage goals and milestones'],['analytics','chart-no-axes-combined','Analytics','Detailed trends, charts and comparisons'],['achievements','award','Achievements','Automatically earned milestone badges'],['xplevels','zap','XP & Levels','Experience and progression'],['personalstats','chart-pie','Personal Statistics','Lifetime totals and personal records']].map(([r,i,t,d])=>`<button onclick="router('${r}')" class="glass-panel rounded-2xl p-5 text-left flex items-center gap-3"><i data-lucide="${i}" class="w-7 h-7 text-primary"></i><span class="flex-1"><b class="block">${t}</b><small class="text-muted">${d}</small></span><i data-lucide="chevron-right"></i></button>`).join('')}</div><div class="glass-panel rounded-2xl p-4 text-sm">Goals completed: <b>${goals.filter(g=>g.status==='Completed').length} / ${goals.length}</b></div></div>`;}
  function personal(c){const t=appState.tasks||[],h=appState.habits||[],g=appState.goals||[],a=appState.achievementsList||[],f=Number(appState.focusStats?.totalSeconds)||0;const stats=[['Tasks completed',t.filter(x=>x.completed).length],['Total tasks',t.length],['Habits created',h.length],['Goals completed',g.filter(x=>x.status==='Completed'||Number(x.progress)>=100).length],['Focus time',`${Math.floor(f/3600)}h ${Math.floor(f%3600/60)}m`],['Current level',appState.user.level||1],['Lifetime XP',Number(appState.user.totalXP)||Number(appState.user.xp)||0],['Achievements unlocked',a.filter(x=>x.unlocked).length],['Longest current habit streak',`${Math.max(0,...h.map(x=>getHabitStreak(x)||0))} days`]];c.innerHTML=`<div class="p-5 md:p-9 max-w-6xl mx-auto space-y-5"><button onclick="router('growth')" class="text-sm text-primary">← Growth</button><h2 class="text-3xl font-extrabold">Personal Statistics</h2><p class="text-sm text-muted">Your account totals, calculated from saved activity.</p><div class="grid grid-cols-2 md:grid-cols-3 gap-3">${stats.map(([k,v])=>`<article class="glass-panel rounded-2xl p-4"><p class="text-xs text-muted">${k}</p><p class="text-2xl font-bold mt-2">${v}</p></article>`).join('')}</div><p class="text-xs text-muted">Historical totals depend on the records available in your account.</p></div>`;}
  function xpPage(c){const xp=Number(appState.user.totalXP)||Number(appState.user.xp)||0,level=Number(appState.user.level)||1,req=level*100;c.innerHTML=`<div class="p-5 md:p-9 max-w-5xl mx-auto space-y-5"><button onclick="router('growth')" class="text-sm text-primary">← Growth</button><h2 class="text-3xl font-extrabold">XP & Levels</h2><div class="glass-panel rounded-3xl p-6"><p class="text-xs text-muted">CURRENT LEVEL</p><p class="text-4xl font-bold mt-2">Level ${level}</p><p class="text-sm text-muted">${xp} lifetime XP</p><div class="ds-progress mt-4"><span style="width:${Math.min(100,req?Number(appState.user.xp||0)/req*100:0)}%"></span></div><p class="text-xs text-muted mt-2">${Number(appState.user.xp)||0} / ${req} XP toward next level</p></div><p class="text-xs text-muted">XP is awarded by Daily Space activity rules and existing XP event records.</p></div>`;}
