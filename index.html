@@ -430,6 +430,17 @@ body.route-health-space.ds-special-ai-active #main-viewport{height:100dvh!import
 @media(max-width:380px){.ds-nutri-overview{padding:14px}.ds-nutri-meal-card{padding:12px}.ds-nutri-methods{gap:6px}.ds-nutri-methods button{padding:10px 8px}.ds-nutri-macro{padding:8px}.ds-nutri-food-row{gap:6px}}
 </style>
 
+
+<style id="ds-nutrition-search-status-styles">
+.ds-nutrition-wait{color:#22c55e!important;font-weight:700;display:inline-flex;align-items:center;gap:2px}
+.ds-nutrition-wait-dots{display:inline-flex;gap:2px;margin-left:2px}
+.ds-nutrition-wait-dots span{opacity:.2;animation:dsNutritionDotPulse 1.2s infinite}
+.ds-nutrition-wait-dots span:nth-child(2){animation-delay:.2s}
+.ds-nutrition-wait-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dsNutritionDotPulse{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.ds-nutrition-no-match{color:#ef4444!important;font-weight:700}
+</style>
+
 </head>
 
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-primary selection:text-white transition-colors duration-300">
@@ -5327,7 +5338,7 @@ function healthNotice(msg,type='info'){showToast(msg,type);}
  function dsNutritionFilterChoose(index,value){const q=dsNutritionFilterState.questions[index];if(!q)return;dsNutritionFilterState.answers[q.id]=value;dsNutritionRenderFilters();}
  function dsNutritionFilterSkip(){dsNutritionFilterState.answers={};dsNutritionFilterApply();}
  function dsNutritionFetchMatchesInput(query){const input=document.getElementById('ds-nutrition-search');if(!input)return false;const typed=input.value.trim().toLowerCase(),term=String(query||'').trim().toLowerCase();if(term===typed)return true;const base=String(dsNutritionFilterState?.query||'').trim().toLowerCase();return !!base&&typed===base&&term.startsWith(base+' ');}
- function dsNutritionFilterApply(){const st=dsNutritionFilterState;if(!st?.query)return;const box=document.getElementById('ds-nutrition-results');if(box)box.innerHTML='<p class="text-xs text-muted">Searching USDA records with your filters…</p>';/* Keep the USDA query anchored to the user's food identity. Preparation and variety are applied locally to real returned records, never appended as free-text API terms. */dsNutritionFetch(st.query,1,false);}
+ function dsNutritionFilterApply(){const st=dsNutritionFilterState;if(!st?.query)return;const box=document.getElementById('ds-nutrition-results');if(box)box.innerHTML='<p class="ds-nutrition-wait" role="status" aria-live="polite">Please wait<span class="ds-nutrition-wait-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>';/* Keep the USDA query anchored to the user's food identity. Preparation and variety are applied locally to real returned records, never appended as free-text API terms. */dsNutritionFetch(st.query,1,false);}
  function dsNutritionFoodState(food){const d=String(food.description||'').toLowerCase();if(/\b(raw|uncooked|un cooked)\b/.test(d))return 'Raw / uncooked';if(/\b(cooked|boiled|steamed|baked|roasted|grilled|fried|prepared)\b/.test(d))return 'Cooked / prepared';if(/\b(dry|dried)\b/.test(d))return 'Dry / dried';return food.dataType==='Branded'?'Branded product':'Preparation not specified';}
  function dsNutritionFoodPrepRank(food){const d=String(food.description||'').toLowerCase();if(/\b(cooked|boiled|steamed|baked|roasted|grilled|fried|prepared)\b/.test(d))return 0;if(/\b(raw|uncooked|un cooked|dry|dried)\b/.test(d))return 2;return 1;}
  function dsNutritionFoodIsDish(food,query){const d=String(food.description||'').toLowerCase(),q=String(query||'').toLowerCase().trim();if(!q)return false;const dishWords=/\b(pilaf|pilau|croquette|casserole|pudding|risotto|dressing|salad|soup|stew|curry|porridge|pancake|pie|stuffed|with raisins|with vegetables|with meat|mixed dish|entree)\b/;if(!dishWords.test(d))return false;return !q.split(/\s+/).some(t=>t.length>2&&d.includes(t)&&!['rice','chicken','beef','fish','potato','beans','egg'].includes(t)&&new RegExp('\\b'+t+'\\b').test(d));}
@@ -5385,6 +5396,7 @@ function healthNotice(msg,type='info'){showToast(msg,type);}
   if(!box)return;
   const input=document.getElementById('ds-nutrition-search');
   if(!input||!dsNutritionFetchMatchesInput(query))return;
+  if(!append)box.innerHTML='<p class="ds-nutrition-wait" role="status" aria-live="polite">Please wait<span class="ds-nutrition-wait-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>';
   const baseQuery=String(dsNutritionFilterState?.query||query).trim();
   const hasPrepSelection=!!(dsNutritionFilterState?.answers?.prep&&!/not sure/i.test(dsNutritionFilterState.answers.prep));
   const hasVarietySelection=!!(dsNutritionFilterState?.answers?.variety&&!/not sure/i.test(dsNutritionFilterState.answers.variety));
@@ -5440,7 +5452,7 @@ function healthNotice(msg,type='info'){showToast(msg,type);}
     ?`No matching records were found after checking all ${state.scanned.toLocaleString()} available USDA records for this search. Try another food description or choose “Not sure”.`
     :'No matching foods found yet. Try another spelling or use Manual Entry';
    const wasExpanded=!!box.querySelector('details[open]');
-   box.innerHTML=(top.length?`<div class="space-y-2"><p class="text-xs font-bold text-muted">Best matches</p>${top.map(dsNutritionResultCard).join('')}</div>`:`<p class="text-sm text-muted">${emptyMessage}</p>`)
+   box.innerHTML=(top.length?`<div class="space-y-2"><p class="text-xs font-bold text-muted">Best matches</p>${top.map(dsNutritionResultCard).join('')}</div>`:`<p class="ds-nutrition-no-match" role="status" aria-live="polite">No food matches found</p>`)
     +(rest.length?`<details class="mt-3" ${wasExpanded?'open':''}><summary class="ds-nutri-more cursor-pointer">More results (${rest.length})</summary><div id="ds-nutrition-more-results" class="space-y-2 mt-2">${rest.map(dsNutritionResultCard).join('')}</div></details>`:'');
    const oldPager=box.querySelector('[data-load-more]');if(oldPager)oldPager.remove();
 
@@ -5555,7 +5567,7 @@ function healthNotice(msg,type='info'){showToast(msg,type);}
   const model=window.dailySpaceAI?.model;
   if(!model){box.innerHTML='<p class="text-sm text-muted">Health AI is not ready. Please try again later.</p>';return;}
   const requestId=++dsNutritionAIRequestId;
-  box.innerHTML='<p class="text-sm text-muted">Health AI is checking the food item…</p>';
+  box.innerHTML='<p class="ds-nutrition-wait" role="status" aria-live="polite">Please wait<span class="ds-nutrition-wait-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>';
   try{
    const prompt=`You are Health AI Food Search inside Daily Space. The user must search for one clearly specified food item. Do not infer or guess a food from a vague description, a list of ingredients, a meal occasion, or an unclear phrase. If the input is not an identifiable specific food item, return JSON only: {"status":"clarification","message":"Please specify the food item you want to search for. For example: chicken curry, boiled egg, or banana."}. If the item is specific, return JSON only with this exact shape: {"status":"food","name":"specific food name","preparation":"preparation if stated, otherwise Not specified","basis_quantity":100,"basis_unit":"g","kcal":0,"protein_g":0,"carbs_g":0,"fat_g":0,"fiber_g":0,"sugar_g":0,"saturated_fat_g":0,"sodium_mg":0,"explanation":"brief note","confidence":"moderate"}. Give cautious approximate typical values per 100 g unless a standard serving is clearly inherent. Do not claim these are USDA or laboratory-verified values. Do not fabricate precision; if you cannot provide a reasonable estimate, return {"status":"clarification","message":"I couldn't identify reliable nutrition information for that exact food. Please specify the food item more clearly."}. No medical advice. User input: ${JSON.stringify(query)}`;
    const result=await model.generateContent(prompt);
@@ -5564,7 +5576,7 @@ function healthNotice(msg,type='info'){showToast(msg,type);}
    const match=raw.match(/\{[\s\S]*\}/);if(!match)throw new Error('Health AI returned an unreadable response. Please try again.');
    const data=JSON.parse(match[0]);
    if(data.status==='clarification'){
-    box.innerHTML=`<div class="rounded-xl border border-white/10 p-3"><p class="text-sm">${esc(String(data.message||'Please specify the food item you want to search for.'))}</p></div>`;return;
+    box.innerHTML=`<p class="ds-nutrition-no-match" role="status" aria-live="polite">No food matches found</p><p class="text-xs text-muted mt-2">${esc(String(data.message||'Please specify the food item you want to search for.'))}</p>`;return;
    }
    const keys=['kcal','protein_g','carbs_g','fat_g','fiber_g','sugar_g','saturated_fat_g','sodium_mg'];
    if(data.status!=='food'||!data.name||keys.some(k=>!Number.isFinite(Number(data[k]))||Number(data[k])<0))throw new Error('Health AI could not provide a reliable nutrition estimate for that item. Please refine the food name.');
